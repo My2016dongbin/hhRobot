@@ -1,0 +1,7 @@
+<!-- drawable/edittext_shape.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/edit_background" android:state_focused="false"/>
+    <item android:drawable="@drawable/edit_background_click" android:state_focused="true"/>
+
+</selector>

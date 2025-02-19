@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="theme_color_blue">#FF548AFF</color>
+    <color name="theme_color">#ffffff</color>
+    <color name="theme_primary">#FF548AFF</color>
+    <color name="colorPrimary">#FF548AFF</color>
+    <color name="back_color">#ffffff</color>
+    <color name="theme_color_blue_trans">#aa3875C5</color>
+    <color name="back_color_design">#f5f8fb</color>
+    <color name="back_color_design2">#e6e8eb</color>
+    <color name="back_color_fe">#fefefe</color>
+    <color name="back_color_f8">#f8f8f8</color>
+    <color name="trans_back_color_f8">#66f8f8f8</color>
+    <color name="back_color_line">#ececec</color>
+    <color name="back_color_fa">#fafafa</color>
+    <color name="chart_handle">#eba461</color>
+    <color name="chart_no_handle">#5e77fb</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,4 +22,91 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="trans_gray">#99999999</color>
+
+    <color name="blue">#6593cb</color>
+    <color name="gray_1">#aaaaaa</color>
+    <color name="app_bg_red">#ffdb5153</color>
+    <color name="gray1">#cccccc</color>
+    <color name="theme_primary_alpha">#bb283345</color>
+
+    <color name="whiteColor">#fff</color>
+    <color name="redColor">#F44336</color>
+
+    <color name="text_color0">#000000</color>
+    <color name="text_color3">#333333</color>
+    <color name="text_color5">#555555</color>
+    <color name="text_color6">#666666</color>
+    <color name="text_color8">#888888</color>
+    <color name="text_color9">#999999</color>
+    <color name="text_color12">#CAC8C8</color>
+    <color name="text_color_blue">#2697FF</color>
+    <color name="text_color_orange">#FE841E</color>
+    <color name="text_color_red">#DE0B0B</color>
+    <color name="red">#DE0B0B</color>
+    <color name="blue_trans">#ee6593cb</color>
+    <color name="theme_primary_trans_">#88283345</color>
+    <color name="theme_primary_trans">#22283345</color>
+    <color name="theme_primary_trans2">#11283345</color>
+
+    <color name="text_orange">#FE841E</color>
+    <color name="text_green">#00D183</color>
+    <color name="text_red">#DE0B0B</color>
+    <color name="text_blue">#2697FF</color>
+
+    <color name="view_line">#E6E6E6</color>
+
+    <color name="background_colorf3">#f3f3f3</color>
+    <color name="background_colorf8">#f8f8f8</color>
+    <color name="background_color7f">#7f7f7f</color>
+
+    <color name="background_refresh">#D5D5D5</color>
+
+
+    <color name="c">#f9f7f7</color>
+    <color name="c0">#F4F4F4</color>
+    <color name="c1">#f1f1f1</color>
+    <color name="c2">#dedede</color>
+    <color name="c3">#cecece</color>
+    <color name="c4">#D3D3D3</color>
+    <color name="c5">#B3B3B3</color>
+    <color name="c56">#888888</color>
+    <color name="c6">#646464</color>
+    <color name="c7">#383838</color>
+    <color name="c8">#181818</color>
+    <color name="c8_">#181818</color>
+    <color name="c9">#cc3333</color>
+    <color name="c10">#e79e99</color>
+    <color name="c11">#ffe8e7</color>
+    <color name="c12">#ffffff</color>
+    <color name="c13">#9FCEF5</color>
+    <color name="c14">#96D996</color>
+    <color name="c15">#F29C24</color>
+    <color name="c16">#0079FF</color>
+    <color name="c17">#79889F</color>
+    <color name="c18">#e8e8e8</color>
+    <color name="c19">#e11c00</color>
+    <color name="c20">#FF3B30</color>
+    <color name="c21">#f28f25</color>
+    <color name="c22">#29B766</color>
+    <color name="c23">#5474af</color>
+    <color name="c24">#FF7214</color>
+    <color name="c25">#585B6A</color>
+    <color name="c26">#424455</color>
+    <color name="c27">#15B3ED</color>
+    <color name="c28"> #0F8AC3</color>
+    <color name="c29">#f9e50d</color>
+    <color name="c30">#ff8989</color>
+    <color name="c31">#121111</color>
+    <color name="c32">#00faf8f8</color>
+
+    <color name="colorMultiRoutePrimary">#ED1F2131</color>
+    <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorBlack">#FF182126</color>
+
+
+    <color name="line_color">#e7e7e7</color>
+    <color name="content_background">#f2f2f2</color>
+    <color name="solar_background">#009988</color>
 </resources>

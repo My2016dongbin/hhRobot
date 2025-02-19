@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ehaohai.robot.ui.viewmodel.LoginViewModel" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        tools:context=".LoginActivity">
+
+
+        <LinearLayout
+            android:background="@drawable/border_white"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:layout_weight="8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/dog"/>
+            </FrameLayout>
+            <LinearLayout
+                android:layout_weight="10"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/login_input_bg"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/username_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/edit_bg_select"
+                        android:inputType="text"
+                        android:textColor="@color/c4"
+                        android:textCursorDrawable="@drawable/edit_cursor_color" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/login_input_bg"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/password_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/edit_bg_select"
+                        android:inputType="textPassword"
+                        android:textColor="@color/c4"
+                        android:textCursorDrawable="@drawable/edit_cursor_color" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+                    <TextView
+                        android:id="@+id/login_nw_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|left"
+                        android:text=" "
+                        android:textColor="@color/c5" />
+                    <TextView
+                        android:id="@+id/tv_ip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        android:text=" "
+                        android:textColor="@color/c5" />
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/login_button"
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/bg_button2"
+                    android:gravity="center"
+                    android:text="登录"
+                    android:textSize="16sp"
+                    android:textColor="@color/c12" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>
