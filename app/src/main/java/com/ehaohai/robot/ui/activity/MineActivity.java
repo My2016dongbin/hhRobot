@@ -1,4 +1,4 @@
-package com.ehaohai.robot;
+package com.ehaohai.robot.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,16 +13,13 @@ import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
-import com.ehaohai.robot.databinding.ActivityMainBinding;
+import com.ehaohai.robot.databinding.ActivityMineBinding;
 import com.ehaohai.robot.event.Exit;
-import com.ehaohai.robot.ui.activity.MineActivity;
-import com.ehaohai.robot.ui.viewmodel.MainViewModel;
+import com.ehaohai.robot.ui.viewmodel.MineViewModel;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
-public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainViewModel> {
+public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineViewModel> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,34 +29,25 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         bind_();
     }
 
-    ///退出登录
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGetMessage(Exit event) {
-        finish();
-    }
-
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
-        EventBus.getDefault().register(this);
-    }
-
-    private void bind_() {
-        binding.mine.setOnClickListener(new View.OnClickListener() {
+        binding.exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, MineActivity.class));
+                startActivity(new Intent(MineActivity.this,LoginActivity.class));
+                EventBus.getDefault().post(new Exit());
+                finish();
             }
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
+    private void bind_() {
+        binding.back.setOnClickListener(view -> finish());
     }
 
     @Override
-    protected ActivityMainBinding dataBinding() {
-        return DataBindingUtil.setContentView(this, R.layout.activity_main);
+    protected ActivityMineBinding dataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_mine);
     }
 
     @Override
@@ -70,8 +58,8 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     }
 
     @Override
-    public MainViewModel obtainViewModel() {
-        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(MainViewModel.class);
+    public MineViewModel obtainViewModel() {
+        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(MineViewModel.class);
     }
 
 

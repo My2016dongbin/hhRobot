@@ -247,4 +247,7 @@ dependencies {
             {
                 exclude(group:'com.facebook.fresco')
             }
+
+    implementation 'me.jessyan:autosize:1.2.1'//autosize
+    implementation 'org.apmem.tools:layouts:1.10@aar'
 }

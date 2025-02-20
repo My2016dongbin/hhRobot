@@ -1,5 +1,7 @@
 package com.ehaohai.robot.ui.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -7,6 +9,10 @@ import android.widget.Toast;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
@@ -21,14 +27,19 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fullScreen(this);
         init_();
         bind_();
         obtainViewModel().getName();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
         binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userName,""));
         binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.password,""));
+        Glide.with(this).load(getResources().getDrawable(R.drawable.dog))
+                .transform(new GranularRoundedCorners(10,0,0,10))
+                .into(binding.imageLeft);
     }
 
     private void bind_() {
@@ -45,6 +56,25 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 }
                 //登录
                 obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
+            }
+        });
+        binding.register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
+        binding.forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
+            }
+        });
+        binding.loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
             }
         });
     }

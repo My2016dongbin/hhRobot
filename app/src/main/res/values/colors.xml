@@ -5,7 +5,7 @@
     <color name="theme_primary">#FF548AFF</color>
     <color name="colorPrimary">#FF548AFF</color>
     <color name="back_color">#ffffff</color>
-    <color name="theme_color_blue_trans">#aa3875C5</color>
+    <color name="theme_color_blue_trans">#aa548AFF</color>
     <color name="back_color_design">#f5f8fb</color>
     <color name="back_color_design2">#e6e8eb</color>
     <color name="back_color_fe">#fefefe</color>
@@ -103,10 +103,16 @@
 
     <color name="colorMultiRoutePrimary">#ED1F2131</color>
     <color name="colorWhite">#FFFFFFFF</color>
-    <color name="colorBlack">#FF182126</color>
+    <color name="colorBlack">#FF161B1C</color>
+    <color name="colorBlackBlue">#FF142026</color>
+    <color name="colorTextGray">#FFC7C9CB</color>
 
 
     <color name="line_color">#e7e7e7</color>
     <color name="content_background">#f2f2f2</color>
     <color name="solar_background">#009988</color>
+
+    <color name="robot_input_back">#EBEFF2</color>
+    <color name="robot_main">#2299A2B7</color>
+    <color name="robot_main_line">#22aabbcc</color>
 </resources>

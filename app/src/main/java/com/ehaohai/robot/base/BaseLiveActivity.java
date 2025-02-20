@@ -47,9 +47,9 @@ public abstract class BaseLiveActivity<T extends ViewDataBinding, V extends Base
             window.setNavigationBarColor(getResources().getColor(R.color.colorBlack));
 //            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+//        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//横屏
+//        }
 
         //动态接收广播
         IntentFilter intentFilter = new IntentFilter();

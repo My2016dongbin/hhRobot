@@ -29,6 +29,9 @@ import org.xutils.x;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import me.jessyan.autosize.AutoAdaptStrategy;
+import me.jessyan.autosize.AutoSize;
+import me.jessyan.autosize.AutoSizeConfig;
 import okhttp3.OkHttpClient;
 
 public class HhApplication extends Application {
@@ -226,6 +229,10 @@ public class HhApplication extends Application {
 
 
         initTPNS();
+
+
+        // 初始化 AutoSize
+        AutoSize.initCompatMultiProcess(this);
 
     }
 
