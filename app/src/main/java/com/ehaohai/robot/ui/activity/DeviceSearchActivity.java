@@ -18,18 +18,35 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceSearchBinding;
+import com.ehaohai.robot.event.Exit;
+import com.ehaohai.robot.event.UDPMessage;
 import com.ehaohai.robot.ui.viewmodel.DeviceSearchViewModel;
 import com.ehaohai.robot.wifi.UDPBroadcast;
 import com.ehaohai.robot.wifi.UDPReceiver;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Date;
 
 public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchBinding, DeviceSearchViewModel> {
     UDPReceiver udpReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         fullScreen(this);
         init_();
         bind_();
+    }
+
+    ///退出登录
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(UDPMessage event) {
+        Date date = new Date();
+        obtainViewModel().stringList.add(event.getMessage());
+        obtainViewModel().name.postValue(event.getMessage());
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -44,19 +61,6 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
         udpReceiver = new UDPReceiver(wifiManager);
         new Thread(udpReceiver).start();
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // 发送广播消息
-                try {
-                    UDPBroadcast broadcast = new UDPBroadcast();
-                    broadcast.sendBroadcast("TurnOnLights");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        },5000);
     }
 
     private void bind_() {
@@ -102,7 +106,7 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        obtainViewModel().onDestroy();
+        EventBus.getDefault().unregister(this);
         udpReceiver.stop();
     }
 }

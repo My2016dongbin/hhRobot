@@ -2,7 +2,10 @@ package com.ehaohai.robot.wifi;
 
 import android.net.wifi.WifiManager;
 
+import com.ehaohai.robot.event.UDPMessage;
 import com.ehaohai.robot.utils.HhLog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -23,9 +26,7 @@ public class UDPReceiver implements Runnable {
     public void run() {
         HhLog.e("UDP 启动: ");
         try {
-            DatagramSocket socket = new DatagramSocket(null);
-            socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress("0.0.0.0", 9990));
+            DatagramSocket socket = new DatagramSocket(PORT);
             socket.setBroadcast(true);
             byte[] buffer = new byte[1024];
             while (true) {
@@ -45,7 +46,8 @@ public class UDPReceiver implements Runnable {
 
     private void processMessage(String message) {
         // 处理接收到的消息，例如开关设备
-        HhLog.e("UDP 接收到消息: " + message);
+        EventBus.getDefault().post(new UDPMessage(message));
+
     }
 
     public void stop() {

@@ -40,6 +40,7 @@
         <activity android:name=".ui.activity.MineActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.DeviceSearchActivity"
+            android:exported="true"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
             android:screenOrientation="landscape">
