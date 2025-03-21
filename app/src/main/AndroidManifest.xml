@@ -42,6 +42,9 @@
         <activity android:name=".ui.activity.DeviceSearchActivity"
             android:exported="true"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.DeviceListActivity"
+            android:exported="true"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
             android:screenOrientation="landscape">
             <intent-filter>

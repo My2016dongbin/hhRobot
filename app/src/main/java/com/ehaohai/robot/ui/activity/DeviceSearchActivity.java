@@ -41,7 +41,7 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
         bind_();
     }
 
-    ///退出登录
+    ///UDP消息
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(UDPMessage event) {
         Date date = new Date();
@@ -51,16 +51,10 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
-        Glide.with(this).load(getResources().getDrawable(R.drawable.dog))
-                .transform(new GranularRoundedCorners(10,0,0,10))
-                .into(binding.imageLeft);
-
-
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         // 启动接收线程
         udpReceiver = new UDPReceiver(wifiManager);
         new Thread(udpReceiver).start();
-
     }
 
     private void bind_() {
@@ -99,6 +93,7 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
             View view = inflater.inflate(R.layout.item_message,null,false);
             TextView text = view.findViewById(R.id.text);
             text.setText(obtainViewModel().stringList.get(i));
+            text.setTextColor(getResources().getColor(R.color.gray1));
             binding.messageList.addView(view);
         }
     }

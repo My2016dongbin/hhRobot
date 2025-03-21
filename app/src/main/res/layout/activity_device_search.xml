@@ -16,49 +16,163 @@
         android:background="@color/colorBlack"
         tools:context=".DeviceSearchActivity">
 
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:padding="5dp"
+            android:src="@drawable/dog"
+            android:scaleType="fitXY"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="66dp"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="65dp"
-            android:layout_marginBottom="34dp"
-            android:background="@drawable/border_white">
+            android:layout_marginBottom="34dp">
 
-            <FrameLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8">
+                <TextView
+                    android:text="添加机器狗"
+                    android:textColor="@color/whiteColor"
+                    android:layout_marginTop="25dp"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="正在扫描..."
+                    android:textColor="@color/gray1"
+                    android:layout_marginTop="15dp"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
-                <ImageView
-                    android:id="@+id/image_left"
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    tools:ignore="SpeakableTextPresentCheck">
 
-                <ImageView
-                    android:id="@+id/back"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginStart="20dp"
-                    android:padding="5dp"
-                    android:src="@drawable/dog"
-                    android:scaleType="fitXY"/>
+                    <LinearLayout
+                        android:id="@+id/message_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
 
-            </FrameLayout>
-
-            <ScrollView
+            </LinearLayout>
+            <View
+                android:layout_width="0.5dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="25dp"
+                android:layout_height="match_parent"
+                android:background="@color/line_color"/>
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8">
+
+                <TextView
+                    android:text="选择要添加的机器狗"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="25dp"
+                    android:textColor="@color/whiteColor"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
                 <LinearLayout
-                    android:id="@+id/message_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </ScrollView>
+                    android:layout_height="48dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="50dp"
+                    android:background="@drawable/black_input_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/name1_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/black_input_back"
+                        android:hint="Go2 EDU"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:textColor="@color/text_color12"
+                        android:textColorHint="@color/text_color9"
+                        android:textCursorDrawable="@drawable/edit_cursor_color"
+                        android:textSize="14sp"
+                        tools:ignore="TextContrastCheck" />
+
+                    <TextView
+                        android:text="已绑定"
+                        android:textColor="@color/gray1"
+                        android:textSize="12sp"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:background="@drawable/bg_bind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="50dp"
+                    android:background="@drawable/black_input_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/name2_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/black_input_back"
+                        android:hint="Go2 EDU"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:textColor="@color/text_color12"
+                        android:textColorHint="@color/text_color9"
+                        android:textCursorDrawable="@drawable/edit_cursor_color"
+                        android:textSize="14sp"
+                        tools:ignore="TextContrastCheck" />
+
+                    <TextView
+                        android:text="绑定"
+                        android:textColor="@color/whiteColor"
+                        android:layout_marginEnd="15dp"
+                        android:textSize="12sp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:background="@drawable/bg_button_conner4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
     </FrameLayout>

@@ -36,7 +36,7 @@ public class UDPReceiver implements Runnable {
                 InetAddress senderIp = packet.getAddress();
                 int senderPort = packet.getPort();
                 HhLog.e( "📩 收到 UDP 消息：" + message + " 来自 " + senderIp + ":" + senderPort);
-                processMessage(message);
+                processMessage(message,senderIp,senderPort);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,9 +44,9 @@ public class UDPReceiver implements Runnable {
         }
     }
 
-    private void processMessage(String message) {
+    private void processMessage(String message,InetAddress senderIp,int senderPort) {
         // 处理接收到的消息，例如开关设备
-        EventBus.getDefault().post(new UDPMessage(message));
+        EventBus.getDefault().post(new UDPMessage("设备" + senderIp + ":" + senderPort + "\n" + message));
 
     }
 

@@ -43,7 +43,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     }
 
     private void bind_() {
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
+/*        binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(binding.usernameEdit.getText().toString().isEmpty()){
@@ -57,7 +57,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 //登录
                 obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
             }
-        });
+        });*/
         binding.register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,7 +73,8 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
         binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
                 finish();
             }
         });
