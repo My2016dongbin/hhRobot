@@ -15,6 +15,7 @@ import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMainBinding;
 import com.ehaohai.robot.event.Exit;
+import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.DeviceSearchActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.viewmodel.MainViewModel;
@@ -44,6 +45,12 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     }
 
     private void bind_() {
+        binding.enter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ControlActivity.class));
+            }
+        });
         binding.mine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

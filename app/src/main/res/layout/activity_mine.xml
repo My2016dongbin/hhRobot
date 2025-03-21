@@ -34,7 +34,7 @@
                 android:layout_marginStart="20dp"
                 android:padding="5dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/dog" />
+                android:src="@drawable/back" />
 
             <TextView
                 android:layout_width="wrap_content"
