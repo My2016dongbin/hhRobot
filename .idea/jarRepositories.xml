@@ -56,5 +56,10 @@
       <option name="name" value="maven6" />
       <option name="url" value="https://s01.oss.sonatype.org/content/groups/public" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://dl.bintray.com/swallowsonny/ext" />
+    </remote-repository>
   </component>
 </project>

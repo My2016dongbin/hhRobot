@@ -52,6 +52,19 @@ public class CommonUtil {
         return permissions.contains(permissionCode+"_");
     }
 
+    public static int parseInt(String content){
+        int count = 100;
+        try{
+            return Integer.parseInt(content);
+        }catch (Exception e){
+            if(content!=null) {
+                content = content.substring(0,content.indexOf("."));
+                return Integer.parseInt(content);
+            }else{
+                return count;
+            }
+        }
+    }
     public static String parseContent(String content){
         if(content!=null) {
             StringBuilder buffer = new StringBuilder();
@@ -767,5 +780,20 @@ public class CommonUtil {
         return context.getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_90 ||
                 context.getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_270;
 
+    }
+
+    public static String parseNetSpeed(long downloadSpeed) {
+        String speed = "";
+        if(downloadSpeed > 999999999){
+            speed = downloadSpeed/1000/1000/1000 + "GB/S";
+        }else if(downloadSpeed > 999999){
+            speed = downloadSpeed/1000/1000 + "MB/S";
+        }else if(downloadSpeed > 999){
+            speed = downloadSpeed/1000 + "KB/S";
+        }else{
+            speed = downloadSpeed + "B/S";
+        }
+
+        return speed;
     }
 }

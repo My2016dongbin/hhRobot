@@ -16,15 +16,681 @@
         android:background="@color/colorBlack"
         tools:context=".MineActivity">
 
+        <!--返回-->
         <ImageView
             android:id="@+id/back"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="35dp"
             android:padding="5dp"
             android:scaleType="fitXY"
             android:src="@drawable/back" />
+
+        <!--电量-->
+        <com.ehaohai.robot.ui.cell.BatteryView
+            android:id="@+id/horizontalBattery"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="40dp"
+            android:background="#00000000"
+            android:gravity="center"
+            app:batteryPower="100"
+            app:batteryColor="@android:color/black"
+            app:batteryOrientation="horizontal" />
+
+        <!--温度-->
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="126dp"
+            android:layout_marginTop="40dp"
+            android:textColor="@color/whiteColor"
+            android:textSize="14sp"
+            android:text="18°C"/>
+
+        <!--报警-->
+        <LinearLayout
+            android:id="@+id/warn"
+            android:layout_marginEnd="130dp"
+            android:layout_marginTop="26dp"
+            android:orientation="vertical"
+            android:background="@drawable/circle_line_blue"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_warn" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/theme_color_blue"
+                android:textSize="12sp"
+                android:text="报警"/>
+        </LinearLayout>
+
+        <!--机器狗&云台-->
+        <LinearLayout
+            android:layout_marginTop="26dp"
+            android:orientation="horizontal"
+            android:background="@drawable/circle_gray"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="30dp"
+            android:padding="5dp"
+            android:layout_width="132dp"
+            android:layout_height="44dp">
+            <TextView
+                android:id="@+id/dog"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/whiteColor"
+                android:background="@drawable/circle_blue"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="机器狗"/>
+            <TextView
+                android:id="@+id/cloud"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/whiteColor"
+                android:background="@drawable/circle_gray"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="云台"/>
+        </LinearLayout>
+
+        <!--对讲-->
+        <LinearLayout
+            android:id="@+id/speak"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="26dp"
+            android:orientation="vertical"
+            android:background="@drawable/circle_blue"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_speak" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/whiteColor"
+                android:textSize="12sp"
+                android:text="对讲"/>
+        </LinearLayout>
+
+        <!--避障-->
+        <LinearLayout
+            android:id="@+id/force"
+            android:layout_marginStart="135dp"
+            android:layout_marginTop="26dp"
+            android:orientation="vertical"
+            android:background="@drawable/circle_gray"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_bizhang" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c4"
+                android:textSize="12sp"
+                android:text="避障"/>
+        </LinearLayout>
+
+        <!--通知-->
+        <LinearLayout
+            android:id="@+id/notice"
+            android:layout_marginStart="195dp"
+            android:layout_marginTop="26dp"
+            android:orientation="vertical"
+            android:background="@drawable/circle_gray"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="18dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_notice" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/theme_color_blue"
+                android:textSize="12sp"
+                android:text="通知"/>
+        </LinearLayout>
+
+        <!--wifi-->
+        <LinearLayout
+            android:id="@+id/wifi"
+            android:layout_marginStart="290dp"
+            android:layout_marginTop="26dp"
+            android:orientation="horizontal"
+            android:background="@drawable/circle_gray"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="120dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_wifi" />
+            <TextView
+                android:id="@+id/text_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/whiteColor"
+                android:textSize="14sp"
+                android:text="330KB/S"/>
+        </LinearLayout>
+
+        <!--设置-->
+        <ImageView
+            android:id="@+id/setting"
+            android:layout_width="26dp"
+            android:layout_height="44dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="end"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_more" />
+
+
+        <!--录像计时-->
+        <TextView
+            android:id="@+id/video_count"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="85dp"
+            android:textColor="@color/whiteColor"
+            android:background="@drawable/circle_red"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="00:11:00"/>
+
+        <!--急停-->
+        <LinearLayout
+            android:id="@+id/stop"
+            android:orientation="horizontal"
+            android:layout_marginTop="85dp"
+            android:background="@drawable/stop_red"
+            android:layout_gravity="end"
+            android:gravity="center_vertical"
+            android:layout_width="150dp"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_stop" />
+            <TextView
+                android:id="@+id/text_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textColor="@color/whiteColor"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:text="急停"/>
+        </LinearLayout>
+
+        <!--机器狗-预览-->
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="110dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="75dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/dog" />
+
+        <!--截图-->
+        <LinearLayout
+            android:id="@+id/screenshoot"
+            android:layout_marginTop="130dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/circle_line_blue"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_screenshoot" />
+        </LinearLayout>
+
+        <!--录像-->
+        <LinearLayout
+            android:id="@+id/record"
+            android:layout_marginTop="185dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/circle_line_red"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_record" />
+        </LinearLayout>
+
+        <!--机器狗-控制-->
+        <ImageView
+            android:id="@+id/control_left"
+            android:layout_width="116dp"
+            android:layout_height="116dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_control" />
+        <ImageView
+            android:id="@+id/control_right"
+            android:layout_width="116dp"
+            android:layout_height="116dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom|end"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_control" />
+
+
+        <!--机器狗-动作&&状态-->
+        <LinearLayout
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal|bottom"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!--动作-->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:background="@drawable/circle_gray_out"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/whiteColor"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="12sp"
+                    android:text="动作"/>
+                <HorizontalScrollView
+                    android:layout_gravity="center_vertical"
+                    android:scrollbars="none"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp">
+
+                        <!--翻身-->
+                        <LinearLayout
+                            android:id="@+id/fan_shen"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_fanshen" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="翻身"/>
+                        </LinearLayout>
+
+                        <!--伸懒腰-->
+                        <LinearLayout
+                            android:id="@+id/shen_lan_yao"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_shenlanyao" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="11sp"
+                                android:text="伸懒腰"/>
+                        </LinearLayout>
+
+                        <!--握手-->
+                        <LinearLayout
+                            android:id="@+id/wo_shou"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="14dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_woshou" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="握手"/>
+                        </LinearLayout>
+
+                        <!--比心-->
+                        <LinearLayout
+                            android:id="@+id/bi_xin"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_bixin" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="比心"/>
+                        </LinearLayout>
+
+                        <!--扑人-->
+                        <LinearLayout
+                            android:id="@+id/pu_ren"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_puren" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="扑人"/>
+                        </LinearLayout>
+
+                        <!--前跳-->
+                        <LinearLayout
+                            android:id="@+id/jump"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_jump" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="前跳"/>
+                        </LinearLayout>
+
+                        <!--图标-->
+                        <ImageView
+                            android:layout_width="6dp"
+                            android:layout_height="8dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_move" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <!--状态-->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle_gray_out"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/whiteColor"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="12sp"
+                    android:text="状态"/>
+                <HorizontalScrollView
+                    android:layout_gravity="center_vertical"
+                    android:scrollbars="none"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp">
+
+                        <!--阻尼-->
+                        <LinearLayout
+                            android:id="@+id/zu_ni"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_zuni" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="阻尼"/>
+                        </LinearLayout>
+
+                        <!--站立-->
+                        <LinearLayout
+                            android:id="@+id/zhan_li"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_zhanli" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="11sp"
+                                android:text="站立"/>
+                        </LinearLayout>
+
+                        <!--坐下-->
+                        <LinearLayout
+                            android:id="@+id/zuo_xia"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_zuoxia" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="坐下"/>
+                        </LinearLayout>
+
+                        <!--卧倒-->
+                        <LinearLayout
+                            android:id="@+id/wo_dao"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="14dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_wodao" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="卧倒"/>
+                        </LinearLayout>
+
+                        <!--锁定-->
+                        <LinearLayout
+                            android:id="@+id/lock"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_lock" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="锁定"/>
+                        </LinearLayout>
+
+                        <!--摆姿势-->
+                        <LinearLayout
+                            android:id="@+id/bai_zi_shi"
+                            android:orientation="vertical"
+                            android:background="@drawable/circle_gray"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp">
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_baizishi" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="12sp"
+                                android:text="摆姿势"/>
+                        </LinearLayout>
+
+                        <!--图标-->
+                        <ImageView
+                            android:layout_width="6dp"
+                            android:layout_height="8dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_move" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </FrameLayout>
 </layout>
