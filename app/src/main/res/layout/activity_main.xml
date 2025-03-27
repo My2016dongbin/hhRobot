@@ -30,17 +30,32 @@
                 android:layout_height="match_parent"
                 android:layout_weight="360">
 
+                <!--返回-->
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="5dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/back" />
+
                 <LinearLayout
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:id="@+id/status"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/dog" />
+<!--                    <ImageView-->
+<!--                        android:id="@+id/status"-->
+<!--                        android:layout_width="10dp"-->
+<!--                        android:layout_height="10dp"-->
+<!--                        android:scaleType="fitXY"-->
+<!--                        android:src="@drawable/dog" />-->
+                    <View
+                        android:background="@drawable/circle_green"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -56,7 +71,7 @@
                         android:layout_height="16dp"
                         android:layout_marginStart="8dp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/dog" />
+                        android:src="@drawable/ic_down" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -70,7 +85,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="36dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -79,19 +94,24 @@
                         android:layout_marginStart="8dp"
                         android:text="100"
                         android:textColor="@color/white"
-                        android:textSize="48sp" />
+                        android:textSize="50sp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
                         android:orientation="vertical">
 
-                        <ImageView
+                        <!--电量-->
+                        <com.ehaohai.robot.ui.cell.BatteryView
+                            android:id="@+id/battery"
                             android:layout_width="10dp"
                             android:layout_height="20dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/dog" />
+                            android:background="#00000000"
+                            android:gravity="center"
+                            app:batteryPower="100"
+                            app:batteryOrientation="vertical" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -130,7 +150,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="34dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/dog" />
+                                android:src="@drawable/ic_galary" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -154,7 +174,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="34dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/dog" />
+                                android:src="@drawable/ic_guide" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -178,7 +198,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="34dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/dog" />
+                                android:src="@drawable/ic_my" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -203,9 +223,9 @@
                             android:layout_height="100dp">
                             <ImageView
                                 android:layout_width="36dp"
-                                android:layout_height="34dp"
+                                android:layout_height="36dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/dog" />
+                                android:src="@drawable/ic_setting" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -229,7 +249,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="34dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/dog" />
+                                android:src="@drawable/ic_manage" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -267,9 +287,9 @@
                             android:layout_gravity="center_vertical|end"
                             android:layout_marginEnd="20dp"
                             android:layout_width="16dp"
-                            android:layout_height="10dp"
+                            android:layout_height="16dp"
                             android:scaleType="fitXY"
-                            android:src="@drawable/dog" />
+                            android:src="@drawable/ic_down" />
                     </FrameLayout>
                     <View
                         android:layout_width="16dp"

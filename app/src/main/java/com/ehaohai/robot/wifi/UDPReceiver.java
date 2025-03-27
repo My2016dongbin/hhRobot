@@ -46,7 +46,7 @@ public class UDPReceiver implements Runnable {
 
     private void processMessage(String message,InetAddress senderIp,int senderPort) {
         // 处理接收到的消息，例如开关设备
-        EventBus.getDefault().post(new UDPMessage("设备" + senderIp + ":" + senderPort + "\n" + message));
+        EventBus.getDefault().post(new UDPMessage(message));
 
     }
 

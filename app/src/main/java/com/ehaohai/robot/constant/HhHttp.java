@@ -32,7 +32,6 @@ public class HhHttp {
     public static PostFormBuilder post() {
         PostFormBuilder postFormBuilder = OkHttpUtils.post();
         postFormBuilder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        postFormBuilder.addHeader("NetworkType", "Internet");
 
         return postFormBuilder;
     }
@@ -40,7 +39,6 @@ public class HhHttp {
     public static GetBuilder get() {
         GetBuilder getBuilder = OkHttpUtils.get();
         getBuilder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        getBuilder.addHeader("NetworkType", "Internet");
         //getBuilder.addHeader("NetworkType", "Internet");
 
         return getBuilder;
@@ -48,7 +46,6 @@ public class HhHttp {
     public static OtherRequestBuilder put() {
         OtherRequestBuilder builder = OkHttpUtils.put();
         builder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        builder.addHeader("NetworkType", "Internet");
         //builder.mediaType(MediaType.parse("application/json; charset=utf-8"));
 
         return builder;
@@ -58,7 +55,6 @@ public class HhHttp {
         PostStringBuilder postStringBuilder = OkHttpUtils.postString();
         postStringBuilder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
         postStringBuilder.mediaType(MediaType.parse("application/json; charset=utf-8"));
-        postStringBuilder.addHeader("NetworkType", "Internet");
 
         return postStringBuilder;
     }
@@ -66,7 +62,6 @@ public class HhHttp {
     public static PostFileBuilder postFile() {
         PostFileBuilder postFileBuilder = OkHttpUtils.postFile();
         postFileBuilder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        postFileBuilder.addHeader("NetworkType", "Internet");
         postFileBuilder.mediaType(MediaType.parse("multipart/form-data"));
 
         return postFileBuilder;
@@ -78,7 +73,6 @@ public class HhHttp {
         builder.url(url);
         builder.method(method, RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content));
         builder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        builder.addHeader("NetworkType", "Internet");
         okHttpClient.newCall(builder.build()).enqueue(callback);
     }
 
@@ -90,19 +84,16 @@ public class HhHttp {
     }
     public static void postX(RequestParams params,org.xutils.common.Callback.CommonCallback<String> callback){
         params.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        params.addHeader("NetworkType", "Internet");
         params.setConnectTimeout(20000);
         x.http().post(params, callback);
     }
     public static void getX(RequestParams params,org.xutils.common.Callback.CommonCallback<String> callback){
         params.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        params.addHeader("NetworkType", "Internet");
         params.setConnectTimeout(20000);
         x.http().get(params, callback);
     }
     public static void methodX(HttpMethod method, RequestParams params, org.xutils.common.Callback.CommonCallback<String> callback){
         params.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
-        params.addHeader("NetworkType", "Internet");
         params.setConnectTimeout(20000);
         x.http().request(method,params, callback);
     }

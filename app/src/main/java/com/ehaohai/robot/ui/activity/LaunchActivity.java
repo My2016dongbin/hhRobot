@@ -42,17 +42,16 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
                     @Override
                     public void onNext(Boolean b) {
                         Object login = SPUtils.get(HhApplication.getInstance(), SPValue.login, false);
-                        CommonData.hasMainApp = (boolean) SPUtils.get(HhApplication.getInstance(), SPValue.hasMainApp, false);
-                        CommonData.hasMainVideo = (boolean) SPUtils.get(HhApplication.getInstance(), SPValue.hasMainVideo, false);
-                        CommonData.hasMainMessage = (boolean) SPUtils.get(HhApplication.getInstance(), SPValue.hasMainMessage, false);
-                        CommonData.hasMainMap = (boolean) SPUtils.get(HhApplication.getInstance(), SPValue.hasMainMap, false);
-                        CommonData.hasMainMy = (boolean) SPUtils.get(HhApplication.getInstance(), SPValue.hasMainMy, true);//强制显示'我的'菜单
                         if(login!=null && (boolean)login){
                             CommonData.token = (String) SPUtils.get(HhApplication.getInstance(), SPValue.token, "");
                             String userName = (String) SPUtils.get(HhApplication.getInstance(), SPValue.userName, "");
                             String password = (String) SPUtils.get(HhApplication.getInstance(), SPValue.password, "");
 
-                            obtainViewModel().login(userName,password);
+//                            obtainViewModel().login(userName,password);
+                            new Handler().postDelayed(() -> {
+                                startActivity(new Intent(LaunchActivity.this, LoginActivity.class));
+                                finish();
+                            },2000);
                         }else{
                             new Handler().postDelayed(() -> {
                                 startActivity(new Intent(LaunchActivity.this, LoginActivity.class));

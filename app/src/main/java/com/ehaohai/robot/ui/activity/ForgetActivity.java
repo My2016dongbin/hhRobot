@@ -29,9 +29,7 @@ public class ForgetActivity extends BaseLiveActivity<ActivityForgetBinding, Forg
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
-        Glide.with(this).load(getResources().getDrawable(R.drawable.dog))
-                .transform(new GranularRoundedCorners(10,0,0,10))
-                .into(binding.imageLeft);
+
     }
 
     private void bind_() {

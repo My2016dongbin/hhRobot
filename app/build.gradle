@@ -235,6 +235,8 @@ dependencies {
     implementation 'com.hyman:flowlayout-lib:1.1.2'//流式布局插件
 
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'//轨迹bar
+    //libvlc
+    implementation 'org.videolan.android:libvlc-all:3.1.12'
 
 
     implementation ('com.github.MZCretin:AutoUpdateProject:2.0.5'){//版本升级

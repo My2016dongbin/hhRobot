@@ -3,7 +3,9 @@ package com.ehaohai.robot.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -18,6 +20,7 @@ import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityLoginBinding;
 import com.ehaohai.robot.ui.viewmodel.LoginViewModel;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 import com.ehaohai.robot.utils.StringData;
@@ -37,27 +40,9 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     private void init_() {
         binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userName,""));
         binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.password,""));
-        Glide.with(this).load(getResources().getDrawable(R.drawable.dog))
-                .transform(new GranularRoundedCorners(10,0,0,10))
-                .into(binding.imageLeft);
     }
 
     private void bind_() {
-/*        binding.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(binding.usernameEdit.getText().toString().isEmpty()){
-                    Toast.makeText(LoginActivity.this, StringData.login_name_null, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(binding.passwordEdit.getText().toString().isEmpty()){
-                    Toast.makeText(LoginActivity.this, StringData.login_password_null, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //登录
-                obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
-            }
-        });*/
         binding.register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,9 +58,49 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
         binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
-                finish();
+                if(CommonData.networkMode){
+                    ///在线模式
+                    startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
+                    finish();
+                }else{
+                    ///离线模式
+                    if(binding.usernameEdit.getText().toString().isEmpty()){
+                        Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(binding.passwordEdit.getText().toString().isEmpty()){
+                        Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
+                }
+            }
+        });
+        binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                CommonData.networkMode = !b;
+                if(b){
+                    startActivity(new Intent(LoginActivity.this, DeviceSearchActivity.class));
+                }else{
+                    CommonData.offlineModeSN = "";
+                    CommonData.offlineModeIP = "";
+
+                    //TODO 测试登出
+                    obtainViewModel().loginOut();
+                }
+            }
+        });
+        binding.confirm.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onClick(View view) {
+                obtainViewModel().confirm = !obtainViewModel().confirm;
+                if(obtainViewModel().confirm){
+                    binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.circle_gray));
+                }else{
+                    binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+                }
             }
         });
     }
@@ -106,6 +131,27 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     }
 
     private void nameChanged(String name) {
-//        binding.name.setText(name);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        exit();
+    }
+
+    private boolean isExit = false;
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次回到主页", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isExit = false;
+                }
+            },2000);
+        } else {
+            finish();
+        }
     }
 }

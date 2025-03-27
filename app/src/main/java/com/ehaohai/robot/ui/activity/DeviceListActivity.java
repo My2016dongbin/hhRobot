@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -19,6 +21,7 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceListBinding;
 import com.ehaohai.robot.event.UDPMessage;
 import com.ehaohai.robot.ui.viewmodel.DeviceListViewModel;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.wifi.UDPReceiver;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,7 +44,13 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
     }
 
     private void bind_() {
-        binding.back.setOnClickListener(view -> finish());
+        binding.back.setOnClickListener(view -> {
+            if(CommonData.networkMode){
+                exit();
+            }else{
+                finish();
+            }
+        });
     }
 
     @Override
@@ -107,5 +116,30 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(CommonData.networkMode){
+            exit();
+        }else{
+            finish();
+        }
+    }
+
+    private boolean isExit = false;
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次回到主页", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isExit = false;
+                }
+            },2000);
+        } else {
+            finish();
+        }
     }
 }

@@ -121,7 +121,7 @@ public class BatteryView extends View {
      *
      * @param canvas
      */
-    private void drawVerticalBattery(Canvas canvas) {
+    private void drawVerticalBattery0(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(mColor);
         paint.setStyle(Paint.Style.STROKE);
@@ -138,6 +138,60 @@ public class BatteryView extends View {
         canvas.drawRect(rect2, paint);
         RectF headRect = new RectF(width / 4.0f, 0, width * 0.75f, headHeight);
         canvas.drawRect(headRect, paint);
+    }
+
+    private void drawVerticalBattery(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(mColor);
+        paint.setStyle(Paint.Style.STROKE);
+        float strokeWidth = width / 20.f;
+        float strokeWidth_2 = strokeWidth / 2;
+        paint.setStrokeWidth(strokeWidth);
+
+        // 外边框（竖向）
+        RectF r1 = new RectF(strokeWidth_2, strokeWidth_2 + strokeWidth * 2, width - strokeWidth_2, height - strokeWidth_2);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(r1, paint);
+
+        paint.setStrokeWidth(0);
+        paint.setStyle(Paint.Style.FILL);
+
+        // 计算电池电量填充区域（从底部向上填充）
+        float offset = (height - strokeWidth * 3) * mPower / 100.f;
+        RectF r2 = new RectF(strokeWidth, height - offset, width - strokeWidth, height - strokeWidth);
+
+        // 根据电池电量决定颜色
+        if (mPower < 30) {
+            paint.setColor(getResources().getColor(R.color.text_color_red));
+        }
+        if (mPower >= 30 && mPower < 50) {
+            paint.setColor(getResources().getColor(R.color.text_color_orange));
+        }
+        if (mPower >= 50) {
+            paint.setColor(getResources().getColor(R.color.text_color_green));
+        }
+        canvas.drawRect(r2, paint);
+
+        // 画电池头（顶部）
+        RectF r3 = new RectF(width * 0.25f, strokeWidth_2, width * 0.75f, strokeWidth * 2);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(r3, paint);
+
+        // 电池头细节（顶部更小的部分）
+        RectF r4 = new RectF(width * 0.40f, strokeWidth_2, width * 0.60f, strokeWidth + strokeWidth_2);
+        canvas.drawRect(r4, paint);
+
+/*        // 绘制电量文本
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(32);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+
+        // 计算文字的垂直居中基线
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+        float baseline = height / 2f - (fontMetrics.ascent + fontMetrics.descent) / 2f;
+        canvas.drawText(mPower + "%", width / 2f, baseline, textPaint);*/
     }
 
     /**

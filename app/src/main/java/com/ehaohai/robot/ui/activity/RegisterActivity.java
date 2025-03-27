@@ -33,9 +33,6 @@ public class RegisterActivity extends BaseLiveActivity<ActivityRegisterBinding, 
     private void init_() {
         binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userName,""));
         binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.password,""));
-        Glide.with(this).load(getResources().getDrawable(R.drawable.dog))
-                .transform(new GranularRoundedCorners(10,0,0,10))
-                .into(binding.imageLeft);
     }
 
     private void bind_() {

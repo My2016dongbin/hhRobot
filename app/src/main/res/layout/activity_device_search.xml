@@ -159,6 +159,7 @@
                         tools:ignore="TextContrastCheck" />
 
                     <TextView
+                        android:id="@+id/bind"
                         android:text="绑定"
                         android:textColor="@color/whiteColor"
                         android:layout_marginEnd="15dp"

@@ -24,18 +24,12 @@
             android:layout_marginTop="34dp"
             android:layout_marginEnd="65dp"
             android:layout_marginBottom="34dp"
-            android:background="@drawable/border_white">
+            android:background="@drawable/ic_forget_back">
 
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8">
-
-                <ImageView
-                    android:id="@+id/image_left"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
 
                 <ImageView
                     android:id="@+id/back"

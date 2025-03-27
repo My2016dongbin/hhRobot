@@ -45,6 +45,12 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     }
 
     private void bind_() {
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         binding.enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

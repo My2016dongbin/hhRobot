@@ -2,12 +2,14 @@ package com.ehaohai.robot.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -20,15 +22,21 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceSearchBinding;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.event.UDPMessage;
+import com.ehaohai.robot.model.UdpMessage;
 import com.ehaohai.robot.ui.viewmodel.DeviceSearchViewModel;
+import com.ehaohai.robot.utils.Common;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.wifi.UDPBroadcast;
 import com.ehaohai.robot.wifi.UDPReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchBinding, DeviceSearchViewModel> {
     UDPReceiver udpReceiver;
@@ -44,9 +52,34 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
     ///UDP消息
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(UDPMessage event) {
-        Date date = new Date();
-        obtainViewModel().stringList.add(event.getMessage());
-        obtainViewModel().name.postValue(event.getMessage());
+        String message = event.getMessage();
+        try {
+            JSONObject object = new JSONObject(message);
+            String msgType = object.getString("msgType");
+            String deviceSn = object.getString("DeviceSn");
+            String timestamp = object.getString("timestamp");
+            String IP = object.getString("IP");
+
+            for (int i = 0; i < obtainViewModel().messageList.size(); i++) {
+                UdpMessage udpMessage = obtainViewModel().messageList.get(i);
+                if(Objects.equals(udpMessage.getDeviceSn(), deviceSn)){
+                    obtainViewModel().messageList.set(i,new UdpMessage(msgType,deviceSn,timestamp,IP));
+                    obtainViewModel().message.postValue(event.getMessage());
+                    return;
+                }
+                if(i == obtainViewModel().messageList.size()-1){
+                    obtainViewModel().messageList.add(new UdpMessage(msgType,deviceSn,timestamp,IP));
+                    obtainViewModel().message.postValue(event.getMessage());
+                }
+            }
+            if(obtainViewModel().messageList.isEmpty()){
+                obtainViewModel().messageList.add(new UdpMessage(msgType,deviceSn,timestamp,IP));
+                obtainViewModel().message.postValue(event.getMessage());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -58,7 +91,24 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
     }
 
     private void bind_() {
-        binding.back.setOnClickListener(view -> finish());
+        binding.back.setOnClickListener(view -> {
+            startActivity(new Intent(this,DeviceListActivity.class));
+            finish();
+        });
+        ///绑定
+        binding.bind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(binding.name1Edit.getText().toString().isEmpty() || binding.name2Edit.getText().toString().isEmpty()){
+                    Toast.makeText(DeviceSearchActivity.this, "请选择或输入机器狗信息", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                CommonData.offlineModeSN = binding.name1Edit.getText().toString();
+                CommonData.offlineModeIP = binding.name2Edit.getText().toString();
+
+                finish();
+            }
+        });
     }
 
     @Override
@@ -83,17 +133,26 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
     protected void subscribeObserver() {
         super.subscribeObserver();
 
-        obtainViewModel().name.observe(this, this::nameChanged);
+        obtainViewModel().message.observe(this, this::messageChanged);
     }
 
-    private void nameChanged(String name) {
+    private void messageChanged(String message) {
         binding.messageList.removeAllViews();
-        for (int i = 0; i < obtainViewModel().stringList.size();i++){
+        for (int i = 0; i < obtainViewModel().messageList.size();i++){
+            UdpMessage udpMessage = obtainViewModel().messageList.get(i);
             LayoutInflater inflater = LayoutInflater.from(this);
             View view = inflater.inflate(R.layout.item_message,null,false);
-            TextView text = view.findViewById(R.id.text);
-            text.setText(obtainViewModel().stringList.get(i));
-            text.setTextColor(getResources().getColor(R.color.gray1));
+            TextView sn = view.findViewById(R.id.sn);
+            TextView ip = view.findViewById(R.id.ip);
+            sn.setText(udpMessage.getDeviceSn());
+            ip.setText(udpMessage.getIP());
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    binding.name1Edit.setText(udpMessage.getDeviceSn());
+                    binding.name2Edit.setText(udpMessage.getIP());
+                }
+            });
             binding.messageList.addView(view);
         }
     }
@@ -103,5 +162,11 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         udpReceiver.stop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this,DeviceListActivity.class));
+        finish();
     }
 }

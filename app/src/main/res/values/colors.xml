@@ -23,6 +23,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="trans_black">#66333333</color>
     <color name="trans_gray">#99999999</color>
 
     <color name="blue">#6593cb</color>

@@ -796,4 +796,16 @@ public class CommonUtil {
 
         return speed;
     }
+
+    public static double parseDoubleCount(double vx) {
+        double v = vx;
+        if(String.valueOf(v).length() > 5){
+            try{
+                v = Double.parseDouble(String.valueOf(v).substring(0,5));
+            }catch (Exception e){
+                //
+            }
+        }
+        return v;
+    }
 }

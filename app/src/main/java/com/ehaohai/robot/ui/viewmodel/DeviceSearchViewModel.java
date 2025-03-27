@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ehaohai.robot.base.BaseViewModel;
+import com.ehaohai.robot.model.UdpMessage;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -21,9 +22,10 @@ import java.util.List;
 
 public class DeviceSearchViewModel extends BaseViewModel {
     public Context context;
-    public final MutableLiveData<String> name = new MutableLiveData<>();
+    public final MutableLiveData<String> message = new MutableLiveData<>();
 
     public List<String> stringList = new ArrayList<>();
+    public List<UdpMessage> messageList = new ArrayList<>();
 
     public void start(Context context) {
         this.context = context;

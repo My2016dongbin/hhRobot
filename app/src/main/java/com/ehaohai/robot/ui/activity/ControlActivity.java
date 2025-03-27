@@ -11,8 +11,14 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -33,9 +39,23 @@ import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.videolan.libvlc.IVLCVout;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, ControlViewModel> {
     BatteryReceiver batteryReceiver;
+    private LibVLC libVLC;
+    private MediaPlayer mediaPlayer;
+    private Media media;
+    private IVLCVout ivlcVout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,25 +81,79 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         //隐藏急停按钮（右侧隐藏一半）
         binding.stop.setTranslationX(obtainViewModel().stopDistance); // 向左偏移 100px，使右侧隐藏
+
+        initLeftControl();
+        initRightControl();
+
+//        startPlayer();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        ///急停
         binding.stop.setOnClickListener(view -> {
             stopAnimation();
             if(obtainViewModel().stop){
+                obtainViewModel().sportControl("manual","es","");
                 hideOtherButton(view);
                 hideOtherButtonStatus(view);
+            }else{
+                obtainViewModel().sportControl("manual","recover","");
             }
         });
+        ///报警
         binding.warn.setOnClickListener(view -> {
             applyClickAnimation(view);
             Toast.makeText(ControlActivity.this, "报警", Toast.LENGTH_SHORT).show();
         });
+        ///对讲
         binding.speak.setOnClickListener(view -> {
-            applyClickAnimation(view);
-            Toast.makeText(ControlActivity.this, "对讲", Toast.LENGTH_SHORT).show();
+            obtainViewModel().speak = !obtainViewModel().speak;
+            if(obtainViewModel().speak){
+                applyFancyAnimation(view);
+                voiceAnimation();
+            }else{
+                applyFancyBackAnimation(view);
+                binding.flVoice.setVisibility(View.GONE);
+                binding.llVoice.setVisibility(View.GONE);
+            }
         });
+        binding.voiceX.setOnClickListener(view -> {
+            voiceAnimationBack();
+            obtainViewModel().speak = false;
+            applyFancyBackAnimation(binding.speak);
+        });
+        binding.flVoice.setOnClickListener(view -> {
+            voiceAnimationBack();
+            obtainViewModel().speak = false;
+            applyFancyBackAnimation(binding.speak);
+        });
+        binding.voiceStart.setOnTouchListener((view, motionEvent) -> {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    binding.voiceStart.setBackgroundResource(R.drawable.circle_voice_big_selected);
+                    binding.voiceCount.setVisibility(View.VISIBLE);
+                    obtainViewModel().voice = true;
+                    obtainViewModel().startRecordTimesVoice();
+//                    startRecordVoice();
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    binding.voiceStart.setBackgroundResource(R.drawable.circle_voice_big);
+                    binding.voiceCount.setVisibility(View.GONE);
+                    obtainViewModel().voice = false;
+                    obtainViewModel().stopVoiceTimes();
+//                    stopRecordVoice();
+                    break;
+            }
+            return true;
+        });
+        ///机器狗
         binding.dog.setOnClickListener(view -> {
             if(!obtainViewModel().isDog){
                 obtainViewModel().isDog = true;
@@ -87,6 +161,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 applyFancyBackAnimation(binding.cloud);
             }
         });
+        ///云台
         binding.cloud.setOnClickListener(view -> {
             if(obtainViewModel().isDog){
                 obtainViewModel().isDog = false;
@@ -94,22 +169,28 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 applyFancyBackAnimation(binding.dog);
             }
         });
+        ///避障
         binding.force.setOnClickListener(view -> {
             obtainViewModel().force = !obtainViewModel().force;
             if(obtainViewModel().force){
                 applyFancyAnimation(view);
+                obtainViewModel().sportControl("manual","obstacle","ON");
             }else{
                 applyFancyBackAnimation(view);
+                obtainViewModel().sportControl("manual","obstacle","OFF");
             }
         });
+        ///通知
         binding.notice.setOnClickListener(view -> {
             applyClickAnimation(view);
             Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
         });
+        ///截图
         binding.screenshoot.setOnClickListener(view -> {
             applyClickAnimation(view);
             Toast.makeText(ControlActivity.this, "截图", Toast.LENGTH_SHORT).show();
         });
+        ///录像
         binding.record.setOnClickListener(view -> {
             obtainViewModel().record = !obtainViewModel().record;
             applyClickAnimation(view);
@@ -117,72 +198,116 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 binding.videoCount.setVisibility(View.VISIBLE);
                 //开始计时并录制
                 Toast.makeText(this, "开始录制", Toast.LENGTH_SHORT).show();
+                obtainViewModel().startRecordTimes();
             }else{
                 binding.videoCount.setVisibility(View.GONE);
                 //关闭计时并保存录像
                 Toast.makeText(this, "录像已保存", Toast.LENGTH_SHORT).show();
+                obtainViewModel().stopRecordTimes();
             }
         });
+        ///翻身
         binding.fanShen.setOnClickListener(view -> {
             obtainViewModel().fanShen = true;
             applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///伸懒腰
         binding.shenLanYao.setOnClickListener(view -> {
             obtainViewModel().shenLanYao = true;
+            obtainViewModel().sportControl("manual","sport","Stretch");
             applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///握手
         binding.woShou.setOnClickListener(view -> {
             obtainViewModel().woShou = true;
+            obtainViewModel().sportControl("manual","sport","Hello");
             applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///比心
         binding.biXin.setOnClickListener(view -> {
             obtainViewModel().biXin = true;
+            obtainViewModel().sportControl("manual","sport","content");
             applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///扑人
         binding.puRen.setOnClickListener(view -> {
             obtainViewModel().puRen = true;
+            obtainViewModel().sportControl("manual","sport","FrontPounce");
             applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///跳
         binding.jump.setOnClickListener(view -> {
             obtainViewModel().jump = true;
+            obtainViewModel().sportControl("manual","sport","FrontJump");
             applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///阻尼
         binding.zuNi.setOnClickListener(view -> {
             obtainViewModel().zuNi = true;
+            obtainViewModel().sportControl("manual","sport","Damp");
             applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+        ///站立
         binding.zhanLi.setOnClickListener(view -> {
             obtainViewModel().zhanLi = true;
+            obtainViewModel().sportControl("manual","sport","BalanceStand");
             applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+        ///坐下
         binding.zuoXia.setOnClickListener(view -> {
             obtainViewModel().zuoXia = true;
+            obtainViewModel().sportControl("manual","sport","Sit");
             applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+        ///卧倒
         binding.woDao.setOnClickListener(view -> {
             obtainViewModel().woDao = true;
+            obtainViewModel().sportControl("manual","sport","StandDown");
             applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+        ///锁定
         binding.lock.setOnClickListener(view -> {
             obtainViewModel().lock = true;
             applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+        ///摆姿势
         binding.baiZiShi.setOnClickListener(view -> {
             obtainViewModel().baiZiShi = true;
             applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+    }
+
+    private void voiceAnimation() {
+        binding.flVoice.setVisibility(View.VISIBLE);
+        binding.llVoice.setVisibility(View.VISIBLE);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(binding.llVoice, "translationY", 2000, 0);
+        animator.setDuration(500); // Set duration of the animation
+        animator.start();
+    }
+
+    private void voiceAnimationBack() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(binding.llVoice, "translationY", 0, 2000);
+        animator.setDuration(300); // Set duration of the animation
+        animator.start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.flVoice.setVisibility(View.GONE);
+                binding.llVoice.setVisibility(View.GONE);
+            }
+        },200);
     }
 
     private void hideOtherButton(View view) {
@@ -261,11 +386,16 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     protected void subscribeObserver() {
         super.subscribeObserver();
 
-        obtainViewModel().name.observe(this, this::nameChanged);
+        obtainViewModel().recordTimes.observe(this, this::recordTimesChanged);
+        obtainViewModel().voiceTimes.observe(this, this::voiceTimesChanged);
     }
 
-    private void nameChanged(String name) {
+    private void recordTimesChanged(String recordTimes) {
+        binding.videoCount.setText(recordTimes);
+    }
 
+    private void voiceTimesChanged(String recordTimes) {
+        binding.voiceCount.setText(recordTimes);
     }
 
     @Override
@@ -406,5 +536,295 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ObjectAnimator animator = ObjectAnimator.ofFloat(binding.stop, "translationX", targetTranslationX);
         animator.setDuration(500); // 动画时间 500ms
         animator.start();
+    }
+
+
+
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initLeftControl() {
+        // 在 View 渲染完毕后获取中心点坐标
+        binding.controlLeft.post(() -> {
+            centerX = binding.controlLeft.getX() + binding.controlLeft.getWidth() / 2f;
+            centerY = binding.controlLeft.getY() + binding.controlLeft.getHeight() / 2f;
+            baseX = binding.controlLeft.getX();
+            baseY = binding.controlLeft.getY();
+            maxRadius = binding.controlLeft.getWidth() * 0.2f; // 限制最大移动范围（摇杆半径 * 1.2）
+        });
+
+        binding.controlLeft.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                float touchX = event.getRawX();
+                float touchY = event.getRawY();
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isDragging = true;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (isDragging) {
+                            updateJoystickPosition(touchX, touchY);
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        isDragging = false;
+                        resetJoystickPosition();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+    private float centerX, centerY, baseX, baseY;
+    private boolean isDragging = false;
+    private float maxRadius; // 限制滑动范围
+    // 更新摇杆位置，并计算角度
+    private void updateJoystickPosition(float touchX, float touchY) {
+        float deltaX = touchX - centerX;
+        float deltaY = touchY - centerY;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX)); // 计算角度
+
+        // 限制摇杆滑动范围
+        if (distance > maxRadius) {
+            float scale = (float) (maxRadius / distance);
+            deltaX *= scale;
+            deltaY *= scale;
+        }
+
+        binding.controlLeft.setX(baseX + deltaX);
+        binding.controlLeft.setY(baseY + deltaY);
+
+        // 角度转换到 0°~360°（右侧 0°，顺时针）
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        onJoystickMove(angle); // 监听角度
+    }
+    // 摇杆回到初始位置（带动画）
+    private void resetJoystickPosition() {
+        ObjectAnimator animX = ObjectAnimator.ofFloat(binding.controlLeft, "x", baseX);
+        ObjectAnimator animY = ObjectAnimator.ofFloat(binding.controlLeft, "y", baseY);
+        animX.setDuration(300);
+        animY.setDuration(300);
+        animX.start();
+        animY.start();
+        obtainViewModel().angleLeft = 999;
+    }
+    // 监听摇杆的角度
+    private void onJoystickMove(double angle) {
+        obtainViewModel().angleLeft = angle;
+        HhLog.e("左侧摇杆角度 Angle: " + angle + "°");
+        obtainViewModel().controlParse();
+    }
+
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initRightControl() {
+        // 在 View 渲染完毕后获取中心点坐标
+        binding.controlRight.post(() -> {
+            centerXRight = binding.controlRight.getX() + binding.controlRight.getWidth() / 2f;
+            centerYRight = binding.controlRight.getY() + binding.controlRight.getHeight() / 2f;
+            baseXRight = binding.controlRight.getX();
+            baseYRight = binding.controlRight.getY();
+            maxRadiusRight = binding.controlRight.getWidth() * 0.2f; // 限制最大移动范围（摇杆半径 * 1.2）
+        });
+
+        binding.controlRight.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                float touchX = event.getRawX();
+                float touchY = event.getRawY();
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isDraggingRight = true;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (isDraggingRight) {
+                            updateJoystickPositionRight(touchX, touchY);
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        isDraggingRight = false;
+                        resetJoystickPositionRight();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+    private float centerXRight, centerYRight, baseXRight, baseYRight;
+    private boolean isDraggingRight = false;
+    private float maxRadiusRight; // 限制滑动范围
+    // 更新摇杆位置，并计算角度
+    private void updateJoystickPositionRight(float touchX, float touchY) {
+        float deltaX = touchX - centerXRight;
+        float deltaY = touchY - centerYRight;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX)); // 计算角度
+
+        // 限制摇杆滑动范围
+        if (distance > maxRadiusRight) {
+            float scale = (float) (maxRadiusRight / distance);
+            deltaX *= scale;
+            deltaY *= scale;
+        }
+
+        binding.controlRight.setX(baseXRight + deltaX);
+        binding.controlRight.setY(baseYRight + deltaY);
+
+        // 角度转换到 0°~360°（右侧 0°，顺时针）
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        onJoystickMoveRight(angle); // 监听角度
+    }
+    // 摇杆回到初始位置（带动画）
+    private void resetJoystickPositionRight() {
+        ObjectAnimator animX = ObjectAnimator.ofFloat(binding.controlRight, "x", baseXRight);
+        ObjectAnimator animY = ObjectAnimator.ofFloat(binding.controlRight, "y", baseYRight);
+        animX.setDuration(300);
+        animY.setDuration(300);
+        animX.start();
+        animY.start();
+        obtainViewModel().angleRight = 999;
+    }
+    // 监听摇杆的角度
+    private void onJoystickMoveRight(double angle) {
+        obtainViewModel().angleRight = angle;
+        HhLog.e("右侧摇杆角度 Angle: " + angle + "°");
+        obtainViewModel().controlParse();
+    }
+
+
+
+    private void startRecordVoice() {
+        obtainViewModel().outputFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice_recording"+new Random(10000).nextInt()+".mp3";
+
+        obtainViewModel().mediaRecorder = new MediaRecorder();
+        obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        obtainViewModel().mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        obtainViewModel().mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        obtainViewModel().mediaRecorder.setOutputFile(obtainViewModel().outputFilePath);
+
+        try {
+            obtainViewModel().mediaRecorder.prepare();
+            obtainViewModel().mediaRecorder.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to start recording", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopRecordVoice() {
+        if (obtainViewModel().mediaRecorder != null) {
+            obtainViewModel().mediaRecorder.stop();
+            obtainViewModel().mediaRecorder.release();
+        }
+    }
+
+
+    void releasePlayer() {
+        if (libVLC == null || mediaPlayer == null ||
+                ivlcVout == null || media == null) {
+            return;
+        }
+        mediaPlayer.stop();
+        ivlcVout = mediaPlayer.getVLCVout();
+        ivlcVout.detachViews();
+        mediaPlayer.release();
+        libVLC.release();
+
+        libVLC = null;
+        mediaPlayer = null;
+        ivlcVout = null;
+        media = null;
+    }
+
+    void startPlayer() {
+        final ArrayList<String> options = new ArrayList<>();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        releasePlayer();
+        //options.add("--aout=opensles");//音频输出模块opensles模式
+        //options.add(" --audio-time-stretch");
+        //options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S\",position=10,color=0xFF0000,size=40}");//这行是可以再vlc窗口右下角添加当前时间的
+        options.add("-vvv");
+        libVLC = new LibVLC(this, options);
+        mediaPlayer = new MediaPlayer(libVLC);
+        //设置vlc视频铺满布局
+        mediaPlayer.setScale(2f);
+
+        mediaPlayer.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
+        mediaPlayer.setAspectRatio("-1");//-1，表示完全拉伸填充，不考虑原始比例
+        mediaPlayer.setVolume(0);
+        ivlcVout = mediaPlayer.getVLCVout();
+        ivlcVout.setVideoView(binding.dogLive);
+        ivlcVout.attachViews();
+
+        media = new Media(libVLC, Uri.parse(obtainViewModel().liveUrl));
+        //media?.addOption(":network-caching=500")//网络缓存
+        //media?.addOption(":rtsp-tcp")//RTSP采用TCP传输方式
+        media.setHWDecoderEnabled(true, true);
+        int cache = 1500;
+        media.addOption(":network-caching=" + cache);
+        media.addOption(":file-caching=" + cache);
+        media.addOption(":live-cacheing=" + cache);
+        media.addOption(":sout-mux-caching=" + cache);
+        media.addOption(":codec=mediacodec,iomx,all");
+        mediaPlayer.setMedia(media);
+        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+            @Override
+            public void onEvent(MediaPlayer.Event event) {
+
+                switch (event.type) {
+                    case MediaPlayer.Event.Buffering:
+                        // 处理缓冲事件
+                        HhLog.e("Buffering");
+                        break;
+                    case MediaPlayer.Event.EndReached:
+                        // 处理播放结束事件
+                        HhLog.e("EndReached");
+                        startPlayer();
+                        break;
+                    case MediaPlayer.Event.EncounteredError:
+                        // 处理播放错误事件
+                        HhLog.e("EncounteredError");
+                        new Handler().postDelayed(() -> {
+                            try{
+                                startPlayer();
+                            }catch (Exception e){
+                                HhLog.e(e.getMessage());
+                            }
+                        },1000);
+                        break;
+                    case MediaPlayer.Event.TimeChanged:
+                        // 处理播放进度变化事件
+                        HhLog.e("TimeChanged");
+                        break;
+                    case MediaPlayer.Event.PositionChanged:
+                        // 处理播放位置变化事件
+                        HhLog.e("PositionChanged");
+                        break;
+                    case MediaPlayer.Event.Vout:
+                        //在视频开始播放之前，视频的宽度和高度可能还没有被确定，因此我们需要在MediaPlayer.Event.Vout事件发生后才能获取到正确的宽度和高度
+                        HhLog.e("Vout");
+                        break;
+                }
+            }
+        });
+        mediaPlayer.play();
     }
 }

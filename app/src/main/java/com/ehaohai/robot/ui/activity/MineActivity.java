@@ -34,9 +34,7 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
         binding.exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MineActivity.this,LoginActivity.class));
-                EventBus.getDefault().post(new Exit());
-                finish();
+                obtainViewModel().loginOut();
             }
         });
     }
