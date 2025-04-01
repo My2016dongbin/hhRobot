@@ -38,6 +38,7 @@ public class LoginViewModel extends BaseViewModel {
     public Context context;
     public final MutableLiveData<String> name = new MutableLiveData<>();
     public boolean confirm = false;
+    public boolean eye = false;
 
     public void start(Context context) {
         this.context = context;

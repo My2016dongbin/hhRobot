@@ -1,15 +1,20 @@
 package com.ehaohai.robot.utils;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,11 +23,17 @@ import android.view.ContextThemeWrapper;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.TintContextWrapper;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
+import com.ehaohai.robot.HhApplication;
+import com.ehaohai.robot.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -807,5 +818,94 @@ public class CommonUtil {
             }
         }
         return v;
+    }
+
+
+    //延迟缩放渐变动画
+    public static void applyDelayClickAnimation(View view,Runnable runnable) {
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1.0f, 0.95f, 1.0f, 0.95f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(100);
+        scaleAnimation.setRepeatMode(ScaleAnimation.REVERSE);
+        scaleAnimation.setRepeatCount(1);
+        view.startAnimation(scaleAnimation);
+        new Handler().postDelayed(runnable, 200);
+    }
+    //缩放渐变动画
+    public static void applyClickAnimation(View view) {
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1.0f, 0.95f, 1.0f, 0.95f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(100);
+        scaleAnimation.setRepeatMode(ScaleAnimation.REVERSE);
+        scaleAnimation.setRepeatCount(1);
+        view.startAnimation(scaleAnimation);
+    }
+
+    //背景切换动画
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public static void applyFancyAnimation(View view) {
+        // **1. 背景颜色渐变**
+        Drawable[] layers;
+        layers = new Drawable[]{
+                ContextCompat.getDrawable(HhApplication.getInstance(), R.drawable.circle_gray),
+                ContextCompat.getDrawable(HhApplication.getInstance(), R.drawable.circle_blue)
+        };
+
+        // 创建背景渐变效果的 TransitionDrawable
+        TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+        view.setBackground(transitionDrawable);
+        transitionDrawable.startTransition(500); // 背景切换渐变 500ms
+
+        // **2. 按钮点击时的缩放动画（轻微缩小再弹回）**
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f);
+
+        // **3. 旋转动画（轻微旋转增加动感）**
+        //PropertyValuesHolder rotation = PropertyValuesHolder.ofFloat(View.ROTATION, 0f, 2f, -2f, 0f);
+
+        // **4. 透明度动画（微闪效果）**
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0.6f, 1f);
+
+        // 组合动画
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY, /*rotation,*/ alpha);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator()); // 平滑过渡
+        animator.setDuration(600);
+        animator.start();
+    }
+
+    //背景切换动画
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public static void applyFancyBackAnimation(View view) {
+        // **1. 背景颜色渐变**
+        Drawable[] layers;
+        layers = new Drawable[]{
+                ContextCompat.getDrawable(HhApplication.getInstance(), R.drawable.circle_blue),
+                ContextCompat.getDrawable(HhApplication.getInstance(), R.drawable.circle_gray)
+        };
+
+        // 创建背景渐变效果的 TransitionDrawable
+        TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+        view.setBackground(transitionDrawable);
+        transitionDrawable.startTransition(500); // 背景切换渐变 500ms
+
+        // **2. 按钮点击时的缩放动画（轻微缩小再弹回）**
+        //PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f);
+        //PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f);
+
+        // **3. 旋转动画（轻微旋转增加动感）**
+        PropertyValuesHolder rotation = PropertyValuesHolder.ofFloat(View.ROTATION, 0f, 2f, -2f, 0f);
+
+        // **4. 透明度动画（微闪效果）**
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0.6f, 1f);
+
+        // 组合动画
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, /*scaleX, scaleY,*/ rotation, alpha);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator()); // 平滑过渡
+        animator.setDuration(600);
+        animator.start();
     }
 }

@@ -85,7 +85,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         initLeftControl();
         initRightControl();
 
-//        startPlayer();
+        startPlayer();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -104,17 +104,18 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///报警
         binding.warn.setOnClickListener(view -> {
-            applyClickAnimation(view);
-            Toast.makeText(ControlActivity.this, "报警", Toast.LENGTH_SHORT).show();
+            CommonUtil.applyDelayClickAnimation(view, () -> {
+                Toast.makeText(ControlActivity.this, "报警", Toast.LENGTH_SHORT).show();
+            });
         });
         ///对讲
         binding.speak.setOnClickListener(view -> {
             obtainViewModel().speak = !obtainViewModel().speak;
             if(obtainViewModel().speak){
-                applyFancyAnimation(view);
+                CommonUtil.applyFancyAnimation(view);
                 voiceAnimation();
             }else{
-                applyFancyBackAnimation(view);
+                CommonUtil.applyFancyBackAnimation(view);
                 binding.flVoice.setVisibility(View.GONE);
                 binding.llVoice.setVisibility(View.GONE);
             }
@@ -122,12 +123,12 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         binding.voiceX.setOnClickListener(view -> {
             voiceAnimationBack();
             obtainViewModel().speak = false;
-            applyFancyBackAnimation(binding.speak);
+            CommonUtil.applyFancyBackAnimation(binding.speak);
         });
         binding.flVoice.setOnClickListener(view -> {
             voiceAnimationBack();
             obtainViewModel().speak = false;
-            applyFancyBackAnimation(binding.speak);
+            CommonUtil.applyFancyBackAnimation(binding.speak);
         });
         binding.voiceStart.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getAction()) {
@@ -136,7 +137,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                     binding.voiceCount.setVisibility(View.VISIBLE);
                     obtainViewModel().voice = true;
                     obtainViewModel().startRecordTimesVoice();
-//                    startRecordVoice();
+                    startRecordVoice();
                     break;
 
                 case MotionEvent.ACTION_MOVE:
@@ -148,7 +149,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                     binding.voiceCount.setVisibility(View.GONE);
                     obtainViewModel().voice = false;
                     obtainViewModel().stopVoiceTimes();
-//                    stopRecordVoice();
+                    stopRecordVoice();
                     break;
             }
             return true;
@@ -157,134 +158,137 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         binding.dog.setOnClickListener(view -> {
             if(!obtainViewModel().isDog){
                 obtainViewModel().isDog = true;
-                applyFancyAnimation(view);
-                applyFancyBackAnimation(binding.cloud);
+                CommonUtil.applyFancyAnimation(view);
+                CommonUtil.applyFancyBackAnimation(binding.cloud);
             }
         });
         ///云台
         binding.cloud.setOnClickListener(view -> {
             if(obtainViewModel().isDog){
                 obtainViewModel().isDog = false;
-                applyFancyAnimation(view);
-                applyFancyBackAnimation(binding.dog);
+                CommonUtil.applyFancyAnimation(view);
+                CommonUtil.applyFancyBackAnimation(binding.dog);
             }
         });
         ///避障
         binding.force.setOnClickListener(view -> {
             obtainViewModel().force = !obtainViewModel().force;
             if(obtainViewModel().force){
-                applyFancyAnimation(view);
+                CommonUtil.applyFancyAnimation(view);
                 obtainViewModel().sportControl("manual","obstacle","ON");
             }else{
-                applyFancyBackAnimation(view);
+                CommonUtil.applyFancyBackAnimation(view);
                 obtainViewModel().sportControl("manual","obstacle","OFF");
             }
         });
         ///通知
         binding.notice.setOnClickListener(view -> {
-            applyClickAnimation(view);
-            Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
+            CommonUtil.applyDelayClickAnimation(view, () -> {
+                Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
+            });
         });
         ///截图
         binding.screenshoot.setOnClickListener(view -> {
-            applyClickAnimation(view);
-            Toast.makeText(ControlActivity.this, "截图", Toast.LENGTH_SHORT).show();
+            CommonUtil.applyDelayClickAnimation(view, () ->{
+                Toast.makeText(ControlActivity.this, "截图", Toast.LENGTH_SHORT).show();
+            });
         });
         ///录像
         binding.record.setOnClickListener(view -> {
             obtainViewModel().record = !obtainViewModel().record;
-            applyClickAnimation(view);
-            if(obtainViewModel().record){
-                binding.videoCount.setVisibility(View.VISIBLE);
-                //开始计时并录制
-                Toast.makeText(this, "开始录制", Toast.LENGTH_SHORT).show();
-                obtainViewModel().startRecordTimes();
-            }else{
-                binding.videoCount.setVisibility(View.GONE);
-                //关闭计时并保存录像
-                Toast.makeText(this, "录像已保存", Toast.LENGTH_SHORT).show();
-                obtainViewModel().stopRecordTimes();
-            }
+            CommonUtil.applyDelayClickAnimation(view, () -> {
+                if(obtainViewModel().record){
+                    binding.videoCount.setVisibility(View.VISIBLE);
+                    //开始计时并录制
+                    Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
+                    obtainViewModel().startRecordTimes();
+                }else{
+                    binding.videoCount.setVisibility(View.GONE);
+                    //关闭计时并保存录像
+                    Toast.makeText(ControlActivity.this, "录像已保存", Toast.LENGTH_SHORT).show();
+                    obtainViewModel().stopRecordTimes();
+                }
+            });
         });
         ///翻身
         binding.fanShen.setOnClickListener(view -> {
             obtainViewModel().fanShen = true;
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
         ///伸懒腰
         binding.shenLanYao.setOnClickListener(view -> {
             obtainViewModel().shenLanYao = true;
             obtainViewModel().sportControl("manual","sport","Stretch");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
         ///握手
         binding.woShou.setOnClickListener(view -> {
             obtainViewModel().woShou = true;
             obtainViewModel().sportControl("manual","sport","Hello");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
         ///比心
         binding.biXin.setOnClickListener(view -> {
             obtainViewModel().biXin = true;
             obtainViewModel().sportControl("manual","sport","content");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
         ///扑人
         binding.puRen.setOnClickListener(view -> {
             obtainViewModel().puRen = true;
             obtainViewModel().sportControl("manual","sport","FrontPounce");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
         ///跳
         binding.jump.setOnClickListener(view -> {
             obtainViewModel().jump = true;
             obtainViewModel().sportControl("manual","sport","FrontJump");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
         ///阻尼
         binding.zuNi.setOnClickListener(view -> {
             obtainViewModel().zuNi = true;
             obtainViewModel().sportControl("manual","sport","Damp");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
         ///站立
         binding.zhanLi.setOnClickListener(view -> {
             obtainViewModel().zhanLi = true;
             obtainViewModel().sportControl("manual","sport","BalanceStand");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
         ///坐下
         binding.zuoXia.setOnClickListener(view -> {
             obtainViewModel().zuoXia = true;
             obtainViewModel().sportControl("manual","sport","Sit");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
         ///卧倒
         binding.woDao.setOnClickListener(view -> {
             obtainViewModel().woDao = true;
             obtainViewModel().sportControl("manual","sport","StandDown");
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
         ///锁定
         binding.lock.setOnClickListener(view -> {
             obtainViewModel().lock = true;
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
         ///摆姿势
         binding.baiZiShi.setOnClickListener(view -> {
             obtainViewModel().baiZiShi = true;
-            applyFancyAnimation(view);
+            CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
     }
@@ -312,54 +316,54 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
     private void hideOtherButton(View view) {
         if(obtainViewModel().fanShen && view.getId()!=binding.fanShen.getId()){
-            applyFancyBackAnimation(binding.fanShen);
+            CommonUtil.applyFancyBackAnimation(binding.fanShen);
             obtainViewModel().fanShen = false;
         }
         if(obtainViewModel().shenLanYao && view.getId()!=binding.shenLanYao.getId()){
-            applyFancyBackAnimation(binding.shenLanYao);
+            CommonUtil.applyFancyBackAnimation(binding.shenLanYao);
             obtainViewModel().shenLanYao = false;
         }
         if(obtainViewModel().woShou && view.getId()!=binding.woShou.getId()){
-            applyFancyBackAnimation(binding.woShou);
+            CommonUtil.applyFancyBackAnimation(binding.woShou);
             obtainViewModel().woShou = false;
         }
         if(obtainViewModel().biXin && view.getId()!=binding.biXin.getId()){
-            applyFancyBackAnimation(binding.biXin);
+            CommonUtil.applyFancyBackAnimation(binding.biXin);
             obtainViewModel().biXin = false;
         }
         if(obtainViewModel().puRen && view.getId()!=binding.puRen.getId()){
-            applyFancyBackAnimation(binding.puRen);
+            CommonUtil.applyFancyBackAnimation(binding.puRen);
             obtainViewModel().puRen = false;
         }
         if(obtainViewModel().jump && view.getId()!=binding.jump.getId()){
-            applyFancyBackAnimation(binding.jump);
+            CommonUtil.applyFancyBackAnimation(binding.jump);
             obtainViewModel().jump = false;
         }
     }
 
     private void hideOtherButtonStatus(View view) {
         if(obtainViewModel().zuNi && view.getId()!=binding.zuNi.getId()){
-            applyFancyBackAnimation(binding.zuNi);
+            CommonUtil.applyFancyBackAnimation(binding.zuNi);
             obtainViewModel().zuNi = false;
         }
         if(obtainViewModel().zhanLi && view.getId()!=binding.zhanLi.getId()){
-            applyFancyBackAnimation(binding.zhanLi);
+            CommonUtil.applyFancyBackAnimation(binding.zhanLi);
             obtainViewModel().zhanLi = false;
         }
         if(obtainViewModel().zuoXia && view.getId()!=binding.zuoXia.getId()){
-            applyFancyBackAnimation(binding.zuoXia);
+            CommonUtil.applyFancyBackAnimation(binding.zuoXia);
             obtainViewModel().zuoXia = false;
         }
         if(obtainViewModel().woDao && view.getId()!=binding.woDao.getId()){
-            applyFancyBackAnimation(binding.woDao);
+            CommonUtil.applyFancyBackAnimation(binding.woDao);
             obtainViewModel().woDao = false;
         }
         if(obtainViewModel().lock && view.getId()!=binding.lock.getId()){
-            applyFancyBackAnimation(binding.lock);
+            CommonUtil.applyFancyBackAnimation(binding.lock);
             obtainViewModel().lock = false;
         }
         if(obtainViewModel().baiZiShi && view.getId()!=binding.baiZiShi.getId()){
-            applyFancyBackAnimation(binding.baiZiShi);
+            CommonUtil.applyFancyBackAnimation(binding.baiZiShi);
             obtainViewModel().baiZiShi = false;
         }
     }
@@ -450,83 +454,6 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         }
     }
 
-
-
-    //缩放渐变动画
-    private void applyClickAnimation(View view) {
-        ScaleAnimation scaleAnimation = new ScaleAnimation(
-                1.0f, 0.95f, 1.0f, 0.95f,
-                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
-                ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-        scaleAnimation.setDuration(100);
-        scaleAnimation.setRepeatMode(ScaleAnimation.REVERSE);
-        scaleAnimation.setRepeatCount(1);
-        view.startAnimation(scaleAnimation);
-    }
-
-    //背景切换动画
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void applyFancyAnimation(View view) {
-        // **1. 背景颜色渐变**
-        Drawable[] layers;
-        layers = new Drawable[]{
-                ContextCompat.getDrawable(this, R.drawable.circle_gray),
-                ContextCompat.getDrawable(this, R.drawable.circle_blue)
-        };
-
-        // 创建背景渐变效果的 TransitionDrawable
-        TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
-        view.setBackground(transitionDrawable);
-        transitionDrawable.startTransition(500); // 背景切换渐变 500ms
-
-        // **2. 按钮点击时的缩放动画（轻微缩小再弹回）**
-        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f);
-        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f);
-
-        // **3. 旋转动画（轻微旋转增加动感）**
-        //PropertyValuesHolder rotation = PropertyValuesHolder.ofFloat(View.ROTATION, 0f, 2f, -2f, 0f);
-
-        // **4. 透明度动画（微闪效果）**
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0.6f, 1f);
-
-        // 组合动画
-        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY, /*rotation,*/ alpha);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator()); // 平滑过渡
-        animator.setDuration(600);
-        animator.start();
-    }
-
-    //背景切换动画
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void applyFancyBackAnimation(View view) {
-        // **1. 背景颜色渐变**
-        Drawable[] layers;
-        layers = new Drawable[]{
-                ContextCompat.getDrawable(this, R.drawable.circle_blue),
-                ContextCompat.getDrawable(this, R.drawable.circle_gray)
-        };
-
-        // 创建背景渐变效果的 TransitionDrawable
-        TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
-        view.setBackground(transitionDrawable);
-        transitionDrawable.startTransition(500); // 背景切换渐变 500ms
-
-        // **2. 按钮点击时的缩放动画（轻微缩小再弹回）**
-        //PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f);
-        //PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f);
-
-        // **3. 旋转动画（轻微旋转增加动感）**
-        PropertyValuesHolder rotation = PropertyValuesHolder.ofFloat(View.ROTATION, 0f, 2f, -2f, 0f);
-
-        // **4. 透明度动画（微闪效果）**
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0.6f, 1f);
-
-        // 组合动画
-        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, /*scaleX, scaleY,*/ rotation, alpha);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator()); // 平滑过渡
-        animator.setDuration(600);
-        animator.start();
-    }
 
     //急停切换动画（展开/收起）
     private void stopAnimation() {
@@ -709,7 +636,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
 
     private void startRecordVoice() {
-        obtainViewModel().outputFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice_recording"+new Random(10000).nextInt()+".mp3";
+        obtainViewModel().outputFilePath = Environment.getDownloadCacheDirectory().getAbsolutePath() + "/voice_recording"+new Random(10000).nextInt()+".mp3";
 
         obtainViewModel().mediaRecorder = new MediaRecorder();
         obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -723,13 +650,14 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to start recording", Toast.LENGTH_SHORT).show();
+            HhLog.e("Failed to start recording " + e);
         }
     }
 
     private void stopRecordVoice() {
         if (obtainViewModel().mediaRecorder != null) {
             obtainViewModel().mediaRecorder.stop();
+            Toast.makeText(this, "audio:"+obtainViewModel().outputFilePath, Toast.LENGTH_SHORT).show();
             obtainViewModel().mediaRecorder.release();
         }
     }
@@ -775,8 +703,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVout.attachViews();
 
         media = new Media(libVLC, Uri.parse(obtainViewModel().liveUrl));
-        //media?.addOption(":network-caching=500")//网络缓存
-        //media?.addOption(":rtsp-tcp")//RTSP采用TCP传输方式
+        media.addOption(":network-caching=500");//网络缓存
+        media.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         media.setHWDecoderEnabled(true, true);
         int cache = 1500;
         media.addOption(":network-caching=" + cache);

@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -21,6 +23,7 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityLoginBinding;
 import com.ehaohai.robot.ui.viewmodel.LoginViewModel;
 import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 import com.ehaohai.robot.utils.StringData;
@@ -42,38 +45,64 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
         binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.password,""));
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void bind_() {
+        binding.eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                obtainViewModel().eye = !obtainViewModel().eye;
+                CommonUtil.applyDelayClickAnimation(view, () -> {
+                    if(obtainViewModel().eye){
+                        binding.eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_zheng));
+                        binding.passwordEdit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    }else{
+                        binding.eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_bi));
+                        binding.passwordEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    }
+                });
+            }
+        });
         binding.register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                CommonUtil.applyDelayClickAnimation(view, () -> {
+                    startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                });
             }
         });
         binding.forget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
+                CommonUtil.applyDelayClickAnimation(view, () -> {
+                    startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
+                });
             }
         });
         binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CommonData.networkMode){
-                    ///在线模式
-                    startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
-                    finish();
-                }else{
-                    ///离线模式
-                    if(binding.usernameEdit.getText().toString().isEmpty()){
-                        Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
-                        return;
+                CommonUtil.applyDelayClickAnimation(view, () -> {
+                    if(CommonData.networkMode){
+                        ///在线模式
+                        startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
+                        finish();
+                    }else{
+                        ///离线模式
+                        if(binding.usernameEdit.getText().toString().isEmpty()){
+                            Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if(binding.passwordEdit.getText().toString().isEmpty()){
+                            Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if(!obtainViewModel().confirm){
+                            Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
                     }
-                    if(binding.passwordEdit.getText().toString().isEmpty()){
-                        Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
-                }
+                });
             }
         });
         binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -96,11 +125,13 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
             @Override
             public void onClick(View view) {
                 obtainViewModel().confirm = !obtainViewModel().confirm;
-                if(obtainViewModel().confirm){
-                    binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.circle_gray));
-                }else{
-                    binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
-                }
+                CommonUtil.applyDelayClickAnimation(view, () -> {
+                    if(obtainViewModel().confirm){
+                        binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.yes));
+                    }else{
+                        binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+                    }
+                });
             }
         });
     }

@@ -110,17 +110,19 @@
                         android:layout_weight="1"
                         android:background="@color/robot_input_back"
                         android:hint="请输入密码"
-                        android:inputType="text"
+                        android:inputType="textPassword"
                         android:textColor="@color/c6"
                         android:textColorHint="@color/c56"
                         android:textCursorDrawable="@drawable/edit_cursor_color"
                         android:textSize="14sp" />
 
                     <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:id="@+id/eye"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_marginStart="12dp"
-                        android:layout_marginEnd="23dp"
+                        android:layout_marginEnd="18dp"
+                        android:padding="5dp"
                         android:src="@drawable/ic_bi" />
                 </LinearLayout>
 
@@ -131,12 +133,13 @@
 
                     <ImageView
                         android:id="@+id/confirm"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:paddingEnd="5dp"
                         android:src="@drawable/ic_un" />
 
                     <org.apmem.tools.layouts.FlowLayout
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="3dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         >
