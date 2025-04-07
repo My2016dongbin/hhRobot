@@ -66,7 +66,7 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         binding.device.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, DeviceSearchActivity.class));
+
             }
         });
     }

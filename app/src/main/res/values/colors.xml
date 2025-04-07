@@ -113,9 +113,11 @@
 
 
     <color name="line_color">#e7e7e7</color>
+    <color name="line_color2">#666666</color>
     <color name="content_background">#f2f2f2</color>
     <color name="solar_background">#009988</color>
 
+    <color name="setting">#39444B</color>
     <color name="robot_input_back">#EBEFF2</color>
     <color name="black_input_back">#2F383E</color>
     <color name="robot_main">#2299A2B7</color>

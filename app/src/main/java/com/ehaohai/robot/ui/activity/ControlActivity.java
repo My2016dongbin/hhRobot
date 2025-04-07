@@ -1,30 +1,22 @@
 package com.ehaohai.robot.ui.activity;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -32,15 +24,11 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityControlBinding;
-import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.ui.viewmodel.ControlViewModel;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
 
-import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
@@ -88,9 +76,13 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         startPlayer();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        //设置
+        binding.setting.setOnClickListener(view -> {
+            binding.settingLayout.openDrawer(GravityCompat.END);
+        });
         ///急停
         binding.stop.setOnClickListener(view -> {
             stopAnimation();
@@ -190,7 +182,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ///截图
         binding.screenshoot.setOnClickListener(view -> {
             CommonUtil.applyDelayClickAnimation(view, () ->{
-                Toast.makeText(ControlActivity.this, "截图", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ControlActivity.this, "截图已保存", Toast.LENGTH_SHORT).show();
             });
         });
         ///录像
@@ -199,11 +191,15 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyDelayClickAnimation(view, () -> {
                 if(obtainViewModel().record){
                     binding.videoCount.setVisibility(View.VISIBLE);
+                    binding.record.setBackgroundResource(R.drawable.circle_line_red);
+                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
                     //开始计时并录制
                     Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
                     obtainViewModel().startRecordTimes();
                 }else{
                     binding.videoCount.setVisibility(View.GONE);
+                    binding.record.setBackgroundResource(R.drawable.circle_line_blue);
+                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
                     //关闭计时并保存录像
                     Toast.makeText(ControlActivity.this, "录像已保存", Toast.LENGTH_SHORT).show();
                     obtainViewModel().stopRecordTimes();
@@ -636,7 +632,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
 
     private void startRecordVoice() {
-        obtainViewModel().outputFilePath = Environment.getDownloadCacheDirectory().getAbsolutePath() + "/voice_recording"+new Random(10000).nextInt()+".mp3";
+        obtainViewModel().outputFilePath = getCacheDir() + "/voice_recording"+new Random(10000).nextInt()+".mp3";
 
         obtainViewModel().mediaRecorder = new MediaRecorder();
         obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -657,8 +653,30 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     private void stopRecordVoice() {
         if (obtainViewModel().mediaRecorder != null) {
             obtainViewModel().mediaRecorder.stop();
-            Toast.makeText(this, "audio:"+obtainViewModel().outputFilePath, Toast.LENGTH_SHORT).show();
             obtainViewModel().mediaRecorder.release();
+            Toast.makeText(this, "已发送", Toast.LENGTH_SHORT).show();
+            playMp3();
+        }
+    }
+
+    private void playMp3() {
+        MediaPlayer player;
+        try {
+            LibVLC libVLC = new LibVLC(this);
+            player = new MediaPlayer(libVLC);
+            player.play(obtainViewModel().outputFilePath);
+
+            player.setEventListener(new MediaPlayer.EventListener() {
+                @Override
+                public void onEvent(MediaPlayer.Event event) {
+                    if(event.type == MediaPlayer.Event.EndReached){
+                        player.release();
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
