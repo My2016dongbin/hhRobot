@@ -20,11 +20,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +36,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
+import com.ehaohai.robot.ui.activity.AudioListActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -820,28 +823,87 @@ public class CommonUtil {
         return v;
     }
 
-
-    //延迟缩放渐变动画
-    public static void applyDelayClickAnimation(View view,Runnable runnable) {
-        ScaleAnimation scaleAnimation = new ScaleAnimation(
-                1.0f, 0.95f, 1.0f, 0.95f,
-                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
-                ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-        scaleAnimation.setDuration(100);
-        scaleAnimation.setRepeatMode(ScaleAnimation.REVERSE);
-        scaleAnimation.setRepeatCount(1);
-        view.startAnimation(scaleAnimation);
-        new Handler().postDelayed(runnable, 200);
+    public static long times = 0;
+    ///点击事件封装-点击
+    public static void click(View view,Action action) {
+        final boolean[] force = {false};//防止连续点击300ms
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        long now = new Date().getTime();
+                        if(now - times < 300){
+                            force[0] = true;
+                            return true;
+                        }
+                        force[0] = false;
+                        times = now;
+                        CommonUtil.applyClickDownAnimation(view);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if(force[0]){
+                            return true;
+                        }
+                        times = new Date().getTime();
+                        CommonUtil.applyClickUpAnimation(view);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                action.click();
+                            }
+                        },100);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
     }
-    //缩放渐变动画
-    public static void applyClickAnimation(View view) {
+    ///点击事件封装-按下抬起
+    public static void clickDownUp(View view,ActionDownUp action) {
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        CommonUtil.applyClickDownAnimation(view);
+                        action.clickDown();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        CommonUtil.applyClickUpAnimation(view);
+                        action.clickUp();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+    //按下缩小
+    public static void applyClickDownAnimation(View view) {
         ScaleAnimation scaleAnimation = new ScaleAnimation(
-                1.0f, 0.95f, 1.0f, 0.95f,
+                1.0f, 0.93f,  // 从正常缩放到缩小
+                1.0f, 0.93f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-        scaleAnimation.setDuration(100);
-        scaleAnimation.setRepeatMode(ScaleAnimation.REVERSE);
-        scaleAnimation.setRepeatCount(1);
+        scaleAnimation.setDuration(100); // 动画时长
+        scaleAnimation.setFillAfter(true); // 保持缩放后的状态
+        view.startAnimation(scaleAnimation);
+    }
+    //松手放大
+    public static void applyClickUpAnimation(View view) {
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                0.93f, 1.0f,  // 从缩小恢复到原始大小
+                0.93f, 1.0f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(100); // 动画时长
+        scaleAnimation.setFillAfter(true); // 保持最终状态（还原）
         view.startAnimation(scaleAnimation);
     }
 
@@ -909,3 +971,4 @@ public class CommonUtil {
         animator.start();
     }
 }
+

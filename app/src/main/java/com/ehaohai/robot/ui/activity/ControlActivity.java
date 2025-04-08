@@ -79,6 +79,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        //播放器
+        binding.llPlayer.setOnClickListener(view -> {
+            startActivity(new Intent(this,AudioListActivity.class));
+        });
         //设置
         binding.setting.setOnClickListener(view -> {
             binding.settingLayout.openDrawer(GravityCompat.END);
@@ -95,10 +99,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             }
         });
         ///报警
-        binding.warn.setOnClickListener(view -> {
-            CommonUtil.applyDelayClickAnimation(view, () -> {
-                Toast.makeText(ControlActivity.this, "报警", Toast.LENGTH_SHORT).show();
-            });
+        CommonUtil.click(binding.warn, () -> {
+            startActivity(new Intent(ControlActivity.this,WarnListActivity.class));
         });
         ///对讲
         binding.speak.setOnClickListener(view -> {
@@ -174,37 +176,31 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             }
         });
         ///通知
-        binding.notice.setOnClickListener(view -> {
-            CommonUtil.applyDelayClickAnimation(view, () -> {
-                Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
-            });
+        CommonUtil.click(binding.notice, () -> {
+            Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
         });
         ///截图
-        binding.screenshoot.setOnClickListener(view -> {
-            CommonUtil.applyDelayClickAnimation(view, () ->{
-                Toast.makeText(ControlActivity.this, "截图已保存", Toast.LENGTH_SHORT).show();
-            });
+        CommonUtil.click(binding.screenshoot, () ->{
+            Toast.makeText(ControlActivity.this, "截图已保存", Toast.LENGTH_SHORT).show();
         });
         ///录像
-        binding.record.setOnClickListener(view -> {
+        CommonUtil.click(binding.record, () -> {
             obtainViewModel().record = !obtainViewModel().record;
-            CommonUtil.applyDelayClickAnimation(view, () -> {
-                if(obtainViewModel().record){
-                    binding.videoCount.setVisibility(View.VISIBLE);
-                    binding.record.setBackgroundResource(R.drawable.circle_line_red);
-                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
-                    //开始计时并录制
-                    Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
-                    obtainViewModel().startRecordTimes();
-                }else{
-                    binding.videoCount.setVisibility(View.GONE);
-                    binding.record.setBackgroundResource(R.drawable.circle_line_blue);
-                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
-                    //关闭计时并保存录像
-                    Toast.makeText(ControlActivity.this, "录像已保存", Toast.LENGTH_SHORT).show();
-                    obtainViewModel().stopRecordTimes();
-                }
-            });
+            if(obtainViewModel().record){
+                binding.videoCount.setVisibility(View.VISIBLE);
+                binding.record.setBackgroundResource(R.drawable.circle_line_red);
+                binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
+                //开始计时并录制
+                Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
+                obtainViewModel().startRecordTimes();
+            }else{
+                binding.videoCount.setVisibility(View.GONE);
+                binding.record.setBackgroundResource(R.drawable.circle_line_blue);
+                binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
+                //关闭计时并保存录像
+                Toast.makeText(ControlActivity.this, "录像已保存", Toast.LENGTH_SHORT).show();
+                obtainViewModel().stopRecordTimes();
+            }
         });
         ///翻身
         binding.fanShen.setOnClickListener(view -> {

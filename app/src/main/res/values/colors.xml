@@ -75,6 +75,7 @@
     <color name="c5">#B3B3B3</color>
     <color name="c56">#888888</color>
     <color name="c6">#646464</color>
+    <color name="c66">#7A7F85</color>
     <color name="c7">#383838</color>
     <color name="c8">#181818</color>
     <color name="c8_">#181818</color>
@@ -105,6 +106,8 @@
 
     <color name="colorMultiRoutePrimary">#ED1F2131</color>
     <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorBlackBack">#FF101314</color>
+    <color name="colorBlackBack2">#0E1C24</color>
     <color name="colorBlack">#FF161B1C</color>
     <color name="colorBlackTrans">#66161B1C</color>
     <color name="colorBlackBG">#FF2E3647</color>
@@ -120,6 +123,7 @@
     <color name="setting">#39444B</color>
     <color name="robot_input_back">#EBEFF2</color>
     <color name="black_input_back">#2F383E</color>
+    <color name="gray_back">#3F4849</color>
     <color name="robot_main">#2299A2B7</color>
     <color name="robot_main_line">#22aabbcc</color>
 </resources>

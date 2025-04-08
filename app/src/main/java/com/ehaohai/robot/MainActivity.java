@@ -19,6 +19,8 @@ import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.DeviceSearchActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.viewmodel.MainViewModel;
+import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,9 +53,9 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
                 finish();
             }
         });
-        binding.enter.setOnClickListener(new View.OnClickListener() {
+        CommonUtil.click(binding.enter, new Action() {
             @Override
-            public void onClick(View view) {
+            public void click() {
                 startActivity(new Intent(MainActivity.this, ControlActivity.class));
             }
         });
