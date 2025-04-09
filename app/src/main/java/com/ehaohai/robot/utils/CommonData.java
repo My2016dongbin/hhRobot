@@ -18,6 +18,7 @@ public class CommonData {
     public static double lat_old = 0;
     public static double lng_old = 0;
     public static boolean hasSensor = false;
+    public static String mode = "常规模式";
 
     public static boolean hasMainApp = true;
     public static boolean hasMainVideo = true;

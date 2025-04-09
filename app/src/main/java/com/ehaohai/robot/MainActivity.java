@@ -17,9 +17,13 @@ import com.ehaohai.robot.databinding.ActivityMainBinding;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.DeviceSearchActivity;
+import com.ehaohai.robot.ui.activity.DeviceSettingActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
+import com.ehaohai.robot.ui.activity.ModeActivity;
+import com.ehaohai.robot.ui.activity.WarnListActivity;
 import com.ehaohai.robot.ui.viewmodel.MainViewModel;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,12 +69,30 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
                 startActivity(new Intent(MainActivity.this, MineActivity.class));
             }
         });
-        binding.device.setOnClickListener(new View.OnClickListener() {
+        binding.setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(MainActivity.this, DeviceSettingActivity.class));
             }
         });
+        binding.modeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ModeActivity.class));
+            }
+        });
+        binding.warn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, WarnListActivity.class));
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.modeText.setText(CommonData.mode);
     }
 
     @Override
