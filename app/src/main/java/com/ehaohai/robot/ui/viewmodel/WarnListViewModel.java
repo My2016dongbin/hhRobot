@@ -2,6 +2,7 @@ package com.ehaohai.robot.ui.viewmodel;
 
 import static me.drakeet.multitype.MultiTypeAsserts.assertAllRegistered;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
@@ -16,6 +17,7 @@ import java.util.List;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 public class WarnListViewModel extends BaseViewModel {
+    @SuppressLint("StaticFieldLeak")
     public Context context;
     public final MutableLiveData<String> warn = new MutableLiveData<>();
     public MultiTypeAdapter aiAdapter;
@@ -42,6 +44,7 @@ public class WarnListViewModel extends BaseViewModel {
         updateDataBug();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateDataAi() {
         aiItems.clear();
         if (warnList != null && warnList.size()!=0) {

@@ -10,6 +10,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.icu.text.DateFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.ui.activity.AudioListActivity;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -97,6 +99,16 @@ public class CommonUtil {
         }else {
             return "0" + num;
         }
+    }
+    public static String parseLongTime(long times){
+        String t = times+"";
+        Date date = new Date(times);
+        try{
+            t = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(date);
+        }catch (Exception e){
+            //
+        }
+        return t;
     }
 
     public static void enterWhiteListSetting(Context context){

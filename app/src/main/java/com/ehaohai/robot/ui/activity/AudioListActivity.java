@@ -1,26 +1,46 @@
 package com.ehaohai.robot.ui.activity;
 
+import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
+
 import android.annotation.SuppressLint;
+import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityAudioListBinding;
-import com.ehaohai.robot.databinding.ActivityForgetBinding;
+import com.ehaohai.robot.ui.multitype.Audio;
+import com.ehaohai.robot.ui.multitype.AudioViewBinder;
+import com.ehaohai.robot.ui.multitype.Empty;
+import com.ehaohai.robot.ui.multitype.EmptyViewBinder;
+import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.viewmodel.AudioListViewModel;
-import com.ehaohai.robot.ui.viewmodel.ForgetViewModel;
-import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
+import com.kongzue.dialogx.dialogs.MessageDialog;
+import com.kongzue.dialogx.util.TextInfo;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 
-public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding, AudioListViewModel> {
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.MediaPlayer;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
+
+import me.drakeet.multitype.MultiTypeAdapter;
+
+public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding, AudioListViewModel> implements AudioViewBinder.OnItemClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +52,50 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        binding.recycle.setLayoutManager(linearLayoutManager);
+        obtainViewModel().adapter = new MultiTypeAdapter(obtainViewModel().items);
+        binding.recycle.setHasFixedSize(true);
+        binding.recycle.setNestedScrollingEnabled(false);//设置样式后面的背景颜色
+        binding.refresh.setRefreshHeader(new ClassicsHeader(this));
+        //设置监听器，包括顶部下拉刷新、底部上滑刷新
+        binding.refresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                obtainViewModel().getAudioList();
+                refreshLayout.finishRefresh(1000);
+            }
 
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishLoadMore(1000);
+            }
+        });
+        AudioViewBinder audioListViewBinder = new AudioViewBinder(this);
+        audioListViewBinder.setListener(this);
+        obtainViewModel().adapter.register(Audio.class, audioListViewBinder);
+        obtainViewModel().adapter.register(Empty.class, new EmptyViewBinder(this));
+        binding.recycle.setAdapter(obtainViewModel().adapter);
+        assertHasTheSameAdapter(binding.recycle, obtainViewModel().adapter);
+
+        obtainViewModel().getAudioList();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
         CommonUtil.click(binding.upload, () -> {
             Toast.makeText(this, "上传", Toast.LENGTH_SHORT).show();
         });
         CommonUtil.click(binding.record, () -> {
-            Toast.makeText(AudioListActivity.this, "开始录音", Toast.LENGTH_SHORT).show();
+            obtainViewModel().recording = !obtainViewModel().recording;
+            if(obtainViewModel().recording){
+                startRecordVoice();
+                obtainViewModel().startRecordTimes();
+            }else{
+                stopRecordVoice();
+                obtainViewModel().stopRecordTimes();
+            }
         });
     }
 
@@ -69,9 +122,78 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
         super.subscribeObserver();
 
         obtainViewModel().name.observe(this, this::nameChanged);
+        obtainViewModel().recordTimes.observe(this, this::recordTimesChanged);
     }
 
     private void nameChanged(String name) {
 
+    }
+
+    private void recordTimesChanged(String recordTimes) {
+        binding.recordText.setText(recordTimes);
+    }
+
+    @Override
+    public void onItemClick(Audio audio) {
+
+    }
+
+    @Override
+    public void notifyClick(Audio audio) {
+        obtainViewModel().getAudioList();
+    }
+
+    @Override
+    public void onItemDeleteClick(Audio audio) {
+        TextInfo okTextInfo = new TextInfo();
+        okTextInfo.setFontColor(getResources().getColor(R.color.text_color_red));
+        TextInfo textInfo = new TextInfo();
+        textInfo.setFontColor(getResources().getColor(R.color.gray1));
+        MessageDialog.show("温馨提示", "确定要删除该音频吗？","确定","取消")
+                .setButtonOrientation(LinearLayout.VERTICAL)
+                .setOkTextInfo(okTextInfo)
+                .setTitleTextInfo(textInfo)
+                .setMessageTextInfo(textInfo)
+                .setBackgroundColor(getResources().getColor(R.color.gray_back))
+                .setOkButtonClickListener((dialog, v1) -> {
+                    boolean delete = new File(audio.getPath()).delete();
+                    if(delete){
+                        obtainViewModel().getAudioList();
+                        Toast.makeText(AudioListActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                    }
+                    return false;
+                })
+                .setCancelable(true);
+    }
+
+
+    private void startRecordVoice() {
+        File dir = new File(getCacheDir(), "recordings");
+        if (!dir.exists()) dir.mkdirs();
+        String fileName = CommonUtil.parseLongTime(System.currentTimeMillis()) + ".mp3";
+        obtainViewModel().outputFilePath = new File(dir, fileName).getPath();
+
+        obtainViewModel().mediaRecorder = new MediaRecorder();
+        obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        obtainViewModel().mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        obtainViewModel().mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        obtainViewModel().mediaRecorder.setOutputFile(obtainViewModel().outputFilePath);
+
+        try {
+            obtainViewModel().mediaRecorder.prepare();
+            obtainViewModel().mediaRecorder.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            HhLog.e("Failed to start recording " + e);
+        }
+    }
+
+    private void stopRecordVoice() {
+        if (obtainViewModel().mediaRecorder != null) {
+            obtainViewModel().mediaRecorder.stop();
+            obtainViewModel().mediaRecorder.release();
+            obtainViewModel().getAudioList();
+        }
     }
 }

@@ -34,6 +34,7 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -628,7 +629,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
 
     private void startRecordVoice() {
-        obtainViewModel().outputFilePath = getCacheDir() + "/voice_recording"+new Random(10000).nextInt()+".mp3";
+        File dir = new File(getCacheDir(), "speaking");
+        if (!dir.exists()) dir.mkdirs();
+        String fileName = CommonUtil.parseLongTime(System.currentTimeMillis()) + ".mp3";
+        obtainViewModel().outputFilePath = new File(dir, fileName).getPath();
 
         obtainViewModel().mediaRecorder = new MediaRecorder();
         obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
