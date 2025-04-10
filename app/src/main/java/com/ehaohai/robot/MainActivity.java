@@ -3,7 +3,9 @@ package com.ehaohai.robot;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -14,8 +16,10 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMainBinding;
+import com.ehaohai.robot.event.DeviceRemove;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.ui.activity.ControlActivity;
+import com.ehaohai.robot.ui.activity.DeviceListActivity;
 import com.ehaohai.robot.ui.activity.DeviceSearchActivity;
 import com.ehaohai.robot.ui.activity.DeviceSettingActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
@@ -36,6 +40,7 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fullScreen(this);
+        EventBus.getDefault().register(this);
         init_();
         bind_();
     }
@@ -46,17 +51,17 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         finish();
     }
 
+    ///设备移除
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(DeviceRemove event) {
+        finish();
+    }
+
     private void init_() {
-        EventBus.getDefault().register(this);
+
     }
 
     private void bind_() {
-        binding.back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
         CommonUtil.click(binding.enter, new Action() {
             @Override
             public void click() {
@@ -69,10 +74,10 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
                 startActivity(new Intent(MainActivity.this, MineActivity.class));
             }
         });
-        binding.setting.setOnClickListener(new View.OnClickListener() {
+        binding.device.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, DeviceSettingActivity.class));
+                startActivity(new Intent(MainActivity.this, DeviceListActivity.class));
             }
         });
         binding.modeButton.setOnClickListener(new View.OnClickListener() {
@@ -128,5 +133,30 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
 
     private void nameChanged(String name) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(CommonData.networkMode){
+            exit();
+        }else{
+            finish();
+        }
+    }
+
+    private boolean isExit = false;
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次回到主页", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isExit = false;
+                }
+            },2000);
+        } else {
+            finish();
+        }
     }
 }

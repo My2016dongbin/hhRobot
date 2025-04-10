@@ -36,7 +36,6 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
         fullScreen(this);
         init_();
         bind_();
-        obtainViewModel().getName();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -64,26 +63,21 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
             startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
         });
         CommonUtil.click(binding.loginButton, () -> {
-            if(CommonData.networkMode){
-                ///在线模式
-                startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
-                finish();
-            }else{
-                ///离线模式
-                if(binding.usernameEdit.getText().toString().isEmpty()){
-                    Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(binding.passwordEdit.getText().toString().isEmpty()){
-                    Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(!obtainViewModel().confirm){
-                    Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                obtainViewModel().login(binding.usernameEdit.getText().toString(),binding.passwordEdit.getText().toString());
-            }
+            ///在线模式 TODO 暂时跳过登录校验
+//            if(binding.usernameEdit.getText().toString().isEmpty()){
+//                Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            if(binding.passwordEdit.getText().toString().isEmpty()){
+//                Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            if(!obtainViewModel().confirm){
+//                Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
         });
         binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -94,16 +88,13 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 }else{
                     CommonData.offlineModeSN = "";
                     CommonData.offlineModeIP = "";
-
-                    //TODO 测试登出
-                    obtainViewModel().loginOut();
                 }
             }
         });
         CommonUtil.click(binding.confirm, () -> {
             obtainViewModel().confirm = !obtainViewModel().confirm;
             if(obtainViewModel().confirm){
-                binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.yes));
+                binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
             }else{
                 binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             }

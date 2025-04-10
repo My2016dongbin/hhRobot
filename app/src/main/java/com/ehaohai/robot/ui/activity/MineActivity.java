@@ -35,6 +35,9 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
             @Override
             public void onClick(View view) {
                 obtainViewModel().loginOut();
+                startActivity(new Intent(MineActivity.this, LoginActivity.class));
+                EventBus.getDefault().post(new Exit());
+                finish();
             }
         });
     }

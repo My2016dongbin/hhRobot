@@ -18,4 +18,7 @@ public class DeviceSettingViewModel extends BaseViewModel {
         this.context = context;
     }
 
+    public void getDeviceInfo() {
+        message.postValue(message.getValue()+"-");
+    }
 }

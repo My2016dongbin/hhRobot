@@ -20,7 +20,6 @@ public class URLConstant {
     public static final String PERMISSION_PER = BASE_PATH + "auth/api/auth/auth/list/element/from/menu";
 
     //登录相关
-    public static final String GET_NAME = BASE_PATH + "auth/api/platformConfig/getDefaultConfigNotLogin";//获取项目名称
     public static final String GET_LOGIN = "robot/v1/auth/login";//登录-
     public static final String GET_USER_INFO = BASE_PATH + "auth/api/auth/user/get/userinfo";//个人信息
 

@@ -19,6 +19,8 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceListBinding;
+import com.ehaohai.robot.event.DeviceRefresh;
+import com.ehaohai.robot.event.DeviceRemove;
 import com.ehaohai.robot.event.UDPMessage;
 import com.ehaohai.robot.ui.viewmodel.DeviceListViewModel;
 import com.ehaohai.robot.utils.CommonData;
@@ -35,21 +37,24 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fullScreen(this);
+        EventBus.getDefault().register(this);
         init_();
         bind_();
     }
 
-    private void init_() {
+    ///设备移除
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(DeviceRefresh event) {
+        obtainViewModel().postDeviceList();
+    }
 
+    private void init_() {
+        obtainViewModel().postDeviceList();
     }
 
     private void bind_() {
         binding.back.setOnClickListener(view -> {
-            if(CommonData.networkMode){
-                exit();
-            }else{
-                finish();
-            }
+            finish();
         });
     }
 
@@ -98,7 +103,7 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(DeviceListActivity.this, MainActivity.class));
+                    startActivity(new Intent(DeviceListActivity.this, DeviceSettingActivity.class));
                 }
             });
             binding.messageList.addView(view);
@@ -116,30 +121,6 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(CommonData.networkMode){
-            exit();
-        }else{
-            finish();
-        }
-    }
-
-    private boolean isExit = false;
-    private void exit() {
-        if (!isExit) {
-            isExit = true;
-            Toast.makeText(getApplicationContext(), "再按一次回到主页", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    isExit = false;
-                }
-            },2000);
-        } else {
-            finish();
-        }
+        EventBus.getDefault().unregister(this);
     }
 }

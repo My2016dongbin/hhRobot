@@ -1,4 +1,7 @@
 package com.ehaohai.robot.ui.activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -9,9 +12,13 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceSettingBinding;
+import com.ehaohai.robot.event.DeviceRefresh;
+import com.ehaohai.robot.event.DeviceRemove;
 import com.ehaohai.robot.ui.viewmodel.DeviceSettingViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettingBinding, DeviceSettingViewModel> {
     @Override
@@ -23,7 +30,7 @@ public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettin
     }
 
     private void init_() {
-
+        obtainViewModel().getDeviceInfo();
     }
 
     private void bind_() {
@@ -34,17 +41,20 @@ public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettin
         CommonUtil.click(binding.copy, new Action() {
             @Override
             public void click() {
-                if(binding.name1Edit.getText().toString().isEmpty() || binding.name2Edit.getText().toString().isEmpty()){
-                    Toast.makeText(DeviceSettingActivity.this, "请选择或输入机器狗信息", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("label", binding.snEdit.getText().toString());
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(DeviceSettingActivity.this, "设备SN已复制到剪贴板", Toast.LENGTH_SHORT).show();
             }
         });
         ///移除
         CommonUtil.click(binding.remove, new Action() {
             @Override
             public void click() {
-
+                EventBus.getDefault().post(new DeviceRemove());
+                EventBus.getDefault().post(new DeviceRefresh());
+                Toast.makeText(DeviceSettingActivity.this, "设备移除成功", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }
@@ -75,7 +85,10 @@ public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettin
     }
 
     private void messageChanged(String message) {
-
+        binding.snEdit.setText("S21873DHSBUSU23726");
+        binding.typeEdit.setText("Go2 EDU");
+        binding.nameEdit.setText("浩海机器狗");
+        binding.textFrom.setText("来自添加设备");
     }
 
     @Override

@@ -42,9 +42,6 @@ public class MineViewModel extends BaseViewModel {
                         Log.e("TAG", "onSuccess: OFFLINE_LOGIN_OUT = " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            context.startActivity(new Intent(context, LoginActivity.class));
-                            EventBus.getDefault().post(new Exit());
-                            ((MineActivity)context).finish();
 
                         } catch (Exception e) {
                             e.printStackTrace();

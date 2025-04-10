@@ -52,12 +52,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5">
                 <TextView
+                    android:id="@+id/text_from"
                     android:text="来自浩海科技的分享"
                     android:textColor="@color/whiteColor"
-                    android:layout_marginTop="15dp"
                     android:layout_marginBottom="64dp"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <ImageView
@@ -77,59 +77,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/black_input_bg"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/name1_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:background="@color/black_input_back"
-                        android:hint="Go2 EDU"
-                        android:inputType="text"
-                        android:minHeight="48dp"
-                        android:textColor="@color/text_color12"
-                        android:textColorHint="@color/text_color9"
-                        android:textCursorDrawable="@drawable/edit_cursor_color"
-                        android:textSize="14sp"
-                        tools:ignore="TextContrastCheck" />
-
                     <TextView
-                        android:text="已绑定"
+                        android:text="设备SN"
                         android:textColor="@color/gray1"
-                        android:textSize="12sp"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:background="@drawable/bg_bind"
+                        android:layout_marginEnd="15dp"
+                        android:textSize="14sp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/black_input_bg"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
 
                     <EditText
-                        android:id="@+id/name2_edit"
+                        android:id="@+id/sn_edit"
+                        android:enabled="false"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"
+                        android:gravity="end|center_vertical"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="20dp"
                         android:layout_weight="1"
                         android:background="@color/black_input_back"
-                        android:hint="Go2 EDU"
+                        android:hint=""
                         android:inputType="text"
                         android:minHeight="48dp"
                         android:textColor="@color/text_color12"
@@ -142,15 +117,96 @@
                         android:id="@+id/copy"
                         android:text="复制"
                         android:textColor="@color/whiteColor"
+                        android:gravity="center"
                         android:layout_marginEnd="15dp"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:background="@drawable/bg_button_conner4"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/black_input_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="型号"
+                        android:textColor="@color/gray1"
+                        android:layout_marginEnd="15dp"
+                        android:textSize="14sp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+
+                    <EditText
+                        android:id="@+id/type_edit"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="end|center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/black_input_back"
+                        android:hint=""
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:textColor="@color/text_color12"
+                        android:textColorHint="@color/text_color9"
+                        android:textCursorDrawable="@drawable/edit_cursor_color"
+                        android:textSize="14sp"
+                        tools:ignore="TextContrastCheck" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/black_input_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="机器狗名称"
+                        android:textColor="@color/gray1"
+                        android:layout_marginEnd="15dp"
+                        android:textSize="14sp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <EditText
+                        android:id="@+id/name_edit"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="end|center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/black_input_back"
+                        android:hint=""
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:textColor="@color/text_color12"
+                        android:textColorHint="@color/text_color9"
+                        android:textCursorDrawable="@drawable/edit_cursor_color"
+                        android:textSize="14sp"
+                        tools:ignore="TextContrastCheck" />
+
                 </LinearLayout>
 
                 <View
@@ -160,7 +216,7 @@
 
                 <TextView
                     android:id="@+id/remove"
-                    android:text="移除共享"
+                    android:text="移除设备"
                     android:gravity="center"
                     android:textColor="@color/whiteColor"
                     android:textSize="14sp"

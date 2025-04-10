@@ -92,7 +92,6 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
 
     private void bind_() {
         binding.back.setOnClickListener(view -> {
-            startActivity(new Intent(this,DeviceListActivity.class));
             finish();
         });
         ///绑定
@@ -106,7 +105,12 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
                 CommonData.offlineModeSN = binding.name1Edit.getText().toString();
                 CommonData.offlineModeIP = binding.name2Edit.getText().toString();
 
-                finish();
+                if(CommonData.networkMode){
+                    finish();
+                }else{
+                    startActivity(new Intent(DeviceSearchActivity.this,OfflineLoginActivity.class));
+                    finish();
+                }
             }
         });
     }
@@ -162,11 +166,5 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         udpReceiver.stop();
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this,DeviceListActivity.class));
-        finish();
     }
 }
