@@ -915,7 +915,7 @@ public class CommonUtil {
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setDuration(100); // 动画时长
-        scaleAnimation.setFillAfter(true); // 保持最终状态（还原）
+        scaleAnimation.setFillAfter(false); //保持最终状态（还原）防止setVisibility()失效
         view.startAnimation(scaleAnimation);
     }
 

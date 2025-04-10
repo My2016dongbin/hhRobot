@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
@@ -37,7 +38,6 @@ import org.videolan.libvlc.MediaPlayer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, ControlViewModel> {
     BatteryReceiver batteryReceiver;
@@ -88,6 +88,17 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         binding.setting.setOnClickListener(view -> {
             binding.settingLayout.openDrawer(GravityCompat.END);
         });
+        //十字准星
+        binding.switchCenter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    binding.center.setVisibility(View.VISIBLE);
+                }else{
+                    binding.center.setVisibility(View.GONE);
+                }
+            }
+        });
         ///急停
         binding.stop.setOnClickListener(view -> {
             stopAnimation();
@@ -101,7 +112,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///报警
         CommonUtil.click(binding.warn, () -> {
-            startActivity(new Intent(ControlActivity.this,WarnListActivity.class));
+            startActivity(new Intent(ControlActivity.this,SingleWarnListActivity.class));
         });
         ///对讲
         binding.speak.setOnClickListener(view -> {
@@ -155,6 +166,22 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().isDog = true;
                 CommonUtil.applyFancyAnimation(view);
                 CommonUtil.applyFancyBackAnimation(binding.cloud);
+
+                binding.warn.setVisibility(View.VISIBLE);
+                binding.speak.setVisibility(View.VISIBLE);
+                binding.force.setVisibility(View.VISIBLE);
+                binding.notice.setVisibility(View.VISIBLE);
+                binding.stop.setVisibility(View.VISIBLE);
+                binding.controlLeft.setVisibility(View.VISIBLE);
+                binding.controlRight.setVisibility(View.VISIBLE);
+                binding.llDogButton.setVisibility(View.VISIBLE);
+
+                binding.cloudSet.setVisibility(View.GONE);
+                binding.controlCloud.setVisibility(View.GONE);
+                binding.flCloudSet.setVisibility(View.GONE);
+
+                initLeftControl();
+                initRightControl();
             }
         });
         ///云台
@@ -163,7 +190,29 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().isDog = false;
                 CommonUtil.applyFancyAnimation(view);
                 CommonUtil.applyFancyBackAnimation(binding.dog);
+
+                binding.cloudSet.setVisibility(View.VISIBLE);
+                binding.controlCloud.setVisibility(View.VISIBLE);
+
+                binding.warn.setVisibility(View.GONE);
+                binding.speak.setVisibility(View.GONE);
+                binding.force.setVisibility(View.GONE);
+                binding.notice.setVisibility(View.GONE);
+                binding.stop.setVisibility(View.GONE);
+                binding.controlLeft.setVisibility(View.GONE);
+                binding.controlRight.setVisibility(View.GONE);
+                binding.llDogButton.setVisibility(View.GONE);
+
+                initCloudControl();
             }
+        });
+        ///(云台)设置
+        CommonUtil.click(binding.cloudSet, () -> {
+            binding.flCloudSet.setVisibility(View.VISIBLE);
+        });
+        ///云台-设置菜单-关闭按钮
+        binding.cloudSetX.setOnClickListener(view -> {
+            binding.flCloudSet.setVisibility(View.GONE);
         });
         ///避障
         binding.force.setOnClickListener(view -> {
@@ -624,6 +673,88 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         obtainViewModel().angleRight = angle;
         HhLog.e("右侧摇杆角度 Angle: " + angle + "°");
         obtainViewModel().controlParse();
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initCloudControl() {
+        // 在 View 渲染完毕后获取中心点坐标
+        binding.controlCloud.post(() -> {
+            centerXCloud = binding.controlCloud.getX() + binding.controlCloud.getWidth() / 2f;
+            centerYCloud = binding.controlCloud.getY() + binding.controlCloud.getHeight() / 2f;
+            baseXCloud = binding.controlCloud.getX();
+            baseYCloud = binding.controlCloud.getY();
+            maxRadiusCloud = binding.controlCloud.getWidth() * 0.2f; // 限制最大移动范围（摇杆半径 * 1.2）
+        });
+
+        binding.controlCloud.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                float touchX = event.getRawX();
+                float touchY = event.getRawY();
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isDraggingCloud = true;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (isDraggingCloud) {
+                            updateJoystickPositionCloud(touchX, touchY);
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        isDraggingCloud = false;
+                        resetJoystickPositionCloud();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+    private float centerXCloud, centerYCloud, baseXCloud, baseYCloud;
+    private boolean isDraggingCloud = false;
+    private float maxRadiusCloud; // 限制滑动范围
+    // 更新摇杆位置，并计算角度
+    private void updateJoystickPositionCloud(float touchX, float touchY) {
+        float deltaX = touchX - centerXCloud;
+        float deltaY = touchY - centerYCloud;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX)); // 计算角度
+
+        // 限制摇杆滑动范围
+        if (distance > maxRadiusCloud) {
+            float scale = (float) (maxRadiusCloud / distance);
+            deltaX *= scale;
+            deltaY *= scale;
+        }
+
+        binding.controlCloud.setX(baseXCloud + deltaX);
+        binding.controlCloud.setY(baseYCloud + deltaY);
+
+        // 角度转换到 0°~360°（右侧 0°，顺时针）
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        onJoystickMoveCloud(angle); // 监听角度
+    }
+    // 摇杆回到初始位置（带动画）
+    private void resetJoystickPositionCloud() {
+        ObjectAnimator animX = ObjectAnimator.ofFloat(binding.controlCloud, "x", baseXCloud);
+        ObjectAnimator animY = ObjectAnimator.ofFloat(binding.controlCloud, "y", baseYCloud);
+        animX.setDuration(300);
+        animY.setDuration(300);
+        animX.start();
+        animY.start();
+        obtainViewModel().angleCloud = 999;
+    }
+    // 监听摇杆的角度
+    private void onJoystickMoveCloud(double angle) {
+        obtainViewModel().angleCloud = angle;
+        HhLog.e("云台摇杆角度 Angle: " + angle + "°");
+        obtainViewModel().controlCloudParse();
     }
 
 

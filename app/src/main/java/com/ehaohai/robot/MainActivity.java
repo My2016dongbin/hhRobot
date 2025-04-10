@@ -1,6 +1,5 @@
 package com.ehaohai.robot;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,19 +8,12 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
-import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMainBinding;
-import com.ehaohai.robot.event.DeviceRemove;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.DeviceListActivity;
-import com.ehaohai.robot.ui.activity.DeviceSearchActivity;
-import com.ehaohai.robot.ui.activity.DeviceSettingActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.activity.ModeActivity;
 import com.ehaohai.robot.ui.activity.WarnListActivity;
@@ -48,12 +40,6 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     ///退出登录
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(Exit event) {
-        finish();
-    }
-
-    ///设备移除
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGetMessage(DeviceRemove event) {
         finish();
     }
 

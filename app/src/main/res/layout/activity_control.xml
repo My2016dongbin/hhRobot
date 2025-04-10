@@ -23,12 +23,37 @@
             android:background="@color/colorBlack"
             tools:context=".MineActivity">
 
-            <!--流播放器-->
-            <SurfaceView
-                android:id="@+id/dog_live"
-                android:gravity="center"
+            <FrameLayout
+                android:id="@+id/fl_live"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+                <!--机器狗流播放器-->
+                <SurfaceView
+                    android:id="@+id/dog_live"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <LinearLayout
+                    android:id="@+id/ll_cloud"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <!--云台可见光流播放器-->
+                    <SurfaceView
+                        android:id="@+id/cloud_light_live"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                    <!--云台热成像流播放器-->
+                    <SurfaceView
+                        android:id="@+id/cloud_hot_live"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </FrameLayout>
             <!--流播放器2-->
 <!--            <SurfaceView
                 android:id="@+id/dog_live2"
@@ -48,6 +73,17 @@
                 android:padding="5dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/back" />
+
+            <!--十字准星-->
+            <ImageView
+                android:id="@+id/center"
+                android:visibility="gone"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_center" />
 
             <!--电量-->
             <com.ehaohai.robot.ui.cell.BatteryView
@@ -199,6 +235,31 @@
                     android:text="通知"/>
             </LinearLayout>
 
+            <!--(云台)设置-->
+            <LinearLayout
+                android:id="@+id/cloud_set"
+                android:visibility="gone"
+                android:layout_marginStart="195dp"
+                android:layout_marginTop="26dp"
+                android:orientation="vertical"
+                android:background="@drawable/circle_gray"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_width="44dp"
+                android:layout_height="44dp">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_set" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/theme_color_blue"
+                    android:textSize="12sp"
+                    android:text="设置"/>
+            </LinearLayout>
+
             <!--wifi-->
             <LinearLayout
                 android:id="@+id/wifi"
@@ -320,6 +381,159 @@
                     android:src="@drawable/ic_record_un" />
             </LinearLayout>
 
+            <!--(云台)控制-->
+            <ImageView
+                android:id="@+id/control_cloud"
+                android:visibility="gone"
+                android:layout_width="116dp"
+                android:layout_height="116dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="bottom"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_control" />
+            <!--(云台)设置步长焦距焦点-->
+            <FrameLayout
+                android:id="@+id/fl_cloud_set"
+                android:visibility="gone"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/circle_gray_4_trans"
+                android:layout_width="222dp"
+                android:layout_height="153dp">
+                <ImageView
+                    android:id="@+id/cloud_set_x"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="14dp"
+                    android:padding="5dp"
+                    android:layout_gravity="end"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_x" />
+                <LinearLayout
+                    android:layout_marginTop="34dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <!--步长-->
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp">
+                        <TextView
+                            android:text="步长"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                        <SeekBar
+                            android:id="@+id/step_seek"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:max="100"
+                            android:progress="30" />
+                    </LinearLayout>
+                    <!--焦距&&光圈-->
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="24dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp">
+                        <TextView
+                            android:text="焦距"
+                            android:textColor="@color/whiteColor"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:text="-"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"/>
+                        <TextView
+                            android:text="+"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"/>
+                        <TextView
+                            android:text="光圈"
+                            android:layout_marginStart="22dp"
+                            android:textColor="@color/whiteColor"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:text="-"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"/>
+                        <TextView
+                            android:text="+"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"/>
+                    </LinearLayout>
+                    <!--焦点-->
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="21dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp">
+                        <TextView
+                            android:text="焦点"
+                            android:textColor="@color/whiteColor"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:text="-"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"/>
+                        <TextView
+                            android:text="+"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
             <!--机器狗-控制-->
             <ImageView
                 android:id="@+id/control_left"
@@ -343,6 +557,7 @@
 
             <!--机器狗-动作&&状态-->
             <LinearLayout
+                android:id="@+id/ll_dog_button"
                 android:layout_marginBottom="20dp"
                 android:orientation="vertical"
                 android:layout_gravity="center_horizontal|bottom"
@@ -926,11 +1141,13 @@
                         android:paddingBottom="16dp"
                         android:paddingStart="25dp"
                         />
-                    <Switch
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="25dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <SeekBar
+                        android:id="@+id/light_seek"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:progress="30" />
                 </LinearLayout>
                 <View
                     android:background="@color/line_color2"
@@ -955,11 +1172,13 @@
                         android:paddingBottom="16dp"
                         android:paddingStart="25dp"
                         />
-                    <Switch
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="25dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <SeekBar
+                        android:id="@+id/voice_seek"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:progress="30" />
                 </LinearLayout>
                 <View
                     android:background="@color/line_color2"

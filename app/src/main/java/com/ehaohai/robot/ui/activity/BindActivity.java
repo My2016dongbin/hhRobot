@@ -11,15 +11,15 @@ import androidx.lifecycle.ViewModelProviders;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
-import com.ehaohai.robot.databinding.ActivityDeviceSettingBinding;
+import com.ehaohai.robot.databinding.ActivityBindBinding;
 import com.ehaohai.robot.event.DeviceRefresh;
-import com.ehaohai.robot.ui.viewmodel.DeviceSettingViewModel;
+import com.ehaohai.robot.ui.viewmodel.BindViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettingBinding, DeviceSettingViewModel> {
+public class BindActivity extends BaseLiveActivity<ActivityBindBinding, BindViewModel> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,30 +36,28 @@ public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettin
         binding.back.setOnClickListener(view -> {
             finish();
         });
-        ///复制
-        CommonUtil.click(binding.copy, new Action() {
+        ///取消
+        CommonUtil.click(binding.dismiss, new Action() {
             @Override
             public void click() {
-                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText("label", binding.snEdit.getText().toString());
-                clipboardManager.setPrimaryClip(clipData);
-                Toast.makeText(DeviceSettingActivity.this, "设备SN已复制到剪贴板", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BindActivity.this, "已取消绑定", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
-        ///移除
-        CommonUtil.click(binding.remove, new Action() {
+        ///确定
+        CommonUtil.click(binding.confirm, new Action() {
             @Override
             public void click() {
                 EventBus.getDefault().post(new DeviceRefresh());
-                Toast.makeText(DeviceSettingActivity.this, "设备移除成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BindActivity.this, "设备绑定成功", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
     }
 
     @Override
-    protected ActivityDeviceSettingBinding dataBinding() {
-        return DataBindingUtil.setContentView(this, R.layout.activity_device_setting);
+    protected ActivityBindBinding dataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_bind);
     }
 
     @Override
@@ -70,8 +68,8 @@ public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettin
     }
 
     @Override
-    public DeviceSettingViewModel obtainViewModel() {
-        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(DeviceSettingViewModel.class);
+    public BindViewModel obtainViewModel() {
+        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(BindViewModel.class);
     }
 
 
@@ -83,10 +81,7 @@ public class DeviceSettingActivity extends BaseLiveActivity<ActivityDeviceSettin
     }
 
     private void messageChanged(String message) {
-        binding.snEdit.setText("S21873DHSBUSU23726");
-        binding.typeEdit.setText("Go2 EDU");
-        binding.nameEdit.setText("浩海机器狗");
-        binding.textFrom.setText("来自添加设备");
+        binding.textFrom.setText("绑定机器狗Go2 EDU");
     }
 
     @Override

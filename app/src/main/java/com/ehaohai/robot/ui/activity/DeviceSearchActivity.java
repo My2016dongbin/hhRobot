@@ -106,8 +106,11 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
                 CommonData.offlineModeIP = binding.name2Edit.getText().toString();
 
                 if(CommonData.networkMode){
+                    //在线模式
+                    startActivity(new Intent(DeviceSearchActivity.this,BindActivity.class));
                     finish();
                 }else{
+                    //离线模式
                     startActivity(new Intent(DeviceSearchActivity.this,OfflineLoginActivity.class));
                     finish();
                 }

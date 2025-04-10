@@ -56,13 +56,16 @@
             android:exported="true"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.WarnListActivity"
-            android:exported="true"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.SingleWarnListActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.AudioListActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.ModeActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.DeviceSettingActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.BindActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.OfflineLoginActivity"
             android:screenOrientation="landscape"/>

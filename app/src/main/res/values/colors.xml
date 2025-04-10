@@ -118,6 +118,7 @@
 
     <color name="line_color">#e7e7e7</color>
     <color name="line_color2">#666666</color>
+    <color name="line_color3">#2F383E</color>
     <color name="content_background">#f2f2f2</color>
     <color name="solar_background">#009988</color>
 
@@ -125,6 +126,7 @@
     <color name="robot_input_back">#EBEFF2</color>
     <color name="black_input_back">#2F383E</color>
     <color name="gray_back">#3F4849</color>
+    <color name="gray_back_trans">#AA3F4849</color>
     <color name="robot_main">#2299A2B7</color>
     <color name="robot_main_line">#22aabbcc</color>
 </resources>

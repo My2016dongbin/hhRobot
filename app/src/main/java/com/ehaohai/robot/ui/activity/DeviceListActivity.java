@@ -1,36 +1,23 @@
 package com.ehaohai.robot.ui.activity;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.WifiManager;
+import android.content.Intent;;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceListBinding;
 import com.ehaohai.robot.event.DeviceRefresh;
-import com.ehaohai.robot.event.DeviceRemove;
-import com.ehaohai.robot.event.UDPMessage;
 import com.ehaohai.robot.ui.viewmodel.DeviceListViewModel;
-import com.ehaohai.robot.utils.CommonData;
-import com.ehaohai.robot.wifi.UDPReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Date;
 
 public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBinding, DeviceListViewModel> {
     @Override
@@ -42,7 +29,7 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
         bind_();
     }
 
-    ///设备移除
+    ///设备刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(DeviceRefresh event) {
         obtainViewModel().postDeviceList();

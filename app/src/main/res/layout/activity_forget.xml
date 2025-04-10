@@ -84,12 +84,54 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/login_input_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/password_edit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="17dp"
+                            android:layout_weight="1"
+                            android:background="@color/robot_input_back"
+                            android:hint="验证码"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:textColor="@color/c6"
+                            android:textColorHint="@color/c56"
+                            android:textCursorDrawable="@drawable/edit_cursor_color"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/code_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="16dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:background="@drawable/bg_button2"
+                        android:gravity="center"
+                        android:text="获取验证码"
+                        android:textColor="@color/c12"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/next_button"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="108dp"
+                    android:layout_marginTop="44dp"
                     android:background="@drawable/bg_button2"
                     android:gravity="center"
                     android:text="下一步"

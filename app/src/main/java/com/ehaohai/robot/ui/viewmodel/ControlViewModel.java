@@ -62,7 +62,9 @@ public class ControlViewModel extends BaseViewModel {
     public Calendar dateVoice;
     public double angleLeft = 999;
     public double angleRight = 999;
+    public double angleCloud = 999;
     public long times = 0;
+    public long timesCloud = 0;
     public static final int REQUEST_PERMISSION_CODE = 100;
     public MediaRecorder mediaRecorder;
     public String outputFilePath;
@@ -258,6 +260,46 @@ public class ControlViewModel extends BaseViewModel {
             e.printStackTrace();
         }
         sportControl("manual","run",object.toString());
+    }
+
+    public void controlCloudParse() {
+        long timeNow = Calendar.getInstance().getTime().getTime();
+        if(timeNow - timesCloud < 200){
+            return;
+        }
+        timesCloud = timeNow;
+
+        if(angleCloud >= 225 && angleCloud <= 315){
+            //向上
+            HhLog.e("Cloud move Up");
+        }
+        if((angleCloud > 315 && angleCloud <= 360)  ||  (angleCloud >= 0 && angleCloud < 45)){
+            //向右
+            HhLog.e("Cloud move Right");
+        }
+        if(angleCloud >= 45 && angleCloud <= 135){
+            //向下
+            HhLog.e("Cloud move Down");
+        }
+        if(angleCloud > 135 && angleCloud < 225){
+            //向左
+            HhLog.e("Cloud move Left");
+        }
+        if(angleCloud == 999){
+            //没动
+            HhLog.e("Cloud move Don't move");
+        }
+
+
+        /*JSONObject object = new JSONObject();
+        try {
+            object.put("vx",CommonUtil.parseDoubleCount(vx));
+            object.put("vy",CommonUtil.parseDoubleCount(vy));
+            object.put("vyaw",CommonUtil.parseDoubleCount(vyaw));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sportControl("manual","run",object.toString());*/
     }
 
 }
