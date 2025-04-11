@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="adapter"
+            type="com.ehaohai.robot.ui.multitype.PictureViewBinder" />
+        <variable
+            name="item"
+            type="com.ehaohai.robot.ui.multitype.Picture" />
+    </data>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="187dp"
+        android:layout_height="105dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/colorBlackBack">
+
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
+        <ImageView
+            android:id="@+id/select"
+            android:visibility="visible"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="8dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_un"
+            android:scaleType="fitXY" />
+
+    </FrameLayout>
+</layout>

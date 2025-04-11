@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- 自定义 AlertDialog 主题 -->
+    <style name="DialogNoBackground" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@android:color/transparent</item> <!-- 去除背景 -->
+        <item name="android:windowBackground">@android:color/transparent</item> <!-- 去除窗口背景 -->
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/theme_color</item>

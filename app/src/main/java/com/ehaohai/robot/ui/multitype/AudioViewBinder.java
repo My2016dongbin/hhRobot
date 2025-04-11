@@ -102,24 +102,8 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
                 //重命名
                 popupView.findViewById(R.id.rename).setOnClickListener(view -> {
                     popupWindow.dismiss();
-                    // 弹出重命名对话框
-                    /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("重命名文件");
-                    final EditText input = new EditText(context);
-                    input.setText(audio.getName());
-                    builder.setView(input);
-                    builder.setPositiveButton("确定", (dialog, which) -> {
-                        String newName = input.getText().toString().trim();
-                        if (!newName.isEmpty()) {
-                            if (renameFile(new File(audio.getPath()), newName)) {
-                                Toast.makeText(context, "文件重命名成功", Toast.LENGTH_SHORT).show();
-                                listener.notifyClick(audio);
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-                    builder.show();*/
-
+                    TextInfo titleInfo = new TextInfo();
+                    titleInfo.setFontColor(context.getResources().getColor(R.color.colorBlack));
                     TextInfo textInfo = new TextInfo();
                     textInfo.setFontColor(context.getResources().getColor(R.color.gray1));
                     InputInfo inputInfo = new InputInfo();
@@ -130,11 +114,11 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
                     InputDialog.show("重命名文件","","确定","取消",audio.getName())
                             .setButtonOrientation(LinearLayout.VERTICAL)
                             .setOkTextInfo(okTextInfo)
-                            .setCancelTextInfo(textInfo)
-                            .setTitleTextInfo(textInfo)
+                            .setCancelTextInfo(titleInfo)
+                            .setTitleTextInfo(titleInfo)
                             .setInputInfo(inputInfo)
                             .setAutoShowInputKeyboard(false)
-                            .setBackgroundColor(context.getResources().getColor(R.color.gray_back))
+                            .setBackgroundColor(context.getResources().getColor(R.color.whiteColor))
                             .setOkButtonClickListener((dialog, v1) -> {
                                 String newName = dialog.getInputText().trim();
                                 if (!newName.isEmpty()) {

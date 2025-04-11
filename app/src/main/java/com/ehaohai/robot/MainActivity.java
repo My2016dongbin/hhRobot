@@ -16,6 +16,7 @@ import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.DeviceListActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.activity.ModeActivity;
+import com.ehaohai.robot.ui.activity.PictureListActivity;
 import com.ehaohai.robot.ui.activity.WarnListActivity;
 import com.ehaohai.robot.ui.viewmodel.MainViewModel;
 import com.ehaohai.robot.utils.Action;
@@ -76,6 +77,12 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, WarnListActivity.class));
+            }
+        });
+        binding.picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, PictureListActivity.class));
             }
         });
     }

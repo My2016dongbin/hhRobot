@@ -3,9 +3,14 @@ package com.ehaohai.robot.ui.activity;
 import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +28,7 @@ import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.EmptyViewBinder;
 import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.viewmodel.AudioListViewModel;
+import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.kongzue.dialogx.dialogs.MessageDialog;
@@ -145,25 +151,21 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
 
     @Override
     public void onItemDeleteClick(Audio audio) {
-        TextInfo okTextInfo = new TextInfo();
-        okTextInfo.setFontColor(getResources().getColor(R.color.text_color_red));
-        TextInfo textInfo = new TextInfo();
-        textInfo.setFontColor(getResources().getColor(R.color.gray1));
-        MessageDialog.show("温馨提示", "确定要删除该音频吗？","确定","取消")
-                .setButtonOrientation(LinearLayout.VERTICAL)
-                .setOkTextInfo(okTextInfo)
-                .setTitleTextInfo(textInfo)
-                .setMessageTextInfo(textInfo)
-                .setBackgroundColor(getResources().getColor(R.color.gray_back))
-                .setOkButtonClickListener((dialog, v1) -> {
-                    boolean delete = new File(audio.getPath()).delete();
-                    if(delete){
-                        obtainViewModel().getAudioList();
-                        Toast.makeText(AudioListActivity.this, "已删除", Toast.LENGTH_SHORT).show();
-                    }
-                    return false;
-                })
-                .setCancelable(true);
+        CommonUtil.showConfirm(this,"确定要删除该音频吗？", "删除", "取消", new Action() {
+            @Override
+            public void click() {
+                boolean delete = new File(audio.getPath()).delete();
+                if(delete){
+                    obtainViewModel().getAudioList();
+                    Toast.makeText(AudioListActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Action() {
+            @Override
+            public void click() {
+
+            }
+        },true);
     }
 
 

@@ -16,6 +16,8 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMineBinding;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.ui.viewmodel.MineViewModel;
+import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,19 +33,30 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
-        binding.exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                obtainViewModel().loginOut();
-                startActivity(new Intent(MineActivity.this, LoginActivity.class));
-                EventBus.getDefault().post(new Exit());
-                finish();
-            }
-        });
+
     }
 
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        CommonUtil.click(binding.exit, new Action() {
+            @Override
+            public void click() {
+                CommonUtil.showConfirm(MineActivity.this, "确定要退出当前账户吗？", "退出", "取消", new Action() {
+                    @Override
+                    public void click() {
+                        obtainViewModel().loginOut();
+                        startActivity(new Intent(MineActivity.this, LoginActivity.class));
+                        EventBus.getDefault().post(new Exit());
+                        finish();
+                    }
+                }, new Action() {
+                    @Override
+                    public void click() {
+
+                    }
+                },true);
+            }
+        });
     }
 
     @Override

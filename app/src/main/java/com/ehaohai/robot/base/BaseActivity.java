@@ -93,8 +93,5 @@ public class BaseActivity extends AppCompatActivity{
             window.setStatusBarColor(getResources().getColor(R.color.whiteColor));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
 }

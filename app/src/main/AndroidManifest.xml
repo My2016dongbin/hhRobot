@@ -59,6 +59,8 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.SingleWarnListActivity"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PictureListActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.AudioListActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.ModeActivity"
@@ -68,6 +70,8 @@
         <activity android:name=".ui.activity.BindActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.OfflineLoginActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PictureViewerActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
             android:screenOrientation="landscape">

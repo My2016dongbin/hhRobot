@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -21,12 +22,14 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -867,6 +870,13 @@ public class CommonUtil {
                             }
                         },100);
                         break;
+                    case MotionEvent.ACTION_CANCEL:
+                        if(force[0]){
+                            return true;
+                        }
+                        times = new Date().getTime();
+                        CommonUtil.applyClickUpAnimation(view);
+                        break;
                     default:
                         break;
                 }
@@ -888,6 +898,9 @@ public class CommonUtil {
                     case MotionEvent.ACTION_UP:
                         CommonUtil.applyClickUpAnimation(view);
                         action.clickUp();
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        CommonUtil.applyClickUpAnimation(view);
                         break;
                     default:
                         break;
@@ -982,5 +995,93 @@ public class CommonUtil {
         animator.setDuration(600);
         animator.start();
     }
-}
 
+    public static void showConfirm(Context context,String message,String confirmText,String cancelText,Action confirmClick) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.DialogNoBackground);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View customView = inflater.inflate(R.layout.dialog_message, null);
+        builder.setView(customView)
+                .setCancelable(true);
+        AlertDialog dialog = builder.create();
+        TextView confirmButton = customView.findViewById(R.id.cancel);
+        TextView cancelButton = customView.findViewById(R.id.confirm);
+        confirmButton.setText(confirmText);
+        cancelButton.setText(cancelText);
+        CommonUtil.click(confirmButton, new Action() {
+            @Override
+            public void click() {
+                dialog.cancel();
+                confirmClick.click();
+            }
+        });
+        CommonUtil.click(cancelButton, new Action() {
+            @Override
+            public void click() {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
+    }
+    public static void showConfirm(Context context,String message,String confirmText,String cancelText,Action confirmClick,Action cancelClick) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.DialogNoBackground);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View customView = inflater.inflate(R.layout.dialog_message, null);
+        builder.setView(customView)
+                .setCancelable(true);
+        AlertDialog dialog = builder.create();
+        TextView confirmButton = customView.findViewById(R.id.cancel);
+        TextView cancelButton = customView.findViewById(R.id.confirm);
+        confirmButton.setText(confirmText);
+        cancelButton.setText(cancelText);
+        CommonUtil.click(confirmButton, new Action() {
+            @Override
+            public void click() {
+                dialog.cancel();
+                confirmClick.click();
+            }
+        });
+        CommonUtil.click(cancelButton, new Action() {
+            @Override
+            public void click() {
+                dialog.cancel();
+                cancelClick.click();
+            }
+        });
+        dialog.show();
+    }
+
+    public static void showConfirm(Context context,String message,String confirmText,String cancelText,Action confirmClick,Action cancelClick,Boolean delete) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.DialogNoBackground);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View customView = inflater.inflate(R.layout.dialog_message, null);
+        builder.setView(customView)
+                .setCancelable(true);
+        AlertDialog dialog = builder.create();
+        TextView messageView = customView.findViewById(R.id.message);
+        TextView confirmButton = customView.findViewById(R.id.confirm);
+        TextView cancelButton = customView.findViewById(R.id.cancel);
+        messageView.setText(message);
+        confirmButton.setText(confirmText);
+        cancelButton.setText(cancelText);
+        if(delete){
+            confirmButton.setBackground(ContextCompat.getDrawable(context,R.drawable.circle_red_4));
+        }else{
+            confirmButton.setBackground(ContextCompat.getDrawable(context,R.drawable.circle_blue_4));
+        }
+        CommonUtil.click(confirmButton, new Action() {
+            @Override
+            public void click() {
+                dialog.cancel();
+                confirmClick.click();
+            }
+        });
+        CommonUtil.click(cancelButton, new Action() {
+            @Override
+            public void click() {
+                dialog.cancel();
+                cancelClick.click();
+            }
+        });
+        dialog.show();
+    }
+}
