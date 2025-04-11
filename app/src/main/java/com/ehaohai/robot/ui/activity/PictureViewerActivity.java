@@ -67,7 +67,7 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         CommonUtil.click(binding.delete, new Action() {
             @Override
             public void click() {
-                CommonUtil.showConfirm(PictureViewerActivity.this, "确定要删除该图片吗？", "删除", "取消", new Action() {
+                CommonUtil.showConfirm(PictureViewerActivity.this, "确认删除该图片吗？", "删除", "取消", new Action() {
                     @Override
                     public void click() {
                         Toast.makeText(PictureViewerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();

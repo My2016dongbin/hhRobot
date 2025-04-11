@@ -151,7 +151,7 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
 
     @Override
     public void onItemDeleteClick(Audio audio) {
-        CommonUtil.showConfirm(this,"确定要删除该音频吗？", "删除", "取消", new Action() {
+        CommonUtil.showConfirm(this,"确认删除该音频吗？", "删除", "取消", new Action() {
             @Override
             public void click() {
                 boolean delete = new File(audio.getPath()).delete();

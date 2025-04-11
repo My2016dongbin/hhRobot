@@ -120,7 +120,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 if(list.isEmpty()){
                     Toast.makeText(PictureListActivity.this, "您还没有选择图片", Toast.LENGTH_SHORT).show();
                 }else{
-                    CommonUtil.showConfirm(PictureListActivity.this, "确定要删除选中的图片吗？", "删除", "取消", new Action() {
+                    CommonUtil.showConfirm(PictureListActivity.this, "确认删除选中的图片吗？", "删除", "取消", new Action() {
                         @Override
                         public void click() {
                             Toast.makeText(PictureListActivity.this, "删除成功", Toast.LENGTH_SHORT).show();

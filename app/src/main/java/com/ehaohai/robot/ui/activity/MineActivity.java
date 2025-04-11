@@ -41,7 +41,7 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
         CommonUtil.click(binding.exit, new Action() {
             @Override
             public void click() {
-                CommonUtil.showConfirm(MineActivity.this, "确定要退出当前账户吗？", "退出", "取消", new Action() {
+                CommonUtil.showConfirm(MineActivity.this, "确认退出当前账户吗？", "退出", "取消", new Action() {
                     @Override
                     public void click() {
                         obtainViewModel().loginOut();
