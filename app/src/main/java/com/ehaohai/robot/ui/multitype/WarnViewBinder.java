@@ -2,6 +2,7 @@ package com.ehaohai.robot.ui.multitype;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.databinding.ItemWarnListBinding;
+import com.ehaohai.robot.ui.activity.PictureViewerActivity;
+import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonUtil;
+
+import java.util.ArrayList;
 
 import me.drakeet.multitype.ItemViewProvider;
 
@@ -71,6 +77,16 @@ public class WarnViewBinder extends ItemViewProvider<Warn, WarnViewBinder.ViewHo
         Glide.with(context).load(warn.getFindImage())
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
                 .error(R.drawable.ic_no_pic).into(binding.findImage);
+        CommonUtil.click(binding.findImage, new Action() {
+            @Override
+            public void click() {
+                ArrayList<String> picUrls = new ArrayList<>();
+                picUrls.add(warn.getFindImage());
+                Intent intent = new Intent(context, PictureViewerActivity.class);
+                intent.putStringArrayListExtra("urls", picUrls);
+                context.startActivity(intent);
+            }
+        });
 
     }
 

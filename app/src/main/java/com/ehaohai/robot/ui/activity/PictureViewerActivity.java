@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -38,6 +39,13 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         Intent intent = getIntent();
         obtainViewModel().urls = intent.getStringArrayListExtra("urls");
         obtainViewModel().pictureIndex = intent.getIntExtra("index",0);
+        obtainViewModel().canDelete = intent.getBooleanExtra("delete",false);
+        //是否显示删除按钮
+        if(obtainViewModel().canDelete){
+            binding.delete.setVisibility(View.VISIBLE);
+        }else{
+            binding.delete.setVisibility(View.GONE);
+        }
         if(!obtainViewModel().urls.isEmpty()){
             showPicAndIndex();
         }else{

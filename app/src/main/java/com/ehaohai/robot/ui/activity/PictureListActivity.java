@@ -221,6 +221,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 picUrls.add(pic.getUrl());
                 Intent intent = new Intent(this, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
+                intent.putExtra("delete",true);
                 startActivity(intent);
                 return;
             }
@@ -247,12 +248,14 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             }
             intent.putStringArrayListExtra("urls", picUrls);
             intent.putExtra("index",index);
+            intent.putExtra("delete",true);
             startActivity(intent);
         }else{
             //-单图片预览
             Intent intent = new Intent(this, PictureViewerActivity.class);
             picUrls.add(pic.getUrl());
-        intent.putStringArrayListExtra("urls", picUrls);
+            intent.putStringArrayListExtra("urls", picUrls);
+            intent.putExtra("delete",true);
             startActivity(intent);
         }
     }
