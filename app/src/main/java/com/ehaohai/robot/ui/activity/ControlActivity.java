@@ -82,7 +82,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         binding.back.setOnClickListener(view -> finish());
         //播放器
         binding.llPlayer.setOnClickListener(view -> {
-            startActivity(new Intent(this,AudioListActivity.class));
+            startActivity(new Intent(this,AudioLocalListActivity.class));
         });
         //设置
         binding.setting.setOnClickListener(view -> {

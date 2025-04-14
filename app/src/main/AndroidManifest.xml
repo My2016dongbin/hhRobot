@@ -63,6 +63,8 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.AudioListActivity"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.AudioLocalListActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.ModeActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.DeviceSettingActivity"
