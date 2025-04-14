@@ -31,8 +31,10 @@
                 android:layout_weight="360">
 
                 <LinearLayout
-                    android:layout_marginTop="5dp"
+                    android:id="@+id/ll_device_choose"
                     android:layout_marginStart="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical">
@@ -44,11 +46,13 @@
 <!--                        android:scaleType="fitXY"-->
 <!--                        android:src="@drawable/dog" />-->
                     <View
+                        android:id="@+id/device_status"
                         android:background="@drawable/circle_green"
                         android:layout_width="6dp"
                         android:layout_height="6dp"/>
 
                     <TextView
+                        android:id="@+id/device_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"

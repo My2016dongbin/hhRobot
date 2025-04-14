@@ -783,10 +783,14 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
     private void stopRecordVoice() {
         if (obtainViewModel().mediaRecorder != null) {
-            obtainViewModel().mediaRecorder.stop();
-            obtainViewModel().mediaRecorder.release();
-            Toast.makeText(this, "已发送", Toast.LENGTH_SHORT).show();
-            playMp3();
+            try{
+                obtainViewModel().mediaRecorder.stop();
+                obtainViewModel().mediaRecorder.release();
+                Toast.makeText(this, "已发送", Toast.LENGTH_SHORT).show();
+                playMp3();
+            }catch (Exception e){
+                //
+            }
         }
     }
 

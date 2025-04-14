@@ -49,6 +49,12 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     }
 
     private void bind_() {
+        CommonUtil.click(binding.llDeviceChoose, new Action() {
+            @Override
+            public void click() {
+
+            }
+        });
         CommonUtil.click(binding.enter, new Action() {
             @Override
             public void click() {
