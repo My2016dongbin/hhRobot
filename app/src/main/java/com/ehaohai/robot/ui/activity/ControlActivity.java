@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,6 +27,7 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityControlBinding;
+import com.ehaohai.robot.ui.service.ScreenRecordService;
 import com.ehaohai.robot.ui.viewmodel.ControlViewModel;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
@@ -41,10 +44,18 @@ import java.util.ArrayList;
 
 public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, ControlViewModel> {
     BatteryReceiver batteryReceiver;
-    private LibVLC libVLC;
-    private MediaPlayer mediaPlayer;
-    private Media media;
-    private IVLCVout ivlcVout;
+    private LibVLC libVLCDog;
+    private MediaPlayer mediaPlayerDog;
+    private Media mediaDog;
+    private IVLCVout ivlcVoutDog;
+    private LibVLC libVLCLight;
+    private MediaPlayer mediaPlayerLight;
+    private Media mediaLight;
+    private IVLCVout ivlcVoutLight;
+    private LibVLC libVLCHot;
+    private MediaPlayer mediaPlayerHot;
+    private Media mediaHot;
+    private IVLCVout ivlcVoutHot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +85,12 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         initLeftControl();
         initRightControl();
 
-        startPlayer();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startPlayerDog();
+            }
+        },200);
     }
 
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
@@ -180,8 +196,20 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 binding.controlCloud.setVisibility(View.GONE);
                 binding.flCloudSet.setVisibility(View.GONE);
 
+                binding.llCloud.setVisibility(View.GONE);
+                binding.dogLive.setVisibility(View.VISIBLE);
+
                 initLeftControl();
                 initRightControl();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startPlayerDog();
+                        releasePlayerLight();
+                        releasePlayerHot();
+                    }
+                },500);
             }
         });
         ///云台
@@ -203,7 +231,19 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 binding.controlRight.setVisibility(View.GONE);
                 binding.llDogButton.setVisibility(View.GONE);
 
+                binding.llCloud.setVisibility(View.VISIBLE);
+                binding.dogLive.setVisibility(View.GONE);
+
                 initCloudControl();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startPlayerLight();
+                        startPlayerHot();
+                        releasePlayerDog();
+                    }
+                },500);
             }
         });
         ///(云台)设置
@@ -227,29 +267,35 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///通知
         CommonUtil.click(binding.notice, () -> {
-            Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
         });
         ///截图
         CommonUtil.click(binding.screenshoot, () ->{
-            Toast.makeText(ControlActivity.this, "截图已保存", Toast.LENGTH_SHORT).show();
+            if(obtainViewModel().isDog){
+                CommonUtil.captureSurfaceView(binding.dogLive,this);
+            }else{
+                CommonUtil.captureSurfaceView(binding.cloudLightLive,this);
+                CommonUtil.captureSurfaceView(binding.cloudHotLive,this);
+            }
         });
         ///录像
         CommonUtil.click(binding.record, () -> {
             obtainViewModel().record = !obtainViewModel().record;
             if(obtainViewModel().record){
-                binding.videoCount.setVisibility(View.VISIBLE);
+                /*binding.videoCount.setVisibility(View.VISIBLE);
                 binding.record.setBackgroundResource(R.drawable.circle_line_red);
                 binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
                 //开始计时并录制
                 Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
-                obtainViewModel().startRecordTimes();
+                obtainViewModel().startRecordTimes();*/
+                requestScreenCapture();
             }else{
                 binding.videoCount.setVisibility(View.GONE);
                 binding.record.setBackgroundResource(R.drawable.circle_line_blue);
                 binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
                 //关闭计时并保存录像
-                Toast.makeText(ControlActivity.this, "录像已保存", Toast.LENGTH_SHORT).show();
                 obtainViewModel().stopRecordTimes();
+                ScreenRecordService.stopRecording(this);
             }
         });
         ///翻身
@@ -334,6 +380,41 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             hideOtherButtonStatus(view);
         });
     }
+
+    private static final int REQUEST_CODE_SCREEN_CAPTURE = 1000;
+
+    private void requestScreenCapture() {
+        MediaProjectionManager projectionManager =
+                null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        }
+        Intent captureIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            captureIntent = projectionManager.createScreenCaptureIntent();
+        }
+        startActivityForResult(captureIntent, REQUEST_CODE_SCREEN_CAPTURE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_SCREEN_CAPTURE && resultCode == RESULT_OK) {
+            Intent serviceIntent = new Intent(this, ScreenRecordService.class);
+            serviceIntent.putExtra(ScreenRecordService.RESULT_CODE, resultCode);
+            serviceIntent.putExtra(ScreenRecordService.RESULT_DATA, data);
+            ContextCompat.startForegroundService(this, serviceIntent);
+
+            binding.videoCount.setVisibility(View.VISIBLE);
+            binding.record.setBackgroundResource(R.drawable.circle_line_red);
+            binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
+            //开始计时并录制
+            Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
+            obtainViewModel().startRecordTimes();
+        }
+    }
+
+
 
     private void voiceAnimation() {
         binding.flVoice.setVisibility(View.VISIBLE);
@@ -816,57 +897,56 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     }
 
 
-    void releasePlayer() {
-        if (libVLC == null || mediaPlayer == null ||
-                ivlcVout == null || media == null) {
+    void releasePlayerDog() {
+        if (libVLCDog == null || mediaPlayerDog == null ||
+                ivlcVoutDog == null || mediaDog == null) {
             return;
         }
-        mediaPlayer.stop();
-        ivlcVout = mediaPlayer.getVLCVout();
-        ivlcVout.detachViews();
-        mediaPlayer.release();
-        libVLC.release();
+        mediaPlayerDog.stop();
+        ivlcVoutDog = mediaPlayerDog.getVLCVout();
+        ivlcVoutDog.detachViews();
+        mediaPlayerDog.release();
+        libVLCDog.release();
 
-        libVLC = null;
-        mediaPlayer = null;
-        ivlcVout = null;
-        media = null;
+        libVLCDog = null;
+        mediaPlayerDog = null;
+        ivlcVoutDog = null;
+        mediaDog = null;
     }
-
-    void startPlayer() {
+    void startPlayerDog() {
         final ArrayList<String> options = new ArrayList<>();
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-        releasePlayer();
+        int width = binding.dogLive.getWidth();
+        int height = binding.dogLive.getHeight();
+        releasePlayerDog();
         //options.add("--aout=opensles");//音频输出模块opensles模式
         //options.add(" --audio-time-stretch");
         //options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S\",position=10,color=0xFF0000,size=40}");//这行是可以再vlc窗口右下角添加当前时间的
         options.add("-vvv");
-        libVLC = new LibVLC(this, options);
-        mediaPlayer = new MediaPlayer(libVLC);
+        libVLCDog = new LibVLC(this, options);
+        mediaPlayerDog = new MediaPlayer(libVLCDog);
         //设置vlc视频铺满布局
-        mediaPlayer.setScale(2f);
+        mediaPlayerDog.setScale(0f);
 
-        mediaPlayer.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
-        mediaPlayer.setAspectRatio("-1");//-1，表示完全拉伸填充，不考虑原始比例
-        mediaPlayer.setVolume(0);
-        ivlcVout = mediaPlayer.getVLCVout();
-        ivlcVout.setVideoView(binding.dogLive);
-        ivlcVout.attachViews();
+        mediaPlayerDog.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
+        mediaPlayerDog.setAspectRatio(width+":"+height);//-1，表示完全拉伸填充，不考虑原始比例
+        mediaPlayerDog.setVolume(0);
+        ivlcVoutDog = mediaPlayerDog.getVLCVout();
+        ivlcVoutDog.setVideoView(binding.dogLive);
+        ivlcVoutDog.attachViews();
 
-        media = new Media(libVLC, Uri.parse(obtainViewModel().liveUrl));
-        media.addOption(":network-caching=500");//网络缓存
-        media.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
-        media.setHWDecoderEnabled(true, true);
+        mediaDog = new Media(libVLCDog, Uri.parse(obtainViewModel().dogUrl));
+        mediaDog.addOption(":network-caching=500");//网络缓存
+        mediaDog.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
+        mediaDog.setHWDecoderEnabled(true, true);
         int cache = 1500;
-        media.addOption(":network-caching=" + cache);
-        media.addOption(":file-caching=" + cache);
-        media.addOption(":live-cacheing=" + cache);
-        media.addOption(":sout-mux-caching=" + cache);
-        media.addOption(":codec=mediacodec,iomx,all");
-        mediaPlayer.setMedia(media);
-        mediaPlayer.setEventListener(new MediaPlayer.EventListener() {
+        mediaDog.addOption(":network-caching=" + cache);
+        mediaDog.addOption(":file-caching=" + cache);
+        mediaDog.addOption(":live-cacheing=" + cache);
+        mediaDog.addOption(":sout-mux-caching=" + cache);
+        mediaDog.addOption(":codec=mediacodec,iomx,all");
+        mediaPlayerDog.setMedia(mediaDog);
+        mediaPlayerDog.setEventListener(new MediaPlayer.EventListener() {
             @Override
             public void onEvent(MediaPlayer.Event event) {
 
@@ -878,14 +958,14 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                     case MediaPlayer.Event.EndReached:
                         // 处理播放结束事件
                         HhLog.e("EndReached");
-                        startPlayer();
+                        startPlayerDog();
                         break;
                     case MediaPlayer.Event.EncounteredError:
                         // 处理播放错误事件
                         HhLog.e("EncounteredError");
                         new Handler().postDelayed(() -> {
                             try{
-                                startPlayer();
+                                startPlayerDog();
                             }catch (Exception e){
                                 HhLog.e(e.getMessage());
                             }
@@ -906,6 +986,190 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 }
             }
         });
-        mediaPlayer.play();
+        mediaPlayerDog.play();
+    }
+
+    void releasePlayerLight() {
+        if (libVLCLight == null || mediaPlayerLight == null ||
+                ivlcVoutLight == null || mediaLight == null) {
+            return;
+        }
+        mediaPlayerLight.stop();
+        ivlcVoutLight = mediaPlayerLight.getVLCVout();
+        ivlcVoutLight.detachViews();
+        mediaPlayerLight.release();
+        libVLCLight.release();
+
+        libVLCLight = null;
+        mediaPlayerLight = null;
+        ivlcVoutLight = null;
+        mediaLight = null;
+    }
+    void startPlayerLight() {
+        final ArrayList<String> options = new ArrayList<>();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int width = binding.cloudLightLive.getWidth();
+        int height = binding.cloudLightLive.getHeight();
+        releasePlayerLight();
+        //options.add("--aout=opensles");//音频输出模块opensles模式
+        //options.add(" --audio-time-stretch");
+        //options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S\",position=10,color=0xFF0000,size=40}");//这行是可以再vlc窗口右下角添加当前时间的
+        options.add("-vvv");
+        libVLCLight = new LibVLC(this, options);
+        mediaPlayerLight = new MediaPlayer(libVLCLight);
+        //设置vlc视频铺满布局
+        mediaPlayerLight.setScale(0f);
+
+        mediaPlayerLight.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
+        mediaPlayerLight.setAspectRatio(width+":"+height);//-1，表示完全拉伸填充，不考虑原始比例
+        mediaPlayerLight.setVolume(0);
+        ivlcVoutLight = mediaPlayerLight.getVLCVout();
+        ivlcVoutLight.setVideoView(binding.cloudLightLive);
+        ivlcVoutLight.attachViews();
+
+        mediaLight = new Media(libVLCLight, Uri.parse(obtainViewModel().lightUrl));
+        mediaLight.addOption(":network-caching=500");//网络缓存
+        mediaLight.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
+        mediaLight.setHWDecoderEnabled(true, true);
+        int cache = 1500;
+        mediaLight.addOption(":network-caching=" + cache);
+        mediaLight.addOption(":file-caching=" + cache);
+        mediaLight.addOption(":live-cacheing=" + cache);
+        mediaLight.addOption(":sout-mux-caching=" + cache);
+        mediaLight.addOption(":codec=mediacodec,iomx,all");
+        mediaPlayerLight.setMedia(mediaLight);
+        mediaPlayerLight.setEventListener(new MediaPlayer.EventListener() {
+            @Override
+            public void onEvent(MediaPlayer.Event event) {
+
+                switch (event.type) {
+                    case MediaPlayer.Event.Buffering:
+                        // 处理缓冲事件
+                        HhLog.e("Buffering");
+                        break;
+                    case MediaPlayer.Event.EndReached:
+                        // 处理播放结束事件
+                        HhLog.e("EndReached");
+                        startPlayerLight();
+                        break;
+                    case MediaPlayer.Event.EncounteredError:
+                        // 处理播放错误事件
+                        HhLog.e("EncounteredError");
+                        new Handler().postDelayed(() -> {
+                            try{
+                                startPlayerLight();
+                            }catch (Exception e){
+                                HhLog.e(e.getMessage());
+                            }
+                        },1000);
+                        break;
+                    case MediaPlayer.Event.TimeChanged:
+                        // 处理播放进度变化事件
+                        HhLog.e("TimeChanged");
+                        break;
+                    case MediaPlayer.Event.PositionChanged:
+                        // 处理播放位置变化事件
+                        HhLog.e("PositionChanged");
+                        break;
+                    case MediaPlayer.Event.Vout:
+                        //在视频开始播放之前，视频的宽度和高度可能还没有被确定，因此我们需要在MediaPlayer.Event.Vout事件发生后才能获取到正确的宽度和高度
+                        HhLog.e("Vout");
+                        break;
+                }
+            }
+        });
+        mediaPlayerLight.play();
+    }
+
+    void releasePlayerHot() {
+        if (libVLCHot == null || mediaPlayerHot == null ||
+                ivlcVoutHot == null || mediaHot == null) {
+            return;
+        }
+        mediaPlayerHot.stop();
+        ivlcVoutHot = mediaPlayerHot.getVLCVout();
+        ivlcVoutHot.detachViews();
+        mediaPlayerHot.release();
+        libVLCHot.release();
+
+        libVLCHot = null;
+        mediaPlayerHot = null;
+        ivlcVoutHot = null;
+        mediaHot = null;
+    }
+    void startPlayerHot() {
+        final ArrayList<String> options = new ArrayList<>();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int width = binding.cloudHotLive.getWidth();
+        int height = binding.cloudHotLive.getHeight();
+        releasePlayerHot();
+        //options.add("--aout=opensles");//音频输出模块opensles模式
+        //options.add(" --audio-time-stretch");
+        //options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S\",position=10,color=0xFF0000,size=40}");//这行是可以再vlc窗口右下角添加当前时间的
+        options.add("-vvv");
+        libVLCHot = new LibVLC(this, options);
+        mediaPlayerHot = new MediaPlayer(libVLCHot);
+        //设置vlc视频铺满布局
+        mediaPlayerHot.setScale(0f);
+
+        mediaPlayerHot.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
+        mediaPlayerHot.setAspectRatio(width+":"+height);//-1，表示完全拉伸填充，不考虑原始比例
+        mediaPlayerHot.setVolume(0);
+        ivlcVoutHot = mediaPlayerHot.getVLCVout();
+        ivlcVoutHot.setVideoView(binding.cloudHotLive);
+        ivlcVoutHot.attachViews();
+
+        mediaHot = new Media(libVLCHot, Uri.parse(obtainViewModel().hotUrl));
+        mediaHot.addOption(":network-caching=500");//网络缓存
+        mediaHot.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
+        mediaHot.setHWDecoderEnabled(true, true);
+        int cache = 1500;
+        mediaHot.addOption(":network-caching=" + cache);
+        mediaHot.addOption(":file-caching=" + cache);
+        mediaHot.addOption(":live-cacheing=" + cache);
+        mediaHot.addOption(":sout-mux-caching=" + cache);
+        mediaHot.addOption(":codec=mediacodec,iomx,all");
+        mediaPlayerHot.setMedia(mediaHot);
+        mediaPlayerHot.setEventListener(new MediaPlayer.EventListener() {
+            @Override
+            public void onEvent(MediaPlayer.Event event) {
+
+                switch (event.type) {
+                    case MediaPlayer.Event.Buffering:
+                        // 处理缓冲事件
+                        HhLog.e("Buffering");
+                        break;
+                    case MediaPlayer.Event.EndReached:
+                        // 处理播放结束事件
+                        HhLog.e("EndReached");
+                        startPlayerHot();
+                        break;
+                    case MediaPlayer.Event.EncounteredError:
+                        // 处理播放错误事件
+                        HhLog.e("EncounteredError");
+                        new Handler().postDelayed(() -> {
+                            try{
+                                startPlayerHot();
+                            }catch (Exception e){
+                                HhLog.e(e.getMessage());
+                            }
+                        },1000);
+                        break;
+                    case MediaPlayer.Event.TimeChanged:
+                        // 处理播放进度变化事件
+                        HhLog.e("TimeChanged");
+                        break;
+                    case MediaPlayer.Event.PositionChanged:
+                        // 处理播放位置变化事件
+                        HhLog.e("PositionChanged");
+                        break;
+                    case MediaPlayer.Event.Vout:
+                        //在视频开始播放之前，视频的宽度和高度可能还没有被确定，因此我们需要在MediaPlayer.Event.Vout事件发生后才能获取到正确的宽度和高度
+                        HhLog.e("Vout");
+                        break;
+                }
+            }
+        });
+        mediaPlayerHot.play();
     }
 }

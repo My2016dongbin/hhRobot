@@ -15,6 +15,8 @@ import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.databinding.ItemSingleWarnBugListBinding;
 
+import java.util.Objects;
+
 import me.drakeet.multitype.ItemViewProvider;
 
 /**
@@ -49,14 +51,16 @@ public class SingleWarnBugViewBinder extends ItemViewProvider<Warn, SingleWarnBu
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        binding.findTime.setText(warn.getFindTime());
-        binding.warnType.setText(warn.getFindType());
+        binding.findTime.setText(warn.getTimeStamp());
+        if(warn.getMoreInfo()!=null){
+            binding.warnType.setText(warn.getMoreInfo().getName());
+        }
         if(warn.getCount()%2==0){
             binding.click.setBackgroundResource(R.color.colorBlackBack2);
         }else{
             binding.click.setBackgroundResource(R.color.gray_back);
         }
-        if(warn.isUnRead()){
+        if(Objects.equals(warn.getIsRead(), "0")){
             binding.unread.setVisibility(View.VISIBLE);
         }else{
             binding.unread.setVisibility(View.GONE);

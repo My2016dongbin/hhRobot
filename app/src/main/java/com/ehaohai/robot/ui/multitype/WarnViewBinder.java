@@ -24,6 +24,7 @@ import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import me.drakeet.multitype.ItemViewProvider;
 
@@ -59,29 +60,33 @@ public class WarnViewBinder extends ItemViewProvider<Warn, WarnViewBinder.ViewHo
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        binding.findTime.setText(warn.getFindTime());
+        binding.findTime.setText(warn.getTimeStamp());
         binding.deviceType.setText(warn.getDeviceType());
         binding.deviceName.setText(warn.getDeviceName());
-        binding.findType.setText(warn.getFindType());
-        binding.findResult.setText(warn.getFindResult());
+        binding.deviceType.setText("机器狗");
+        binding.deviceName.setText("浩海机器狗");
+        if(warn.getMoreInfo()!=null){
+            binding.findType.setText(warn.getMoreInfo().getName());
+            binding.findResult.setText(warn.getMoreInfo().getAlarmInfo());
+        }
         if(warn.getCount()%2==0){
             binding.click.setBackgroundResource(R.color.colorBlackBack2);
         }else{
             binding.click.setBackgroundResource(R.color.gray_back);
         }
-        if(warn.isUnRead()){
+        if(Objects.equals(warn.getIsRead(), "0")){
             binding.unread.setVisibility(View.VISIBLE);
         }else{
             binding.unread.setVisibility(View.GONE);
         }
-        Glide.with(context).load(warn.getFindImage())
+        Glide.with(context).load(warn.getImgPath())
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
                 .error(R.drawable.ic_no_pic).into(binding.findImage);
         CommonUtil.click(binding.findImage, new Action() {
             @Override
             public void click() {
                 ArrayList<String> picUrls = new ArrayList<>();
-                picUrls.add(warn.getFindImage());
+                picUrls.add(warn.getImgPath());
                 Intent intent = new Intent(context, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
                 context.startActivity(intent);

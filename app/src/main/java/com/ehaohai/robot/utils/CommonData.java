@@ -31,6 +31,8 @@ public class CommonData {
     public static String  offlineModeIP = "";//离线模式IP
     public static String offlineModePORT = "9990";//离线模式PORT
 
+    public static long loginDownLong = 0;//登出计时器
+
 
     public static void clear() {
         token = "";

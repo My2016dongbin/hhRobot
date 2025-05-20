@@ -3,32 +3,56 @@ package com.ehaohai.robot.ui.multitype;
 public class Warn {
     private int count;
     private String id;
-    private String findTime;
+    private String timeStamp;
     private String deviceType;
     private String deviceName;
-    private String findType;
-    private String findResult;
-    private String findImage;
-    private boolean unRead;
+    private MoreInfo moreInfo;
+    private String imgPath;
+    private String isRead;
 
-    public Warn(int count, String id, String findTime, String deviceType, String deviceName, String findType, String findResult, String findImage, boolean unRead) {
-        this.count = count;
-        this.id = id;
-        this.findTime = findTime;
-        this.deviceType = deviceType;
-        this.deviceName = deviceName;
-        this.findType = findType;
-        this.findResult = findResult;
-        this.findImage = findImage;
-        this.unRead = unRead;
+    private String msgType;
+    private String deviceSn;
+    private String detectType;
+
+
+    public static class MoreInfo{
+        private String name;
+        private String alarmInfo;
+
+        public MoreInfo() {
+        }
+
+        public MoreInfo(String name, String alarmInfo) {
+            this.name = name;
+            this.alarmInfo = alarmInfo;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getAlarmInfo() {
+            return alarmInfo;
+        }
+
+        public void setAlarmInfo(String alarmInfo) {
+            this.alarmInfo = alarmInfo;
+        }
+
+        @Override
+        public String toString() {
+            return "MoreInfo{" +
+                    "name='" + name + '\'' +
+                    ", alarmInfo='" + alarmInfo + '\'' +
+                    '}';
+        }
     }
 
-    public boolean isUnRead() {
-        return unRead;
-    }
-
-    public void setUnRead(boolean unRead) {
-        this.unRead = unRead;
+    public Warn() {
     }
 
     public int getCount() {
@@ -47,12 +71,12 @@ public class Warn {
         this.id = id;
     }
 
-    public String getFindTime() {
-        return findTime;
+    public String getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setFindTime(String findTime) {
-        this.findTime = findTime;
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getDeviceType() {
@@ -71,27 +95,68 @@ public class Warn {
         this.deviceName = deviceName;
     }
 
-    public String getFindType() {
-        return findType;
+    public MoreInfo getMoreInfo() {
+        return moreInfo;
     }
 
-    public void setFindType(String findType) {
-        this.findType = findType;
+    public void setMoreInfo(MoreInfo moreInfo) {
+        this.moreInfo = moreInfo;
     }
 
-    public String getFindResult() {
-        return findResult;
+    public String getImgPath() {
+        return imgPath;
     }
 
-    public void setFindResult(String findResult) {
-        this.findResult = findResult;
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
-    public String getFindImage() {
-        return findImage;
+    public String getIsRead() {
+        return isRead;
     }
 
-    public void setFindImage(String findImage) {
-        this.findImage = findImage;
+    public void setIsRead(String isRead) {
+        this.isRead = isRead;
+    }
+
+    public String getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(String msgType) {
+        this.msgType = msgType;
+    }
+
+    public String getDeviceSn() {
+        return deviceSn;
+    }
+
+    public void setDeviceSn(String deviceSn) {
+        this.deviceSn = deviceSn;
+    }
+
+    public String getDetectType() {
+        return detectType;
+    }
+
+    public void setDetectType(String detectType) {
+        this.detectType = detectType;
+    }
+
+    @Override
+    public String toString() {
+        return "Warn{" +
+                "count=" + count +
+                ", id='" + id + '\'' +
+                ", timeStamp='" + timeStamp + '\'' +
+                ", deviceType='" + deviceType + '\'' +
+                ", deviceName='" + deviceName + '\'' +
+                ", moreInfo=" + moreInfo +
+                ", imgPath='" + imgPath + '\'' +
+                ", isRead='" + isRead + '\'' +
+                ", msgType='" + msgType + '\'' +
+                ", deviceSn='" + deviceSn + '\'' +
+                ", detectType='" + detectType + '\'' +
+                '}';
     }
 }

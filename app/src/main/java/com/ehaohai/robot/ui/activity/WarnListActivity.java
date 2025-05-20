@@ -23,6 +23,7 @@ import com.ehaohai.robot.ui.multitype.WarnViewBinder;
 import com.ehaohai.robot.ui.viewmodel.WarnListViewModel;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 
@@ -45,16 +46,20 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
         binding.aiRecycle.setHasFixedSize(true);
         binding.aiRecycle.setNestedScrollingEnabled(false);//设置样式后面的背景颜色
         binding.aiRefresh.setRefreshHeader(new ClassicsHeader(this));
+        binding.aiRefresh.setRefreshFooter(new ClassicsFooter(this));
         //设置监听器，包括顶部下拉刷新、底部上滑刷新
         binding.aiRefresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                obtainViewModel().pageNum = 1;
                 obtainViewModel().postWarnList();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                obtainViewModel().pageNum++;
+                obtainViewModel().postWarnList();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -71,16 +76,20 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
         binding.bugRecycle.setHasFixedSize(true);
         binding.bugRecycle.setNestedScrollingEnabled(false);//设置样式后面的背景颜色
         binding.bugRefresh.setRefreshHeader(new ClassicsHeader(this));
+        binding.bugRefresh.setRefreshFooter(new ClassicsFooter(this));
         //设置监听器，包括顶部下拉刷新、底部上滑刷新
         binding.bugRefresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                obtainViewModel().postWarnList();
+//                obtainViewModel().pageNum = 1;
+//                obtainViewModel().postWarnList();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                obtainViewModel().pageNum++;
+//                obtainViewModel().postWarnList();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -152,10 +161,20 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
         super.subscribeObserver();
 
         obtainViewModel().warn.observe(this, this::nameChanged);
+        obtainViewModel().todayCount.observe(this, this::todayChanged);
+        obtainViewModel().allCount.observe(this, this::allChanged);
     }
 
     private void nameChanged(String changed) {
 
+    }
+
+    private void todayChanged(String changed) {
+        binding.todayNumber.setText(changed);
+    }
+
+    private void allChanged(String changed) {
+        binding.allNumber.setText(changed);
     }
 
     @Override

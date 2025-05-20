@@ -5,6 +5,8 @@ public class SPValue {
     public static final String user_id = "id";
     public static final String userName = "userName";
     public static final String password = "password";
+    public static final String userNameOff = "userNameOff";
+    public static final String passwordOff = "passwordOff";
 
 
     //广播

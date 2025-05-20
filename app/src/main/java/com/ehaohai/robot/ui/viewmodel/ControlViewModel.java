@@ -68,9 +68,9 @@ public class ControlViewModel extends BaseViewModel {
     public static final int REQUEST_PERMISSION_CODE = 100;
     public MediaRecorder mediaRecorder;
     public String outputFilePath;
-    public String liveUrl = "rtsp://172.16.50.82:8554/live.stream";
-//    public String liveUrl = "http://119.167.67.163:86/live/7b913047-3e43-480a-baa6-f907900924.live.mp4";
-//    public String liveUrl = "http://119.167.67.163:86/live/7b913047-3e43-480a-baa6-f907900925.live.mp4";
+    public String dogUrl = "rtsp://172.16.50.105:554/visible";
+    public String lightUrl = "rtsp://172.16.50.105:554/visible";
+    public String hotUrl = "rtsp://172.16.50.105:554/thermal";
 
     public void start(Context context) {
         this.context = context;

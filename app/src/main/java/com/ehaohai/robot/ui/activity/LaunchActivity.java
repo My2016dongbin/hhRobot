@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.ehaohai.robot.HhApplication;
+import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
@@ -49,7 +50,7 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
 
 //                            obtainViewModel().login(userName,password);
                             new Handler().postDelayed(() -> {
-                                startActivity(new Intent(LaunchActivity.this, LoginActivity.class));
+                                startActivity(new Intent(LaunchActivity.this, MainActivity.class));
                                 finish();
                             },2000);
                         }else{

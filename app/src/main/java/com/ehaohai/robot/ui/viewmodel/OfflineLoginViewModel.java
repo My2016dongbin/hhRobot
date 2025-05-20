@@ -16,6 +16,7 @@ import com.ehaohai.robot.constant.HhHttp;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.ui.activity.LoginActivity;
+import com.ehaohai.robot.ui.activity.OfflineLoginActivity;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
@@ -37,7 +38,7 @@ public class OfflineLoginViewModel extends BaseViewModel {
     }
 
     public void login(String userName, String password) {
-        loading.setValue(new LoadingEvent(true, "登录中.."));
+        loading.setValue(new LoadingEvent(true, "认证中.."));
         JSONObject object = new JSONObject();
         try {
             object.put("username", userName);
@@ -61,16 +62,16 @@ public class OfflineLoginViewModel extends BaseViewModel {
                             try{
                                 CommonData.token = data.getString("access_token");
                                 SPUtils.put(HhApplication.getInstance(), SPValue.token, CommonData.token);
-                                SPUtils.put(HhApplication.getInstance(), SPValue.userName, userName);
-                                SPUtils.put(HhApplication.getInstance(), SPValue.password, password);
+                                SPUtils.put(HhApplication.getInstance(), SPValue.userNameOff, userName);
+                                SPUtils.put(HhApplication.getInstance(), SPValue.passwordOff, password);
                                 SPUtils.put(HhApplication.getInstance(), SPValue.login, true);
-                                msg.setValue("登录成功");
+                                msg.setValue("认证成功");
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         loading.setValue(new LoadingEvent(false, ""));
                                         context.startActivity(new Intent(context, MainActivity.class));
-                                        ((LoginActivity)context).finish();
+                                        ((OfflineLoginActivity)context).finish();
                                     }
                                 }, 500);
                             }catch (Exception e){

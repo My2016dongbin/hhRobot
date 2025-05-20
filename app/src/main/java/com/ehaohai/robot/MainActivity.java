@@ -155,7 +155,7 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
                 }
             },2000);
         } else {
-            finish();
+            finishAffinity();
         }
     }
 }

@@ -91,7 +91,7 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
         CommonUtil.click(binding.upload, () -> {
-            Toast.makeText(this, "上传", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "上传", Toast.LENGTH_SHORT).show();
         });
         CommonUtil.click(binding.record, () -> {
             obtainViewModel().recording = !obtainViewModel().recording;

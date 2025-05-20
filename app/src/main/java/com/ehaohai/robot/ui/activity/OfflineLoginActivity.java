@@ -13,6 +13,8 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityOfflineLoginBinding;
 import com.ehaohai.robot.ui.viewmodel.OfflineLoginViewModel;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.SPUtils;
+import com.ehaohai.robot.utils.SPValue;
 
 public class OfflineLoginActivity extends BaseLiveActivity<ActivityOfflineLoginBinding, OfflineLoginViewModel> {
 
@@ -24,9 +26,14 @@ public class OfflineLoginActivity extends BaseLiveActivity<ActivityOfflineLoginB
         bind_();
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     private void init_() {
+        binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userNameOff,""));
+        binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.passwordOff,""));
 
+        ///TODO 暂时绕过校验
+        binding.usernameEdit.setText("admin");
+        binding.passwordEdit.setText("Haohai@123");
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

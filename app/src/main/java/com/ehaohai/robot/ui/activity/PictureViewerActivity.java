@@ -2,16 +2,27 @@ package com.ehaohai.robot.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
@@ -24,6 +35,8 @@ import com.ehaohai.robot.utils.CommonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewerBinding, PictureViewerViewModel> {
@@ -68,7 +81,7 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         CommonUtil.click(binding.download, new Action() {
             @Override
             public void click() {
-                Toast.makeText(PictureViewerActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                CommonUtil.downloadImageToGallery(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
             }
         });
         ///删除
@@ -116,6 +129,7 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
             }
         });
     }
+
 
     @Override
     protected ActivityPictureViewerBinding dataBinding() {

@@ -23,6 +23,7 @@ import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.viewmodel.SingleWarnListViewModel;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 
@@ -45,16 +46,20 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
         binding.aiRecycle.setHasFixedSize(true);
         binding.aiRecycle.setNestedScrollingEnabled(false);//设置样式后面的背景颜色
         binding.aiRefresh.setRefreshHeader(new ClassicsHeader(this));
+        binding.aiRefresh.setRefreshFooter(new ClassicsFooter(this));
         //设置监听器，包括顶部下拉刷新、底部上滑刷新
         binding.aiRefresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                obtainViewModel().pageNum = 1;
                 obtainViewModel().postWarnList();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                obtainViewModel().pageNum++;
+                obtainViewModel().postWarnList();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -69,18 +74,22 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
         binding.bugRecycle.setLayoutManager(linearLayoutManagerBug);
         obtainViewModel().bugAdapter = new MultiTypeAdapter(obtainViewModel().bugItems);
         binding.bugRecycle.setHasFixedSize(true);
-        binding.bugRecycle.setNestedScrollingEnabled(false);//设置样式后面的背景颜色
+        binding.bugRecycle.setNestedScrollingEnabled(false);
         binding.bugRefresh.setRefreshHeader(new ClassicsHeader(this));
+        binding.bugRefresh.setRefreshFooter(new ClassicsFooter(this));
         //设置监听器，包括顶部下拉刷新、底部上滑刷新
         binding.bugRefresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                obtainViewModel().postWarnList();
+//                obtainViewModel().pageNum = 1;
+//                obtainViewModel().postWarnList();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                obtainViewModel().pageNum++;
+//                obtainViewModel().postWarnList();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -152,11 +161,22 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
         super.subscribeObserver();
 
         obtainViewModel().warn.observe(this, this::nameChanged);
+        obtainViewModel().todayCount.observe(this, this::todayChanged);
+        obtainViewModel().allCount.observe(this, this::allChanged);
     }
 
     private void nameChanged(String changed) {
 
     }
+
+    private void todayChanged(String changed) {
+        binding.todayNumber.setText(changed);
+    }
+
+    private void allChanged(String changed) {
+        binding.allNumber.setText(changed);
+    }
+
 
     @Override
     protected void onDestroy() {

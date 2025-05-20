@@ -5,7 +5,7 @@ import com.ehaohai.robot.utils.CommonData;
 public class URLConstant {
 
     public static final String BASE_PATH = "http://192.168.1.88:8444/";//Release-穿透 //平台8081
-    public static String LOCAL_PATH = "http://172.16.10.164:8001/";//测试本地离线模式
+    public static String LOCAL_PATH = "http://172.16.10.171:8001/";//测试本地离线模式
     public static String NETWORK_BASE_PATH(){
         if(CommonData.networkMode){
             return BASE_PATH;
@@ -45,5 +45,19 @@ public class URLConstant {
     }
 
 
+    //报警列表-
+    public static String ALARM_LIST(){
+        return LOCAL_PATH+"robot/v1/alarm";
+    }
+
+    //获取日报警数-
+    public static String ALARM_DAY_COUNT(){
+        return LOCAL_PATH+"robot/v1/alarm/alarm_count";
+    }
+
+    //获取总报警数-
+    public static String ALARM_ALL_COUNT(){
+        return LOCAL_PATH+"robot/v1/alarm/alarm_all";
+    }
 
 }

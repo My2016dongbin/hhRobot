@@ -24,6 +24,7 @@ import com.ehaohai.robot.databinding.ActivityLoginBinding;
 import com.ehaohai.robot.ui.viewmodel.LoginViewModel;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 import com.ehaohai.robot.utils.StringData;
@@ -42,6 +43,12 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     private void init_() {
         binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userName,""));
         binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.password,""));
+
+
+        /*///TODO 默认自动登出
+        obtainViewModel().loginOut();
+        CommonData.offlineModeSN = "";
+        CommonData.offlineModeIP = "";*/
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -63,19 +70,19 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
             startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
         });
         CommonUtil.click(binding.loginButton, () -> {
-            ///在线模式 TODO 暂时跳过登录校验
-//            if(binding.usernameEdit.getText().toString().isEmpty()){
-//                Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            if(binding.passwordEdit.getText().toString().isEmpty()){
-//                Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            if(!obtainViewModel().confirm){
-//                Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
+            ///在线模式
+            if(binding.usernameEdit.getText().toString().isEmpty()){
+                Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(binding.passwordEdit.getText().toString().isEmpty()){
+                Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(!obtainViewModel().confirm){
+                Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
+                return;
+            }
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         });
@@ -86,8 +93,10 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 if(b){
                     startActivity(new Intent(LoginActivity.this, DeviceSearchActivity.class));
                 }else{
+                    /*TODO 登出
+                    obtainViewModel().loginOut();
                     CommonData.offlineModeSN = "";
-                    CommonData.offlineModeIP = "";
+                    CommonData.offlineModeIP = "";*/
                 }
             }
         });
@@ -99,6 +108,12 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.offline.setChecked(false);
     }
 
     @Override
@@ -147,7 +162,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 }
             },2000);
         } else {
-            finish();
+            finishAffinity();
         }
     }
 }

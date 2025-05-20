@@ -106,7 +106,7 @@
                 android:layout_marginTop="40dp"
                 android:textColor="@color/whiteColor"
                 android:textSize="14sp"
-                android:text="18°C"/>
+                android:text="39°C"/>
 
             <!--报警-->
             <LinearLayout

@@ -15,10 +15,15 @@ import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.ui.activity.LoginActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.HhLog;
+import com.ehaohai.robot.utils.SPUtils;
+import com.ehaohai.robot.utils.SPValue;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
+
+import java.util.Date;
 
 import okhttp3.Call;
 
@@ -31,6 +36,7 @@ public class MineViewModel extends BaseViewModel {
     }
 
     public void loginOut() {
+        CommonData.loginDownLong = new Date().getTime();
         Log.e("TAG", "onSuccess: OFFLINE_LOGIN_OUT = " + URLConstant.OFFLINE_LOGIN_OUT());
         HhHttp.post()
                 .url(URLConstant.OFFLINE_LOGIN_OUT())
@@ -42,11 +48,14 @@ public class MineViewModel extends BaseViewModel {
                         Log.e("TAG", "onSuccess: OFFLINE_LOGIN_OUT = " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
+                            CommonData.token = "";
+                            SPUtils.put(context, SPValue.login,false);
+                            SPUtils.put(context, SPValue.token,"");
 
                         } catch (Exception e) {
                             e.printStackTrace();
                             loading.setValue(new LoadingEvent(false));
-                            Toast.makeText(context, "服务异常", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "服务异常", Toast.LENGTH_SHORT).show();
                         }
                     }
 

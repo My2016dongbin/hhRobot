@@ -1,11 +1,19 @@
 package com.ehaohai.robot.base;
 
 import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
 
+import com.ehaohai.robot.ui.activity.LaunchActivity;
+import com.ehaohai.robot.ui.activity.LoginActivity;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.HhLog;
+import com.ehaohai.robot.utils.SPUtils;
+import com.ehaohai.robot.utils.SPValue;
 import com.zhy.http.okhttp.callback.Callback;
 
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -27,21 +35,36 @@ public abstract class LoggedInStringCallback extends Callback<String> {
     @Override
     public void onError(Call call, Exception e, int id) {
         HhLog.e("onError:" + e.toString());
+        Date date = new Date();
+        long now = date.getTime();
+        if(now - CommonData.loginDownLong < 2000){
+            return;
+        }
+        CommonData.loginDownLong = now;
+        if (e.toString().contains("401")) {
+            ///登录失效
+            CommonData.token = "";
+            SPUtils.put(context, SPValue.login,false);
+            SPUtils.put(context, SPValue.token,"");
+            Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
+            context.startActivity(new Intent(context, LoginActivity.class));
+        }
         onFailure(call, e, id);
     }
 
     @Override
     public void onResponse(String response, int id) {
-        /*if ("102".equals(JSON.parseObject(response).getString("errcode"))) {//登录失效
-//            mViewModel.loading.setValue(new LoadingEvent(false));
-//            mViewModel.loginAgain.setValue(new Object());
-//            mViewModel.showLoginErrorDialog();
-//            LogUtils.e("zcm","重新登录111");
-            context.sendBroadcast(new Intent().setAction(SPValue.TOKEN_FAILURE));
+        if (response.contains(":401,")) {
+            ///登录失效
+            CommonData.token = "";
+            SPUtils.put(context, SPValue.login,false);
+            SPUtils.put(context, SPValue.token,"");
+            Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
+            context.startActivity(new Intent(context, LoginActivity.class));
         } else {
+            ///正常返回
             onSuccess(response, id);
-        }*/
-        onSuccess(response, id);
+        }
     }
 
     public abstract void onSuccess(String response, int id);

@@ -3,12 +3,17 @@ package com.ehaohai.robot.utils;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.icu.text.DateFormat;
@@ -16,7 +21,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,7 +32,9 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.PixelCopy;
 import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -32,17 +42,24 @@ import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.TintContextWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.ui.activity.AudioListActivity;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +86,101 @@ public class CommonUtil {
         }
 
         return permissions.contains(permissionCode+"_");
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public static void captureSurfaceView(SurfaceView surfaceView, Activity activity) {
+        Bitmap bitmap = Bitmap.createBitmap(
+                surfaceView.getWidth(),
+                surfaceView.getHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Surface surface = surfaceView.getHolder().getSurface();
+        if (!surface.isValid()) {
+            Toast.makeText(activity, "Surface 无效，无法截图", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        PixelCopy.request(surface, bitmap, copyResult -> {
+            if (copyResult == PixelCopy.SUCCESS) {
+                saveBitmapToGallery(activity, bitmap);
+            } else {
+                Toast.makeText(activity, "截图失败: " + copyResult, Toast.LENGTH_SHORT).show();
+            }
+        }, new Handler(Looper.getMainLooper()));
+    }
+    public static long screenShootTimes = 0;
+    public static void saveBitmapToGallery(Context context, Bitmap bitmap) {
+        String filename = "screenshot_" + System.currentTimeMillis() + ".png";
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/iot");
+
+        ContentResolver resolver = context.getContentResolver();
+        Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        try (OutputStream os = resolver.openOutputStream(uri)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            long now = new Date().getTime();
+            if(now - screenShootTimes < 2000){
+                return;
+            }
+            screenShootTimes = now;
+            Toast.makeText(context, "截图已保存", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
+        public static void downloadImageToGallery(Context context, String imageUrl) {
+        Glide.with(context)
+                .asBitmap()
+                .load(imageUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        saveImageToAlbum(context, resource, "downloaded_image_" + System.currentTimeMillis() + ".jpg");
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {}
+                });
+    }
+
+    public static void saveImageToAlbum(Context context, Bitmap bitmap, String fileName) {
+        OutputStream fos;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/iot"); // 自定义目录
+            values.put(MediaStore.Images.Media.IS_PENDING, 1);
+
+            ContentResolver resolver = context.getContentResolver();
+            Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+            Uri imageUri = resolver.insert(collection, values);
+
+            if (imageUri != null) {
+                fos = resolver.openOutputStream(imageUri);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                if (fos != null) fos.close();
+
+                values.clear();
+                values.put(MediaStore.Images.Media.IS_PENDING, 0);
+                resolver.update(imageUri, values, null, null);
+
+                Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static int parseInt(String content){
