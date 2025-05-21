@@ -134,7 +134,7 @@
                         android:layout_height="wrap_content">
                         <TextView
                             android:id="@+id/today_number"
-                            android:text="15"
+                            android:text="0"
                             android:textColor="@color/text_color_red"
                             android:textSize="26sp"
                             android:textStyle="bold"
@@ -174,7 +174,7 @@
                         android:layout_height="wrap_content">
                         <TextView
                             android:id="@+id/all_number"
-                            android:text="15"
+                            android:text="0"
                             android:textColor="@color/text_color_blue"
                             android:textSize="26sp"
                             android:textStyle="bold"

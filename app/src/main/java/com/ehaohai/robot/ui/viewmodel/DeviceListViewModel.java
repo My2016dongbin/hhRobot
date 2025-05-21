@@ -23,7 +23,6 @@ public class DeviceListViewModel extends BaseViewModel {
     public void postDeviceList(){
         deviceList = new ArrayList<>();
         deviceList.add(new Device("1","浩海机器狗","来自共享","http://web.ehaohai.com:2018/SatelliteData/H9-FIR/china/2025-04-08/Fire_Result/16/H9-FIR_2025-04-08_0800__16_321_fp.jpg","1","Go2 EDU"));
-        deviceList.add(new Device("2","轮式机器人","来自共享","http://web.ehaohai.com:2018/SatelliteData/H9-FIR/china/2025-04-08/Fire_Result/16/H9-FIR_2025-04-08_0800__16_321_fp.jpg","1","1888"));
         device.postValue(device.getValue()+"-");
     }
 
