@@ -49,8 +49,7 @@ public class MineViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             CommonData.token = "";
-                            SPUtils.put(context, SPValue.login,false);
-                            SPUtils.put(context, SPValue.token,"");
+                            SPUtils.clear(context);
 
                         } catch (Exception e) {
                             e.printStackTrace();

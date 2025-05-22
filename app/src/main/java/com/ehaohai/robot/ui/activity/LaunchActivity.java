@@ -12,6 +12,7 @@ import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ActivityLaunchBinding;
 import com.ehaohai.robot.ui.viewmodel.LaunchViewModel;
 import com.ehaohai.robot.utils.CommonData;
@@ -45,6 +46,7 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
                         Object login = SPUtils.get(HhApplication.getInstance(), SPValue.login, false);
                         if(login!=null && (boolean)login){
                             CommonData.token = (String) SPUtils.get(HhApplication.getInstance(), SPValue.token, "");
+                            URLConstant.setLocalPath((String) SPUtils.get(HhApplication.getInstance(), SPValue.offlineIp, ""));
                             String userName = (String) SPUtils.get(HhApplication.getInstance(), SPValue.userName, "");
                             String password = (String) SPUtils.get(HhApplication.getInstance(), SPValue.password, "");
 

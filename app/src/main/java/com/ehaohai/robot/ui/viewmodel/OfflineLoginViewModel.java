@@ -47,51 +47,56 @@ public class OfflineLoginViewModel extends BaseViewModel {
             e.printStackTrace();
         }
         Log.e("TAG", "onSuccess: login = " + object);
-        HhHttp.postString()
-                .url(URLConstant.OFFLINE_LOGIN())
-                .content(object.toString())
-                .build()
-                .connTimeOut(10000)
-                .execute(new LoggedInStringCallback(this, context) {
-                    @Override
-                    public void onSuccess(String response, int id) {
-                        Log.e("TAG", "onSuccess: login = " + response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONObject data = jsonObject.getJSONObject("data");
-                            try{
-                                CommonData.token = data.getString("access_token");
-                                SPUtils.put(HhApplication.getInstance(), SPValue.token, CommonData.token);
-                                SPUtils.put(HhApplication.getInstance(), SPValue.userNameOff, userName);
-                                SPUtils.put(HhApplication.getInstance(), SPValue.passwordOff, password);
-                                SPUtils.put(HhApplication.getInstance(), SPValue.login, true);
-                                msg.setValue("认证成功");
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        loading.setValue(new LoadingEvent(false, ""));
-                                        context.startActivity(new Intent(context, MainActivity.class));
-                                        ((OfflineLoginActivity)context).finish();
-                                    }
-                                }, 500);
-                            }catch (Exception e){
+        try{
+            HhHttp.postString()
+                    .url(URLConstant.OFFLINE_LOGIN())
+                    .content(object.toString())
+                    .build()
+                    .connTimeOut(10000)
+                    .execute(new LoggedInStringCallback(this, context) {
+                        @Override
+                        public void onSuccess(String response, int id) {
+                            Log.e("TAG", "onSuccess: login = " + response);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                try{
+                                    CommonData.token = data.getString("access_token");
+                                    SPUtils.put(HhApplication.getInstance(), SPValue.token, CommonData.token);
+                                    SPUtils.put(HhApplication.getInstance(), SPValue.userNameOff, userName);
+                                    SPUtils.put(HhApplication.getInstance(), SPValue.passwordOff, password);
+                                    SPUtils.put(HhApplication.getInstance(), SPValue.login, true);
+                                    msg.setValue("认证成功");
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loading.setValue(new LoadingEvent(false, ""));
+                                            context.startActivity(new Intent(context, MainActivity.class));
+                                            ((OfflineLoginActivity)context).finish();
+                                        }
+                                    }, 500);
+                                }catch (Exception e){
+                                    loading.setValue(new LoadingEvent(false));
+                                    String message = data.getString("msg");
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 loading.setValue(new LoadingEvent(false));
-                                String message = data.getString("msg");
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "服务异常", Toast.LENGTH_SHORT).show();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            loading.setValue(new LoadingEvent(false));
-                            Toast.makeText(context, "服务异常", Toast.LENGTH_SHORT).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call call, Exception e, int id) {
-                        HhLog.e("onFailure: " + e.toString());
-                        loading.setValue(new LoadingEvent(false, ""));
-                    }
-                });
+                        @Override
+                        public void onFailure(Call call, Exception e, int id) {
+                            HhLog.e("onFailure: " + e.toString());
+                            loading.setValue(new LoadingEvent(false, ""));
+                        }
+                    });
+        }catch (Exception e){
+            Toast.makeText(context, "认证地址不可用，请重新输入", Toast.LENGTH_SHORT).show();
+            loading.setValue(new LoadingEvent(false, ""));
+        }
     }
 
     public void loginOut() {

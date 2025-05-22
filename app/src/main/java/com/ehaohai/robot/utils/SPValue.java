@@ -57,6 +57,8 @@ public class SPValue {
     public static final String messageIndex = "messageIndex";
     public static final String mapIndex = "mapIndex";
     public static final String myIndex = "myIndex";
+    public static final String offlineIp = "offlineIp";
+    public static final String offlineSn = "offlineSn";
 
 
 

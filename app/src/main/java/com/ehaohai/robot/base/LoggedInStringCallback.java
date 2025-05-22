@@ -44,8 +44,7 @@ public abstract class LoggedInStringCallback extends Callback<String> {
         if (e.toString().contains("401")) {
             ///登录失效
             CommonData.token = "";
-            SPUtils.put(context, SPValue.login,false);
-            SPUtils.put(context, SPValue.token,"");
+            SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, LoginActivity.class));
         }
@@ -57,8 +56,7 @@ public abstract class LoggedInStringCallback extends Callback<String> {
         if (response.contains(":401,")) {
             ///登录失效
             CommonData.token = "";
-            SPUtils.put(context, SPValue.login,false);
-            SPUtils.put(context, SPValue.token,"");
+            SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, LoginActivity.class));
         } else {

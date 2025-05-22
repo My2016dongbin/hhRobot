@@ -19,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ActivityDeviceSearchBinding;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.event.UDPMessage;
@@ -26,6 +27,8 @@ import com.ehaohai.robot.model.UdpMessage;
 import com.ehaohai.robot.ui.viewmodel.DeviceSearchViewModel;
 import com.ehaohai.robot.utils.Common;
 import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.SPUtils;
+import com.ehaohai.robot.utils.SPValue;
 import com.ehaohai.robot.wifi.UDPBroadcast;
 import com.ehaohai.robot.wifi.UDPReceiver;
 
@@ -91,8 +94,8 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
 
 
         ///TODO 暂时绕过校验
-        binding.name1Edit.setText("ehaohai");
-        binding.name2Edit.setText("ehaohai");
+        binding.name1Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineSn,"浩海机器狗"));
+        binding.name2Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineIp,"172.16.10.171"));
     }
 
     private void bind_() {
@@ -107,8 +110,6 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
                     Toast.makeText(DeviceSearchActivity.this, "请选择或输入机器狗信息", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                CommonData.offlineModeSN = binding.name1Edit.getText().toString();
-                CommonData.offlineModeIP = binding.name2Edit.getText().toString();
 
                 if(CommonData.networkMode){
                     //在线模式
@@ -116,6 +117,11 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
                     finish();
                 }else{
                     //离线模式
+                    String ip = binding.name2Edit.getText().toString();
+                    String sn = binding.name1Edit.getText().toString();
+                    SPUtils.put(DeviceSearchActivity.this, SPValue.offlineIp,ip);
+                    SPUtils.put(DeviceSearchActivity.this, SPValue.offlineSn,sn);
+                    URLConstant.setLocalPath(ip);
                     startActivity(new Intent(DeviceSearchActivity.this,OfflineLoginActivity.class));
                     finish();
                 }

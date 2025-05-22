@@ -6,14 +6,10 @@ public class URLConstant {
 
     public static final String BASE_PATH = "http://192.168.1.88:8444/";//Release-穿透 //平台8081
     public static String LOCAL_PATH = "http://172.16.10.171:8001/";//测试本地离线模式
-    public static String NETWORK_BASE_PATH(){
-        if(CommonData.networkMode){
-            return BASE_PATH;
-        }else{
-            return "http://"+CommonData.offlineModeIP+":"+CommonData.offlineModePORT+"/";
-        }
-    }
 
+    public static void setLocalPath(String ip){
+        LOCAL_PATH = "http://" + ip + ":8001/";
+    }
 
 
     public static final String PERMISSION_MAIN = BASE_PATH + "auth/api/auth/auth/user/auth";

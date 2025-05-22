@@ -27,9 +27,6 @@ public class CommonData {
     public static boolean hasMainMy = true;
 
     public static boolean networkMode = true;//在线模式&&离线模式
-    public static String offlineModeSN = "";//离线模式设备SN码
-    public static String  offlineModeIP = "";//离线模式IP
-    public static String offlineModePORT = "9990";//离线模式PORT
 
     public static long loginDownLong = 0;//登出计时器
 
