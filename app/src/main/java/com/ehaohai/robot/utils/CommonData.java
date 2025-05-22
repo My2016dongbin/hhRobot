@@ -17,28 +17,21 @@ public class CommonData {
     public static double lng = 0;
     public static double lat_old = 0;
     public static double lng_old = 0;
-    public static boolean hasSensor = false;
     public static String mode = "常规模式";
 
-    public static boolean hasMainApp = true;
-    public static boolean hasMainVideo = true;
-    public static boolean hasMainMessage = true;
-    public static boolean hasMainMap = true;
-    public static boolean hasMainMy = true;
 
     public static boolean networkMode = true;//在线模式&&离线模式
 
     public static long loginDownLong = 0;//登出计时器
 
-    public static String dogUrl = "rtsp://172.16.50.105:554/visible";
-    public static String lightUrl = "rtsp://172.16.50.105:554/visible";
-    public static String hotUrl = "rtsp://172.16.50.105:554/thermal";
+    public static String dogUrl = "rtsp://172.16.50.82:8554/live.stream";
+    public static String lightUrl = "rtsp://172.16.10.162:554/visible";
+    public static String hotUrl = "rtsp://172.16.10.162:554/thermal";
 
 
     public static void clear() {
         token = "";
         lat = 0;
         lng = 0;
-        hasSensor = false;
     }
 }

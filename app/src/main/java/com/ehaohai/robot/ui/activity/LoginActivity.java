@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
@@ -83,6 +84,9 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
                 return;
             }
+            ///TODO 测试
+            SPUtils.put(HhApplication.getInstance(), SPValue.userName, binding.usernameEdit.getText().toString());
+            SPUtils.put(HhApplication.getInstance(), SPValue.password, binding.passwordEdit.getText().toString());
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         });

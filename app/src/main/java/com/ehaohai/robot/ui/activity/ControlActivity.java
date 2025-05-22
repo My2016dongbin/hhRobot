@@ -946,16 +946,16 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         mediaPlayerDog.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
         mediaPlayerDog.setAspectRatio(width+":"+height);//-1，表示完全拉伸填充，不考虑原始比例
+//        mediaPlayerDog.setAspectRatio("-1");//-1，表示完全拉伸填充，不考虑原始比例
         mediaPlayerDog.setVolume(0);
         ivlcVoutDog = mediaPlayerDog.getVLCVout();
         ivlcVoutDog.setVideoView(binding.dogLive);
         ivlcVoutDog.attachViews();
 
         mediaDog = new Media(libVLCDog, Uri.parse(CommonData.dogUrl));
-        mediaDog.addOption(":network-caching=500");//网络缓存
-        mediaDog.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
+//        mediaDog.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaDog.setHWDecoderEnabled(true, true);
-        int cache = 1500;
+        int cache = 150;
         mediaDog.addOption(":network-caching=" + cache);
         mediaDog.addOption(":file-caching=" + cache);
         mediaDog.addOption(":live-cacheing=" + cache);
@@ -1038,16 +1038,16 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         mediaPlayerLight.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
         mediaPlayerLight.setAspectRatio(width+":"+height);//-1，表示完全拉伸填充，不考虑原始比例
+//        mediaPlayerLight.setAspectRatio("-1");//-1，表示完全拉伸填充，不考虑原始比例
         mediaPlayerLight.setVolume(0);
         ivlcVoutLight = mediaPlayerLight.getVLCVout();
         ivlcVoutLight.setVideoView(binding.cloudLightLive);
         ivlcVoutLight.attachViews();
 
         mediaLight = new Media(libVLCLight, Uri.parse(CommonData.lightUrl));
-        mediaLight.addOption(":network-caching=500");//网络缓存
-        mediaLight.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
+//        mediaLight.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaLight.setHWDecoderEnabled(true, true);
-        int cache = 1500;
+        int cache = 150;
         mediaLight.addOption(":network-caching=" + cache);
         mediaLight.addOption(":file-caching=" + cache);
         mediaLight.addOption(":live-cacheing=" + cache);
@@ -1130,16 +1130,16 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         mediaPlayerHot.getVLCVout().setWindowSize(width, height);//宽，高  播放窗口的大小
         mediaPlayerHot.setAspectRatio(width+":"+height);//-1，表示完全拉伸填充，不考虑原始比例
+//        mediaPlayerHot.setAspectRatio("-1");//-1，表示完全拉伸填充，不考虑原始比例
         mediaPlayerHot.setVolume(0);
         ivlcVoutHot = mediaPlayerHot.getVLCVout();
         ivlcVoutHot.setVideoView(binding.cloudHotLive);
         ivlcVoutHot.attachViews();
 
         mediaHot = new Media(libVLCHot, Uri.parse(CommonData.hotUrl));
-        mediaHot.addOption(":network-caching=500");//网络缓存
-        mediaHot.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
+//        mediaHot.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaHot.setHWDecoderEnabled(true, true);
-        int cache = 1500;
+        int cache = 150;
         mediaHot.addOption(":network-caching=" + cache);
         mediaHot.addOption(":file-caching=" + cache);
         mediaHot.addOption(":live-cacheing=" + cache);
