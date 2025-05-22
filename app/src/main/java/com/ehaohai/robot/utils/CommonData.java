@@ -30,6 +30,10 @@ public class CommonData {
 
     public static long loginDownLong = 0;//登出计时器
 
+    public static String dogUrl = "rtsp://172.16.50.105:554/visible";
+    public static String lightUrl = "rtsp://172.16.50.105:554/visible";
+    public static String hotUrl = "rtsp://172.16.50.105:554/thermal";
+
 
     public static void clear() {
         token = "";

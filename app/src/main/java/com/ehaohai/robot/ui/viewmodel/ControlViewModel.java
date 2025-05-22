@@ -68,9 +68,6 @@ public class ControlViewModel extends BaseViewModel {
     public static final int REQUEST_PERMISSION_CODE = 100;
     public MediaRecorder mediaRecorder;
     public String outputFilePath;
-    public String dogUrl = "rtsp://172.16.50.105:554/visible";
-    public String lightUrl = "rtsp://172.16.50.105:554/visible";
-    public String hotUrl = "rtsp://172.16.50.105:554/thermal";
 
     private double vxPost = 0;
     private double vyPost = 0;

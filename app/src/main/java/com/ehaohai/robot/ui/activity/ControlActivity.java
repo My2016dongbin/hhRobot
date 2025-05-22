@@ -29,6 +29,7 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityControlBinding;
 import com.ehaohai.robot.ui.service.ScreenRecordService;
 import com.ehaohai.robot.ui.viewmodel.ControlViewModel;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
@@ -950,7 +951,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVoutDog.setVideoView(binding.dogLive);
         ivlcVoutDog.attachViews();
 
-        mediaDog = new Media(libVLCDog, Uri.parse(obtainViewModel().dogUrl));
+        mediaDog = new Media(libVLCDog, Uri.parse(CommonData.dogUrl));
         mediaDog.addOption(":network-caching=500");//网络缓存
         mediaDog.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaDog.setHWDecoderEnabled(true, true);
@@ -1042,7 +1043,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVoutLight.setVideoView(binding.cloudLightLive);
         ivlcVoutLight.attachViews();
 
-        mediaLight = new Media(libVLCLight, Uri.parse(obtainViewModel().lightUrl));
+        mediaLight = new Media(libVLCLight, Uri.parse(CommonData.lightUrl));
         mediaLight.addOption(":network-caching=500");//网络缓存
         mediaLight.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaLight.setHWDecoderEnabled(true, true);
@@ -1134,7 +1135,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVoutHot.setVideoView(binding.cloudHotLive);
         ivlcVoutHot.attachViews();
 
-        mediaHot = new Media(libVLCHot, Uri.parse(obtainViewModel().hotUrl));
+        mediaHot = new Media(libVLCHot, Uri.parse(CommonData.hotUrl));
         mediaHot.addOption(":network-caching=500");//网络缓存
         mediaHot.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaHot.setHWDecoderEnabled(true, true);
