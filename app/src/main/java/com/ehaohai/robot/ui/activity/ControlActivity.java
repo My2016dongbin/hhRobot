@@ -612,6 +612,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         isDragging = true;
+                        startControlRunner();
                         break;
 
                     case MotionEvent.ACTION_MOVE:
@@ -629,6 +630,19 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             }
         });
     }
+
+    private void startControlRunner() {
+        if(isDragging || isDraggingRight){
+            obtainViewModel().controlPost();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startControlRunner();
+                }
+            },200);
+        }
+    }
+
     private float centerX, centerY, baseX, baseY;
     private boolean isDragging = false;
     private float maxRadius; // 限制滑动范围
@@ -695,6 +709,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         isDraggingRight = true;
+                        startControlRunner();
                         break;
 
                     case MotionEvent.ACTION_MOVE:

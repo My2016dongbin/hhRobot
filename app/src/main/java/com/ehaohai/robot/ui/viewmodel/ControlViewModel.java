@@ -72,6 +72,10 @@ public class ControlViewModel extends BaseViewModel {
     public String lightUrl = "rtsp://172.16.50.105:554/visible";
     public String hotUrl = "rtsp://172.16.50.105:554/thermal";
 
+    private double vxPost = 0;
+    private double vyPost = 0;
+    private double vyawPost = 0;
+
     public void start(Context context) {
         this.context = context;
     }
@@ -250,12 +254,17 @@ public class ControlViewModel extends BaseViewModel {
             vyaw = 0;
         }
 
+        vxPost = vx;
+        vyPost = vy;
+        vyawPost = vyaw;
+    }
 
+    public void controlPost(){
         JSONObject object = new JSONObject();
         try {
-            object.put("vx",CommonUtil.parseDoubleCount(vx));
-            object.put("vy",CommonUtil.parseDoubleCount(vy));
-            object.put("vyaw",CommonUtil.parseDoubleCount(vyaw));
+            object.put("vx",CommonUtil.parseDoubleCount(vxPost));
+            object.put("vy",CommonUtil.parseDoubleCount(vyPost));
+            object.put("vyaw",CommonUtil.parseDoubleCount(vyawPost));
         } catch (JSONException e) {
             e.printStackTrace();
         }
