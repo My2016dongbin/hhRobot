@@ -55,21 +55,27 @@ public class ModeActivity extends BaseLiveActivity<ActivityModeBinding, ModeView
         });
         binding.modeDefault.setOnClickListener(view -> {
             obtainViewModel().mode.postValue("常规模式");
+            obtainViewModel().sportControl("motionswitcher","set","normal");
         });
         binding.modeForefront.setOnClickListener(view -> {
             obtainViewModel().mode.postValue("前沿模式");
+            obtainViewModel().sportControl("motionswitcher","set","advanced");
         });
         binding.modeAi.setOnClickListener(view -> {
             obtainViewModel().mode.postValue("AI模式");
+            obtainViewModel().sportControl("motionswitcher","set","ai");
         });
         binding.statusDefault.setOnClickListener(view -> {
             obtainViewModel().mode.postValue("常规模式");
+            obtainViewModel().sportControl("motionswitcher","set","normal");
         });
         binding.statusForefront.setOnClickListener(view -> {
             obtainViewModel().mode.postValue("前沿模式");
+            obtainViewModel().sportControl("motionswitcher","set","advanced");
         });
         binding.statusAi.setOnClickListener(view -> {
             obtainViewModel().mode.postValue("AI模式");
+            obtainViewModel().sportControl("motionswitcher","set","ai");
         });
     }
 

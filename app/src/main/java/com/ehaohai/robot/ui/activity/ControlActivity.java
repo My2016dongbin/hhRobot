@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -29,11 +30,14 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityControlBinding;
 import com.ehaohai.robot.ui.service.ScreenRecordService;
 import com.ehaohai.robot.ui.viewmodel.ControlViewModel;
+import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
@@ -97,6 +101,47 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        binding.switchForce.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                obtainViewModel().force.postValue(isChecked);
+                if(isChecked){
+                    CommonUtil.applyFancyAnimation(binding.force);
+                    obtainViewModel().sportControl("manual","obstacle","ON");
+                }else{
+                    CommonUtil.applyFancyBackAnimation(binding.force);
+                    obtainViewModel().sportControl("manual","obstacle","OFF");
+                }
+            }
+        });
+        binding.lightSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                obtainViewModel().sportControl("manual","light",progress+"");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        CommonUtil.click(binding.fixLess, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().sportControl("manual","CameraZoom","-1");
+            }
+        });
+        CommonUtil.click(binding.fixMore, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().sportControl("manual","CameraZoom","1");
+            }
+        });
         //播放器
         binding.llPlayer.setOnClickListener(view -> {
             startActivity(new Intent(this,AudioLocalListActivity.class));
@@ -257,8 +302,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///避障
         binding.force.setOnClickListener(view -> {
-            obtainViewModel().force = !obtainViewModel().force;
-            if(obtainViewModel().force){
+            Boolean value = obtainViewModel().force.getValue();
+            obtainViewModel().force.postValue(!value);
+            if(!value){
                 CommonUtil.applyFancyAnimation(view);
                 obtainViewModel().sportControl("manual","obstacle","ON");
             }else{
@@ -624,6 +670,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
                     case MotionEvent.ACTION_UP:
                         isDragging = false;
+                        obtainViewModel().vxPost = 0;
+                        obtainViewModel().vyPost = 0;
                         resetJoystickPosition();
                         break;
                 }
@@ -639,6 +687,18 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 @Override
                 public void run() {
                     startControlRunner();
+                }
+            },200);
+        }
+    }
+
+    private void startControlRunnerCloud() {
+        if(isDraggingCloud){
+            obtainViewModel().controlPostCloud();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startControlRunnerCloud();
                 }
             },200);
         }
@@ -721,6 +781,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
                     case MotionEvent.ACTION_UP:
                         isDraggingRight = false;
+                        obtainViewModel().vyawPost = 0;
                         resetJoystickPositionRight();
                         break;
                 }
@@ -793,6 +854,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         isDraggingCloud = true;
+                        startControlRunnerCloud();
                         break;
 
                     case MotionEvent.ACTION_MOVE:
@@ -803,6 +865,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
                     case MotionEvent.ACTION_UP:
                         isDraggingCloud = false;
+                        obtainViewModel().speed1 = 0;
+                        obtainViewModel().speed2 = 0;
                         resetJoystickPositionCloud();
                         break;
                 }

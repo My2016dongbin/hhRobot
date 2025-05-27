@@ -1058,6 +1058,10 @@ public class CommonUtil {
         TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
         view.setBackground(transitionDrawable);
         transitionDrawable.startTransition(500); // 背景切换渐变 500ms
+        transitionDrawable.setCrossFadeEnabled(true);
+        new Handler().postDelayed(() -> {
+            view.setBackground(ContextCompat.getDrawable(HhApplication.getInstance(), R.drawable.circle_blue));
+        }, 700);
 
         // **2. 按钮点击时的缩放动画（轻微缩小再弹回）**
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f);
@@ -1090,6 +1094,9 @@ public class CommonUtil {
         TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
         view.setBackground(transitionDrawable);
         transitionDrawable.startTransition(500); // 背景切换渐变 500ms
+        new Handler().postDelayed(() -> {
+            view.setBackground(ContextCompat.getDrawable(HhApplication.getInstance(), R.drawable.circle_gray));
+        }, 700);
 
         // **2. 按钮点击时的缩放动画（轻微缩小再弹回）**
         //PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0.9f, 1f);

@@ -451,6 +451,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <TextView
+                            android:id="@+id/fix_less"
                             android:text="-"
                             android:layout_marginStart="8dp"
                             android:gravity="center"
@@ -461,6 +462,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"/>
                         <TextView
+                            android:id="@+id/fix_more"
                             android:text="+"
                             android:layout_marginStart="8dp"
                             android:gravity="center"
@@ -1146,8 +1148,8 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:max="100"
-                        android:progress="30" />
+                        android:max="10"
+                        android:progress="0" />
                 </LinearLayout>
                 <View
                     android:background="@color/line_color2"
@@ -1256,6 +1258,7 @@
                         />
                     <Switch
                         android:id="@+id/switch_force"
+                        android:checked="@{viewModel.force}"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="25dp"
                         android:layout_width="wrap_content"

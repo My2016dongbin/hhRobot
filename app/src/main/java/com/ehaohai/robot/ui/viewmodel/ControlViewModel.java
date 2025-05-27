@@ -26,8 +26,10 @@ import com.ehaohai.robot.utils.SPValue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -49,7 +51,7 @@ public class ControlViewModel extends BaseViewModel {
     public boolean lock = false;
     public boolean baiZiShi = false;
 
-    public boolean force = false;
+    public final MutableLiveData<Boolean> force = new MutableLiveData<>(false);
     public boolean speak = false;
     public boolean voice = false;
     public boolean record = false;
@@ -69,9 +71,12 @@ public class ControlViewModel extends BaseViewModel {
     public MediaRecorder mediaRecorder;
     public String outputFilePath;
 
-    private double vxPost = 0;
-    private double vyPost = 0;
-    private double vyawPost = 0;
+    public double vxPost = 0;
+    public double vyPost = 0;
+    public double vyawPost = 0;
+
+    public double speed1 = 0;//水平旋转速度，-1:向右转动，1：向左转动
+    public double speed2 = 0;//俯仰旋转速度，-1:向下转动，1：向上转动
 
     public void start(Context context) {
         this.context = context;
@@ -233,16 +238,16 @@ public class ControlViewModel extends BaseViewModel {
 
 
         if(angleRight >= 135 && angleRight <= 225){
-            vyaw = -1;
-        }
-        if((angleRight > 90 && angleRight < 135) || (angleRight > 225 && angleRight < 270)){
             vyaw = -0.5;
         }
+        if((angleRight > 90 && angleRight < 135) || (angleRight > 225 && angleRight < 270)){
+            vyaw = -0.25;
+        }
         if((angleRight >= 0 && angleRight <= 45) || (angleRight >= 315 && angleRight <= 360)){
-            vyaw = 1;
+            vyaw = 0.5;
         }
         if((angleRight > 45 && angleRight < 90) || (angleRight > 270 && angleRight < 315)){
-            vyaw = 0.5;
+            vyaw = 0.25;
         }
         if(angleRight == 90 || angleRight == 270){
             vyaw = 0;
@@ -251,9 +256,20 @@ public class ControlViewModel extends BaseViewModel {
             vyaw = 0;
         }
 
-        vxPost = vx;
-        vyPost = vy;
+        if(Math.abs(vx) < 0.25){
+            vxPost = 0;
+        }else{
+            vxPost = vx;
+        }
+        if(Math.abs(vy) < 0.25){
+            vyPost = 0;
+        }else{
+            vyPost = vy;
+        }
         vyawPost = vyaw;
+        /*vxPost = vx;
+        vyPost = vy;
+        vyawPost = vyaw;*/
     }
 
     public void controlPost(){
@@ -268,6 +284,13 @@ public class ControlViewModel extends BaseViewModel {
         sportControl("manual","run",object.toString());
     }
 
+    public void controlPostCloud(){
+        List<Double> list = new ArrayList<>();
+        list.add(speed1);
+        list.add(speed2);
+        sportControl("manual","CameraSpeed",list.toString());
+    }
+
     public void controlCloudParse() {
         long timeNow = Calendar.getInstance().getTime().getTime();
         if(timeNow - timesCloud < 200){
@@ -277,22 +300,32 @@ public class ControlViewModel extends BaseViewModel {
 
         if(angleCloud >= 225 && angleCloud <= 315){
             //向上
+            speed2 = 1;
+            speed1 = 0;
             HhLog.e("Cloud move Up");
         }
         if((angleCloud > 315 && angleCloud <= 360)  ||  (angleCloud >= 0 && angleCloud < 45)){
             //向右
+            speed1 = -1;
+            speed2 = 0;
             HhLog.e("Cloud move Right");
         }
         if(angleCloud >= 45 && angleCloud <= 135){
             //向下
+            speed2 = -1;
+            speed1 = 0;
             HhLog.e("Cloud move Down");
         }
         if(angleCloud > 135 && angleCloud < 225){
             //向左
+            speed1 = 1;
+            speed2 = 0;
             HhLog.e("Cloud move Left");
         }
         if(angleCloud == 999){
             //没动
+            speed1 = 0;
+            speed2 = 0;
             HhLog.e("Cloud move Don't move");
         }
 
