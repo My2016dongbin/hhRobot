@@ -88,6 +88,11 @@
             android:name=".ui.service.ScreenRecordService"
             android:foregroundServiceType="mediaProjection"
             android:exported="false" />
+        <service
+            android:name=".ui.service.PersistentForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
     </application>
 

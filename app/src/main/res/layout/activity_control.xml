@@ -142,7 +142,7 @@
                 android:layout_marginEnd="30dp"
                 android:padding="5dp"
                 android:layout_width="138dp"
-                android:layout_height="44dp">
+                android:layout_height="46dp">
                 <TextView
                     android:id="@+id/dog"
                     android:layout_width="64dp"
@@ -162,6 +162,126 @@
                     android:textSize="14sp"
                     android:text="云台"/>
             </LinearLayout>
+
+            <!--仪表盘-->
+            <LinearLayout
+                android:id="@+id/pan"
+                android:layout_marginTop="80dp"
+                android:orientation="horizontal"
+                android:background="@drawable/circle_gray"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_marginEnd="30dp"
+                android:layout_width="wrap_content"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:layout_height="39dp">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_warn" />
+                <TextView
+                    android:id="@+id/speed"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/whiteColor"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:text="10m/s"/>
+            </LinearLayout>
+
+            <!--数据-->
+            <FrameLayout
+                android:id="@+id/data"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="80dp"
+                android:background="@drawable/circle_gray_4_trans"
+                android:layout_width="160dp"
+                android:layout_height="100dp">
+                <ImageView
+                    android:id="@+id/data_x"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_marginTop="7dp"
+                    android:padding="10dp"
+                    android:layout_gravity="end"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_x" />
+                <LinearLayout
+                    android:layout_marginTop="26dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <!--环境温度-->
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp">
+                        <TextView
+                            android:text="环境温度"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                        <TextView
+                            android:id="@+id/temperature2"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                    </LinearLayout>
+                    <!--环境湿度-->
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp">
+                        <TextView
+                            android:text="环境湿度"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                        <TextView
+                            android:id="@+id/humidity"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                    </LinearLayout>
+                    <!--烟雾浓度-->
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp">
+                        <TextView
+                            android:text="烟雾浓度"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                        <TextView
+                            android:id="@+id/smoke"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/whiteColor"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
 
             <!--对讲-->
             <LinearLayout
@@ -1066,6 +1186,38 @@
                         />
                     <Switch
                         android:id="@+id/switch_pan"
+                        android:checked="@{viewModel.pan}"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <View
+                    android:background="@color/line_color2"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_height="0.5dp"/>
+                <!--数据-->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="数据"
+                        android:textSize="14sp"
+                        android:textColor="@color/gray1"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:paddingStart="25dp"
+                        />
+                    <Switch
+                        android:id="@+id/switch_data"
+                        android:checked="@{viewModel.data}"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="25dp"
                         android:layout_width="wrap_content"
@@ -1095,7 +1247,7 @@
                         android:paddingStart="25dp"
                         />
                     <Switch
-                        android:id="@+id/switch_data"
+                        android:id="@+id/switch_send"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="25dp"
                         android:layout_width="wrap_content"

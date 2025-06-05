@@ -18,6 +18,7 @@ import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.activity.ModeActivity;
 import com.ehaohai.robot.ui.activity.PictureListActivity;
 import com.ehaohai.robot.ui.activity.WarnListActivity;
+import com.ehaohai.robot.ui.service.PersistentForegroundService;
 import com.ehaohai.robot.ui.viewmodel.MainViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
@@ -45,7 +46,9 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     }
 
     private void init_() {
-
+        ///启动心跳服务
+        Intent intent = new Intent(this, PersistentForegroundService.class);
+        startService(intent);
     }
 
     private void bind_() {

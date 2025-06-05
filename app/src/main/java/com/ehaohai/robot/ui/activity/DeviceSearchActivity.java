@@ -95,7 +95,7 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
 
         ///TODO 暂时绕过校验
         binding.name1Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineSn,"浩海机器狗"));
-        binding.name2Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineIp,"172.16.10.171"));
+        binding.name2Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineIp,URLConstant.LOCAL_IP));
     }
 
     private void bind_() {

@@ -28,6 +28,8 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityControlBinding;
+import com.ehaohai.robot.event.Exit;
+import com.ehaohai.robot.model.Heart;
 import com.ehaohai.robot.ui.service.ScreenRecordService;
 import com.ehaohai.robot.ui.viewmodel.ControlViewModel;
 import com.ehaohai.robot.utils.Action;
@@ -36,6 +38,9 @@ import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.videolan.libvlc.IVLCVout;
@@ -65,8 +70,19 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fullScreen(this);
+        EventBus.getDefault().register(this);
         init_();
         bind_();
+    }
+    ///设备心跳数据
+    @SuppressLint("SetTextI18n")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(Heart heart) {
+        binding.horizontalBattery.setPower(heart.getBatteryPercentage());
+        binding.speed.setText(heart.getLinearSpeed()+"m/s");
+        binding.temperature2.setText(heart.getAmbTemperature()+"°C");
+        binding.humidity.setText(heart.getAmbHumidity()+"%RH");
+        binding.smoke.setText(heart.getSomkeValue()+"PPM");
     }
 
     private void init_() {
@@ -101,6 +117,24 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        CommonUtil.click(binding.dataX, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().data.postValue(false);
+            }
+        });
+        binding.switchData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                obtainViewModel().data.postValue(isChecked);
+            }
+        });
+        binding.switchPan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                obtainViewModel().pan.postValue(isChecked);
+            }
+        });
         binding.switchForce.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -562,6 +596,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         obtainViewModel().recordTimes.observe(this, this::recordTimesChanged);
         obtainViewModel().voiceTimes.observe(this, this::voiceTimesChanged);
+        obtainViewModel().pan.observe(this, this::panChanged);
+        obtainViewModel().data.observe(this, this::dataChanged);
     }
 
     private void recordTimesChanged(String recordTimes) {
@@ -571,10 +607,17 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     private void voiceTimesChanged(String recordTimes) {
         binding.voiceCount.setText(recordTimes);
     }
+    private void panChanged(boolean pan) {
+        binding.pan.setVisibility(pan?View.VISIBLE:View.GONE);
+    }
+    private void dataChanged(boolean data) {
+        binding.data.setVisibility(data?View.VISIBLE:View.GONE);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         // 在活动销毁时取消广播接收器的注册
         unregisterReceiver(batteryReceiver);
     }
@@ -620,7 +663,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                     "Charging: " + isCharging + "\n" +
                     "Charge Plug: " + chargePlugString;
             HhLog.e("battery " + message);
-            binding.horizontalBattery.setPower(CommonUtil.parseInt(batteryPercentage+""));
+            //binding.horizontalBattery.setPower(CommonUtil.parseInt(batteryPercentage+""));//暂时隐藏手机电量
         }
     }
 
@@ -1053,11 +1096,11 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                         break;
                     case MediaPlayer.Event.TimeChanged:
                         // 处理播放进度变化事件
-                        HhLog.e("TimeChanged");
+//                        HhLog.e("TimeChanged");
                         break;
                     case MediaPlayer.Event.PositionChanged:
                         // 处理播放位置变化事件
-                        HhLog.e("PositionChanged");
+//                        HhLog.e("PositionChanged");
                         break;
                     case MediaPlayer.Event.Vout:
                         //在视频开始播放之前，视频的宽度和高度可能还没有被确定，因此我们需要在MediaPlayer.Event.Vout事件发生后才能获取到正确的宽度和高度
@@ -1145,11 +1188,11 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                         break;
                     case MediaPlayer.Event.TimeChanged:
                         // 处理播放进度变化事件
-                        HhLog.e("TimeChanged");
+//                        HhLog.e("TimeChanged");
                         break;
                     case MediaPlayer.Event.PositionChanged:
                         // 处理播放位置变化事件
-                        HhLog.e("PositionChanged");
+//                        HhLog.e("PositionChanged");
                         break;
                     case MediaPlayer.Event.Vout:
                         //在视频开始播放之前，视频的宽度和高度可能还没有被确定，因此我们需要在MediaPlayer.Event.Vout事件发生后才能获取到正确的宽度和高度
@@ -1237,11 +1280,11 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                         break;
                     case MediaPlayer.Event.TimeChanged:
                         // 处理播放进度变化事件
-                        HhLog.e("TimeChanged");
+//                        HhLog.e("TimeChanged");
                         break;
                     case MediaPlayer.Event.PositionChanged:
                         // 处理播放位置变化事件
-                        HhLog.e("PositionChanged");
+//                        HhLog.e("PositionChanged");
                         break;
                     case MediaPlayer.Event.Vout:
                         //在视频开始播放之前，视频的宽度和高度可能还没有被确定，因此我们需要在MediaPlayer.Event.Vout事件发生后才能获取到正确的宽度和高度

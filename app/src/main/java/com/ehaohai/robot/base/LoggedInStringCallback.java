@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.ehaohai.robot.ui.activity.LaunchActivity;
 import com.ehaohai.robot.ui.activity.LoginActivity;
+import com.ehaohai.robot.ui.activity.MineActivity;
+import com.ehaohai.robot.ui.service.PersistentForegroundService;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
@@ -47,6 +49,8 @@ public abstract class LoggedInStringCallback extends Callback<String> {
             SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, LoginActivity.class));
+            Intent intent = new Intent(context, PersistentForegroundService.class);
+            context.stopService(intent);
         }
         onFailure(call, e, id);
     }
@@ -59,6 +63,8 @@ public abstract class LoggedInStringCallback extends Callback<String> {
             SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, LoginActivity.class));
+            Intent intent = new Intent(context, PersistentForegroundService.class);
+            context.stopService(intent);
         } else {
             ///正常返回
             onSuccess(response, id);

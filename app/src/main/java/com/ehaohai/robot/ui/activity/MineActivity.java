@@ -15,6 +15,7 @@ import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMineBinding;
 import com.ehaohai.robot.event.Exit;
+import com.ehaohai.robot.ui.service.PersistentForegroundService;
 import com.ehaohai.robot.ui.viewmodel.MineViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
@@ -47,6 +48,8 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
                         obtainViewModel().loginOut();
                         startActivity(new Intent(MineActivity.this, LoginActivity.class));
                         EventBus.getDefault().post(new Exit());
+                        Intent intent = new Intent(MineActivity.this, PersistentForegroundService.class);
+                        stopService(intent);
                         finish();
                     }
                 }, new Action() {

@@ -52,6 +52,8 @@ public class ControlViewModel extends BaseViewModel {
     public boolean baiZiShi = false;
 
     public final MutableLiveData<Boolean> force = new MutableLiveData<>(false);
+    public final MutableLiveData<Boolean> pan = new MutableLiveData<>(false);
+    public final MutableLiveData<Boolean> data = new MutableLiveData<>(false);
     public boolean speak = false;
     public boolean voice = false;
     public boolean record = false;
