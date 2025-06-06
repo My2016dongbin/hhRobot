@@ -98,7 +98,8 @@ public class CommonUtil {
 
         Surface surface = surfaceView.getHolder().getSurface();
         if (!surface.isValid()) {
-            Toast.makeText(activity, "Surface 无效，无法截图", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(activity, "Surface 无效，无法截图", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "截图失败: 未播放视频", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -106,7 +107,8 @@ public class CommonUtil {
             if (copyResult == PixelCopy.SUCCESS) {
                 saveBitmapToGallery(activity, bitmap);
             } else {
-                Toast.makeText(activity, "截图失败: " + copyResult, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(activity, "截图失败: " + copyResult, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "截图失败: 未播放视频", Toast.LENGTH_SHORT).show();
             }
         }, new Handler(Looper.getMainLooper()));
     }

@@ -33,6 +33,7 @@ import com.ehaohai.robot.model.Heart;
 import com.ehaohai.robot.ui.service.ScreenRecordService;
 import com.ehaohai.robot.ui.viewmodel.ControlViewModel;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.ActionDownUp;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
@@ -164,16 +165,30 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
             }
         });
-        CommonUtil.click(binding.fixLess, new Action() {
+        CommonUtil.clickDownUp(binding.fixLess, new ActionDownUp() {
             @Override
-            public void click() {
-                obtainViewModel().sportControl("manual","CameraZoom","-1");
+            public void clickDown() {
+                zoomParam = "-1";
+                zoomDown = true;
+                zoomRunner();
+            }
+
+            @Override
+            public void clickUp() {
+                zoomDown = false;
             }
         });
-        CommonUtil.click(binding.fixMore, new Action() {
+        CommonUtil.clickDownUp(binding.fixMore, new ActionDownUp() {
             @Override
-            public void click() {
-                obtainViewModel().sportControl("manual","CameraZoom","1");
+            public void clickDown() {
+                zoomParam = "1";
+                zoomDown = true;
+                zoomRunner();
+            }
+
+            @Override
+            public void clickUp() {
+                zoomDown = false;
             }
         });
         //播放器
@@ -460,6 +475,20 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+    }
+
+    private boolean zoomDown = false;
+    private String zoomParam = "";
+    private void zoomRunner() {
+        if(zoomDown){
+            obtainViewModel().sportControl("manual","CameraZoom",zoomParam);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    zoomRunner();
+                }
+            },300);
+        }
     }
 
     private static final int REQUEST_CODE_SCREEN_CAPTURE = 1000;

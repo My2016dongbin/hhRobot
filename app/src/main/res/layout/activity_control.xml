@@ -189,7 +189,7 @@
                     android:textColor="@color/whiteColor"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:text="10m/s"/>
+                    android:text="0m/s"/>
             </LinearLayout>
 
             <!--数据-->
@@ -516,31 +516,31 @@
             <FrameLayout
                 android:id="@+id/fl_cloud_set"
                 android:visibility="gone"
-                android:layout_gravity="end|bottom"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="110dp"
+                android:layout_marginTop="80dp"
                 android:background="@drawable/circle_gray_4_trans"
-                android:layout_width="222dp"
-                android:layout_height="153dp">
+                android:layout_width="150dp"
+                android:layout_height="90dp">
                 <ImageView
                     android:id="@+id/cloud_set_x"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="14dp"
-                    android:padding="5dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_marginTop="7dp"
+                    android:padding="10dp"
                     android:layout_gravity="end"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_x" />
                 <LinearLayout
-                    android:layout_marginTop="34dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <!--步长-->
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="20dp">
@@ -557,9 +557,42 @@
                             android:layout_height="wrap_content"
                             android:max="100"
                             android:progress="30" />
-                    </LinearLayout>
+                    </LinearLayout>-->
                     <!--焦距&&光圈-->
                     <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="24dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="26dp">
+                        <TextView
+                            android:text="焦距"
+                            android:textColor="@color/whiteColor"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/fix_less"
+                            android:text="—"
+                            android:layout_marginStart="10dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="12sp"
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"/>
+                        <TextView
+                            android:id="@+id/fix_more"
+                            android:text="+"
+                            android:layout_marginStart="10dp"
+                            android:gravity="center"
+                            android:background="@drawable/circle_line_blue_3"
+                            android:textColor="@color/text_color_blue"
+                            android:textSize="18sp"
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"/>
+                    </LinearLayout>
+                    <!--<LinearLayout
                         android:gravity="center_vertical"
                         android:layout_marginTop="24dp"
                         android:layout_width="match_parent"
@@ -619,9 +652,9 @@
                             android:textSize="12sp"
                             android:layout_width="20dp"
                             android:layout_height="20dp"/>
-                    </LinearLayout>
+                    </LinearLayout>-->
                     <!--焦点-->
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:gravity="center_vertical"
                         android:layout_marginTop="21dp"
                         android:layout_width="match_parent"
@@ -652,7 +685,7 @@
                             android:textSize="12sp"
                             android:layout_width="20dp"
                             android:layout_height="20dp"/>
-                    </LinearLayout>
+                    </LinearLayout>-->
                 </LinearLayout>
             </FrameLayout>
 
