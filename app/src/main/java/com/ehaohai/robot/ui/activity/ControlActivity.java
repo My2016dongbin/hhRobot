@@ -273,6 +273,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///机器狗
         binding.dog.setOnClickListener(view -> {
+            obtainViewModel().cloudSet = false;
             if(!obtainViewModel().isDog){
                 obtainViewModel().isDog = true;
                 CommonUtil.applyFancyAnimation(view);
@@ -343,12 +344,17 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///(云台)设置
         CommonUtil.click(binding.cloudSet, () -> {
-            binding.flCloudSet.setVisibility(View.VISIBLE);
+            obtainViewModel().cloudSet = !obtainViewModel().cloudSet;
+            if(obtainViewModel().cloudSet){
+                binding.flCloudSet.setVisibility(View.VISIBLE);
+            }else{
+                binding.flCloudSet.setVisibility(View.GONE);
+            }
         });
         ///云台-设置菜单-关闭按钮
-        binding.cloudSetX.setOnClickListener(view -> {
+        /*binding.cloudSetX.setOnClickListener(view -> {
             binding.flCloudSet.setVisibility(View.GONE);
-        });
+        });*/
         ///避障
         binding.force.setOnClickListener(view -> {
             Boolean value = obtainViewModel().force.getValue();

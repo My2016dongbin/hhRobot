@@ -50,6 +50,7 @@ public class ControlViewModel extends BaseViewModel {
     public boolean woDao = false;
     public boolean lock = false;
     public boolean baiZiShi = false;
+    public boolean cloudSet = false;
 
     public final MutableLiveData<Boolean> force = new MutableLiveData<>(false);
     public final MutableLiveData<Boolean> pan = new MutableLiveData<>(false);

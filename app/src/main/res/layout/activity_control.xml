@@ -517,12 +517,12 @@
                 android:id="@+id/fl_cloud_set"
                 android:visibility="gone"
                 android:layout_gravity="end"
-                android:layout_marginEnd="110dp"
+                android:layout_marginEnd="130dp"
                 android:layout_marginTop="80dp"
                 android:background="@drawable/circle_gray_4_trans"
                 android:layout_width="150dp"
-                android:layout_height="90dp">
-                <ImageView
+                android:layout_height="55dp">
+                <!--<ImageView
                     android:id="@+id/cloud_set_x"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -531,9 +531,8 @@
                     android:padding="10dp"
                     android:layout_gravity="end"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_x" />
+                    android:src="@drawable/ic_x" />-->
                 <LinearLayout
-                    android:layout_marginTop="20dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:orientation="vertical"
@@ -561,7 +560,7 @@
                     <!--焦距&&光圈-->
                     <LinearLayout
                         android:gravity="center_vertical"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="16dp"
                         android:layout_width="match_parent"
                         android:layout_height="26dp">
                         <TextView
