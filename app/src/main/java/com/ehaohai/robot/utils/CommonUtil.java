@@ -112,6 +112,50 @@ public class CommonUtil {
             }
         }, new Handler(Looper.getMainLooper()));
     }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public static void captureAndCombineSurfaceViews(SurfaceView leftView, SurfaceView rightView, Activity activity) {
+        Bitmap leftBitmap = Bitmap.createBitmap(leftView.getWidth(), leftView.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap rightBitmap = Bitmap.createBitmap(rightView.getWidth(), rightView.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Surface leftSurface = leftView.getHolder().getSurface();
+        Surface rightSurface = rightView.getHolder().getSurface();
+
+        if (!leftSurface.isValid() || !rightSurface.isValid()) {
+            Toast.makeText(activity, "截图失败: 请确保两个视频都在播放", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        PixelCopy.request(leftSurface, leftBitmap, resultLeft -> {
+            if (resultLeft == PixelCopy.SUCCESS) {
+                PixelCopy.request(rightSurface, rightBitmap, resultRight -> {
+                    if (resultRight == PixelCopy.SUCCESS) {
+                        // 拼接两个 bitmap
+                        Bitmap combined = combineBitmaps(leftBitmap, rightBitmap);
+                        saveBitmapToGallery(activity, combined);
+                    } else {
+                        Toast.makeText(activity, "截图失败: 未播放视频", Toast.LENGTH_SHORT).show();
+                    }
+                }, handler);
+            } else {
+                Toast.makeText(activity, "截图失败: 未播放视频", Toast.LENGTH_SHORT).show();
+            }
+        }, handler);
+    }
+
+    private static Bitmap combineBitmaps(Bitmap left, Bitmap right) {
+        int width = left.getWidth() + right.getWidth();
+        int height = Math.max(left.getHeight(), right.getHeight());
+
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(left, 0f, 0f, null);
+        canvas.drawBitmap(right, left.getWidth(), 0f, null);
+        return result;
+    }
+
     public static long screenShootTimes = 0;
     public static void saveBitmapToGallery(Context context, Bitmap bitmap) {
         String filename = "screenshot_" + System.currentTimeMillis() + ".png";

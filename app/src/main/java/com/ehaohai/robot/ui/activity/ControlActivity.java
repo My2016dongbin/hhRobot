@@ -377,8 +377,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             if(obtainViewModel().isDog){
                 CommonUtil.captureSurfaceView(binding.dogLive,this);
             }else{
-                CommonUtil.captureSurfaceView(binding.cloudLightLive,this);
-                CommonUtil.captureSurfaceView(binding.cloudHotLive,this);
+                //CommonUtil.captureSurfaceView(binding.cloudLightLive,this);
+                //CommonUtil.captureSurfaceView(binding.cloudHotLive,this);
+                CommonUtil.captureAndCombineSurfaceViews(binding.cloudLightLive, binding.cloudHotLive, this);
             }
         });
         ///录像
