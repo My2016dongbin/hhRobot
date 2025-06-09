@@ -1126,7 +1126,7 @@ public class CommonUtil {
         animator.start();
     }
 
-    //背景切换动画
+    //背景恢复动画
     @SuppressLint("UseCompatLoadingForDrawables")
     public static void applyFancyBackAnimation(View view) {
         // **1. 背景颜色渐变**
