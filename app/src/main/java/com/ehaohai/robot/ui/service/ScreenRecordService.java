@@ -170,7 +170,8 @@ public class ScreenRecordService extends Service {
         }
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("录屏中...")
+                .setContentTitle("连接成功")
+                .setContentText("已成功连接机器狗")
                 .setSmallIcon(android.R.drawable.ic_media_play)
                 .setOngoing(true)
                 .build();

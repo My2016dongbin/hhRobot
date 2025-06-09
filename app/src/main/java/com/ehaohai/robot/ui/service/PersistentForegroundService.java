@@ -42,7 +42,7 @@ public class PersistentForegroundService extends Service {
             @Override
             public void run() {
                 heart();
-                handler.postDelayed(this, 10_000);
+                handler.postDelayed(this, 5_000);
             }
         };
 

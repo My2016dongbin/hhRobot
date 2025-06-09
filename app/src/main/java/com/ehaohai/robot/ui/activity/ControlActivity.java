@@ -10,6 +10,7 @@ import android.media.MediaRecorder;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -392,12 +393,16 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().startRecordTimes();*/
                 requestScreenCapture();
             }else{
-                binding.videoCount.setVisibility(View.GONE);
-                binding.record.setBackgroundResource(R.drawable.circle_line_blue);
-                binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
-                //关闭计时并保存录像
-                obtainViewModel().stopRecordTimes();
-                ScreenRecordService.stopRecording(this);
+                try{
+                    binding.videoCount.setVisibility(View.GONE);
+                    binding.record.setBackgroundResource(R.drawable.circle_line_blue);
+                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
+                    //关闭计时并保存录像
+                    obtainViewModel().stopRecordTimes();
+                    ScreenRecordService.stopRecording(this);
+                }catch (Exception e){
+                    //
+                }
             }
         });
         ///翻身
@@ -515,18 +520,28 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_SCREEN_CAPTURE && resultCode == RESULT_OK) {
-            Intent serviceIntent = new Intent(this, ScreenRecordService.class);
-            serviceIntent.putExtra(ScreenRecordService.RESULT_CODE, resultCode);
-            serviceIntent.putExtra(ScreenRecordService.RESULT_DATA, data);
-            ContextCompat.startForegroundService(this, serviceIntent);
+        if (requestCode == REQUEST_CODE_SCREEN_CAPTURE) {
+            if(resultCode == RESULT_OK && data != null){
+                Intent serviceIntent = new Intent(this, ScreenRecordService.class);
+                serviceIntent.putExtra(ScreenRecordService.RESULT_CODE, resultCode);
+                serviceIntent.putExtra(ScreenRecordService.RESULT_DATA, data);
+                //ContextCompat.startForegroundService(this, serviceIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(serviceIntent);
+                } else {
+                    startService(serviceIntent);
+                }
 
-            binding.videoCount.setVisibility(View.VISIBLE);
-            binding.record.setBackgroundResource(R.drawable.circle_line_red);
-            binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
-            //开始计时并录制
-            Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
-            obtainViewModel().startRecordTimes();
+                binding.videoCount.setVisibility(View.VISIBLE);
+                binding.record.setBackgroundResource(R.drawable.circle_line_red);
+                binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
+                //开始计时并录制
+                Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
+                obtainViewModel().startRecordTimes();
+            }else {
+                Toast.makeText(this, "未授权录屏", Toast.LENGTH_SHORT).show();
+                obtainViewModel().record = false;
+            }
         }
     }
 
