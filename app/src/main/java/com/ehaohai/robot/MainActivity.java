@@ -52,6 +52,12 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     }
 
     private void bind_() {
+        CommonUtil.click(binding.guide, new Action() {
+            @Override
+            public void click() {
+                Toast.makeText(MainActivity.this, "暂未开放", Toast.LENGTH_SHORT).show();
+            }
+        });
         CommonUtil.click(binding.llDeviceChoose, new Action() {
             @Override
             public void click() {
@@ -64,33 +70,33 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
                 startActivity(new Intent(MainActivity.this, ControlActivity.class));
             }
         });
-        binding.mine.setOnClickListener(new View.OnClickListener() {
+        CommonUtil.click(binding.mine, new Action() {
             @Override
-            public void onClick(View view) {
+            public void click() {
                 startActivity(new Intent(MainActivity.this, MineActivity.class));
             }
         });
-        binding.device.setOnClickListener(new View.OnClickListener() {
+        CommonUtil.click(binding.device, new Action() {
             @Override
-            public void onClick(View view) {
+            public void click() {
                 startActivity(new Intent(MainActivity.this, DeviceListActivity.class));
             }
         });
-        binding.modeButton.setOnClickListener(new View.OnClickListener() {
+        CommonUtil.click(binding.modeButton, new Action() {
             @Override
-            public void onClick(View view) {
+            public void click() {
                 startActivity(new Intent(MainActivity.this, ModeActivity.class));
             }
         });
-        binding.warn.setOnClickListener(new View.OnClickListener() {
+        CommonUtil.click(binding.warn, new Action() {
             @Override
-            public void onClick(View view) {
+            public void click() {
                 startActivity(new Intent(MainActivity.this, WarnListActivity.class));
             }
         });
-        binding.picture.setOnClickListener(new View.OnClickListener() {
+        CommonUtil.click(binding.picture, new Action() {
             @Override
-            public void onClick(View view) {
+            public void click() {
                 startActivity(new Intent(MainActivity.this, PictureListActivity.class));
             }
         });
