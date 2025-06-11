@@ -1,23 +1,35 @@
 package com.ehaohai.robot.ui.activity;
 import android.content.Intent;;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.ehaohai.robot.HhApplication;
+import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityDeviceListBinding;
 import com.ehaohai.robot.event.DeviceRefresh;
 import com.ehaohai.robot.ui.viewmodel.DeviceListViewModel;
+import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.SPUtils;
+import com.ehaohai.robot.utils.SPValue;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Objects;
 
 public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBinding, DeviceListViewModel> {
     @Override
@@ -74,35 +86,75 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
         binding.messageList.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < obtainViewModel().deviceList.size();i++){
+            String finalSn = obtainViewModel().deviceList.get(i).getSn();
             View view = inflater.inflate(R.layout.item_device,null,false);
             TextView from = view.findViewById(R.id.from);
-            from.setText(obtainViewModel().deviceList.get(i).getFrom());
+            from.setText("添加设备");
             TextView name = view.findViewById(R.id.name);
             name.setText(obtainViewModel().deviceList.get(i).getName());
             TextView code = view.findViewById(R.id.code);
-            code.setText(obtainViewModel().deviceList.get(i).getCode());
+            code.setText(finalSn);
+            TextView state = view.findViewById(R.id.state);
+            if(Objects.equals(finalSn, CommonData.sn)){
+                state.setText("已连接");
+            }else{
+                state.setText("未连接");
+            }
             View viewEmpty = view.findViewById(R.id.view);
             if(i == 0){
                 viewEmpty.setVisibility(View.VISIBLE);
             }else{
                 viewEmpty.setVisibility(View.GONE);
             }
-            view.setOnClickListener(new View.OnClickListener() {
+            CommonUtil.click(view, new Action() {
                 @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(DeviceListActivity.this, DeviceSettingActivity.class));
+                public void click() {
+                    //startActivity(new Intent(DeviceListActivity.this, DeviceSettingActivity.class));
+                    String robotToken = CommonUtil.getRobotFileToken(finalSn);
+                    String robotIp = CommonUtil.getRobotFileIP(finalSn);
+                    if(robotToken.isEmpty()){
+                        Intent intent = new Intent(DeviceListActivity.this, OfflineLoginActivity.class);
+                        intent.putExtra("sn",finalSn);
+                        startActivity(intent);
+                    }else{
+                        startActivity(new Intent(DeviceListActivity.this, MainActivity.class));
+                        CommonData.token = robotToken;
+                        SPUtils.put(HhApplication.getInstance(), SPValue.token, CommonData.token);
+                        CommonData.sn = finalSn;
+                        SPUtils.put(HhApplication.getInstance(), SPValue.sn, finalSn);
+                        SPUtils.put(HhApplication.getInstance(), SPValue.login, true);
+                        SPUtils.put(DeviceListActivity.this, SPValue.offlineIp,robotIp);
+                    }
                 }
             });
             binding.messageList.addView(view);
         }
-        View add = inflater.inflate(R.layout.item_device_add,null,false);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(DeviceListActivity.this,DeviceSearchActivity.class));
-            }
-        });
-        binding.messageList.addView(add);
+        if(obtainViewModel().deviceList.isEmpty()){
+            ///空列表-dog
+            View dog = inflater.inflate(R.layout.item_dog_add,null,false);
+            LinearLayout ll_dog = dog.findViewById(R.id.ll_add);
+            CommonUtil.click(ll_dog, new Action() {
+                @Override
+                public void click() {
+                    startActivity(new Intent(DeviceListActivity.this,DeviceSearchActivity.class));
+                }
+            });
+            int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    screenWidth, // 宽度=屏幕宽度
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            );
+            binding.messageList.addView(dog, params);
+        }else{
+            View add = inflater.inflate(R.layout.item_device_add,null,false);
+            CommonUtil.click(add, new Action() {
+                @Override
+                public void click() {
+                    startActivity(new Intent(DeviceListActivity.this,DeviceSearchActivity.class));
+                }
+            });
+            binding.messageList.addView(add);
+        }
     }
 
     @Override

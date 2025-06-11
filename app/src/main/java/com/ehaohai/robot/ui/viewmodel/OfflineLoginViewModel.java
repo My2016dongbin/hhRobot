@@ -30,6 +30,7 @@ import okhttp3.Call;
 
 public class OfflineLoginViewModel extends BaseViewModel {
     public Context context;
+    public String sn;
     public final MutableLiveData<String> name = new MutableLiveData<>();
     public boolean eye = false;
 
@@ -63,8 +64,10 @@ public class OfflineLoginViewModel extends BaseViewModel {
                                 try{
                                     CommonData.token = data.getString("access_token");
                                     SPUtils.put(HhApplication.getInstance(), SPValue.token, CommonData.token);
-                                    SPUtils.put(HhApplication.getInstance(), SPValue.userNameOff, userName);
-                                    SPUtils.put(HhApplication.getInstance(), SPValue.passwordOff, password);
+                                    CommonData.sn = sn;
+                                    SPUtils.put(HhApplication.getInstance(), SPValue.sn, sn);
+                                    /*SPUtils.put(HhApplication.getInstance(), SPValue.userNameOff, userName);
+                                    SPUtils.put(HhApplication.getInstance(), SPValue.passwordOff, password);*/
                                     SPUtils.put(HhApplication.getInstance(), SPValue.login, true);
                                     msg.setValue("认证成功");
                                     new Handler().postDelayed(new Runnable() {
@@ -91,6 +94,9 @@ public class OfflineLoginViewModel extends BaseViewModel {
                         public void onFailure(Call call, Exception e, int id) {
                             HhLog.e("onFailure: " + e.toString());
                             loading.setValue(new LoadingEvent(false, ""));
+                            if(e.toString().contains("Timeout")){
+                                Toast.makeText(context, "连接超时", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
         }catch (Exception e){

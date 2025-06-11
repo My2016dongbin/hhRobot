@@ -23,6 +23,7 @@ public class SPValue {
     数据交互
      */
     public static final String token = "access_token";
+    public static final String sn = "sn";
     public static final String login = "login";
     public static final String id = "id";
     public static final String userCode = "userCode";
@@ -58,7 +59,6 @@ public class SPValue {
     public static final String mapIndex = "mapIndex";
     public static final String myIndex = "myIndex";
     public static final String offlineIp = "offlineIp";
-    public static final String offlineSn = "offlineSn";
 
 
 

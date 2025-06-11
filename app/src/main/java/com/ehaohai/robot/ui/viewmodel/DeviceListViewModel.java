@@ -6,6 +6,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.ehaohai.robot.base.BaseViewModel;
 import com.ehaohai.robot.model.Device;
+import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +27,16 @@ public class DeviceListViewModel extends BaseViewModel {
 
     public void postDeviceList(){
         deviceList = new ArrayList<>();
-        deviceList.add(new Device("1","浩海机器狗","来自共享","http://web.ehaohai.com:2018/SatelliteData/H9-FIR/china/2025-04-08/Fire_Result/16/H9-FIR_2025-04-08_0800__16_321_fp.jpg","1","Go2 EDU"));
+        List<String> robotFileList = CommonUtil.getRobotFileList();
+        for (int i = 0; i < robotFileList.size(); i++) {
+            String robotSn = robotFileList.get(i);
+            JSONObject jsonObject = CommonUtil.getRobotFileConfigJson(robotSn);
+            try {
+                deviceList.add(new Device(robotSn,jsonObject.getString("name"),jsonObject.getString("ip"),jsonObject.getJSONObject("config")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         device.postValue(device.getValue()+"-");
     }
 

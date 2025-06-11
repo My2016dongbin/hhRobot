@@ -219,6 +219,7 @@
 
                     <TextView
                         android:id="@+id/register"
+                        android:visibility="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -226,7 +227,16 @@
                         android:textColor="@color/c16"
                         android:textSize="12sp" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/offline"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="离线模式"
+                        android:textColor="@color/c16"
+                        android:textSize="12sp" />
+
+                    <!--<LinearLayout
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_width="wrap_content"
@@ -241,10 +251,11 @@
                             android:id="@+id/offline"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
-                    </LinearLayout>
+                    </LinearLayout>-->
 
                     <TextView
                         android:id="@+id/forget"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"

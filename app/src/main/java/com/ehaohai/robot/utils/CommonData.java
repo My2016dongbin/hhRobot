@@ -1,9 +1,6 @@
 package com.ehaohai.robot.utils;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by qc
  * on 2023/7/22.
@@ -20,13 +17,14 @@ public class CommonData {
     public static String mode = "常规模式";
 
 
-    public static boolean networkMode = true;//在线模式&&离线模式
+    public static boolean networkMode = false;//在线模式&&离线模式
 
     public static long loginDownLong = 0;//登出计时器
 
     public static String dogUrl = "rtsp://172.16.10.162:554/live.stream";
     public static String lightUrl = "rtsp://172.16.10.162:554/visible";
     public static String hotUrl = "rtsp://172.16.10.162:554/thermal";
+    public static String sn = "";
 
 
     public static void clear() {

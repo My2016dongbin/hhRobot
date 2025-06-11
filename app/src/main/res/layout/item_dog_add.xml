@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:src="@drawable/dog_add"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:id="@+id/ll_add"
+        android:layout_gravity="center_horizontal|bottom"
+        android:background="@drawable/bg_dog_list_add"
+        android:layout_marginBottom="50dp"
+        android:layout_width="210dp"
+        android:layout_height="60dp">
+        <ImageView
+            android:src="@drawable/icon_dog_add"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+        <TextView
+            android:text="添加机器狗"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/c5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</FrameLayout>

@@ -1015,7 +1015,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
 
     private void startRecordVoice() {
-        File dir = new File(getCacheDir(), "speaking");
+        File dir = new File(getCacheDir()+"/device"+"/"+ CommonData.sn, "speaking");
         if (!dir.exists()) dir.mkdirs();
         String fileName = CommonUtil.parseLongTime(System.currentTimeMillis()) + ".mp3";
         obtainViewModel().outputFilePath = new File(dir, fileName).getPath();

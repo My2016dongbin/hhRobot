@@ -12,6 +12,8 @@ import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMainBinding;
 import com.ehaohai.robot.event.Exit;
+import com.ehaohai.robot.event.UDPMessage;
+import com.ehaohai.robot.model.UdpMessage;
 import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.DeviceListActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
@@ -23,10 +25,20 @@ import com.ehaohai.robot.ui.viewmodel.MainViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainViewModel> {
 
@@ -44,6 +56,35 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     public void onGetMessage(Exit event) {
         finish();
     }
+
+
+    ///UDP消息
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(UDPMessage event) {
+        String message = event.getMessage();
+        try {
+            JSONObject object = new JSONObject(message);
+            String msgType = object.getString("msgType");
+            String deviceSn = object.getString("DeviceSn");
+            String timestamp = object.getString("timestamp");
+            String IP = object.getString("IP");
+
+            List<String> folderNames = CommonUtil.getRobotFileList();
+            HhLog.e("folderNames Config " + folderNames);
+
+            for (int i = 0; i < folderNames.size(); i++) {
+                String udpDeviceSn = folderNames.get(i);
+                if(Objects.equals(udpDeviceSn, deviceSn)){
+                    CommonUtil.refreshRobotFileIP(deviceSn,IP);
+                    return;
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void init_() {
         ///启动心跳服务

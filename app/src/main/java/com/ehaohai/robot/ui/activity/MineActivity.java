@@ -18,7 +18,9 @@ import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.ui.service.PersistentForegroundService;
 import com.ehaohai.robot.ui.viewmodel.MineViewModel;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.SPUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,6 +48,12 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
                     @Override
                     public void click() {
                         obtainViewModel().loginOut();
+                        ///清空账号数据 TODO
+                        CommonData.token = "";
+                        CommonUtil.clearRobotFileToken(CommonData.sn);
+                        CommonData.sn = "";
+                        SPUtils.clear(MineActivity.this);
+
                         startActivity(new Intent(MineActivity.this, LoginActivity.class));
                         EventBus.getDefault().post(new Exit());
                         Intent intent = new Intent(MineActivity.this, PersistentForegroundService.class);

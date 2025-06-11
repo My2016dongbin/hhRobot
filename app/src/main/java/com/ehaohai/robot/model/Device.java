@@ -1,28 +1,37 @@
 package com.ehaohai.robot.model;
 
+import org.json.JSONObject;
+
 public class Device {
-    private String id;
+    private String sn;
     private String name;
-    private String from;
-    private String image;
-    private String state;
-    private String code;
+    private String ip;
+    private JSONObject config;
 
-    public Device(String id, String name, String from, String image, String state, String code) {
-        this.id = id;
+    public Device() {
+    }
+
+    public Device(String sn, String name, String ip, JSONObject config) {
+        this.sn = sn;
         this.name = name;
-        this.from = from;
-        this.image = image;
-        this.state = state;
-        this.code = code;
+        this.ip = ip;
+        this.config = config;
     }
 
-    public String getId() {
-        return id;
+    public String getIp() {
+        return ip;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 
     public String getName() {
@@ -33,35 +42,11 @@ public class Device {
         this.name = name;
     }
 
-    public String getFrom() {
-        return from;
+    public JSONObject getConfig() {
+        return config;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public void setConfig(JSONObject config) {
+        this.config = config;
     }
 }

@@ -16,6 +16,7 @@ import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.ui.activity.LoginActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
@@ -48,7 +49,10 @@ public class MineViewModel extends BaseViewModel {
                         Log.e("TAG", "onSuccess: OFFLINE_LOGIN_OUT = " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
+                            ///清空账号数据
                             CommonData.token = "";
+                            CommonUtil.clearRobotFileToken(CommonData.sn);
+                            CommonData.sn = "";
                             SPUtils.clear(context);
 
                         } catch (Exception e) {

@@ -9,6 +9,7 @@ import com.ehaohai.robot.ui.activity.LoginActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.service.PersistentForegroundService;
 import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
@@ -46,6 +47,8 @@ public abstract class LoggedInStringCallback extends Callback<String> {
         if (e.toString().contains("401")) {
             ///登录失效
             CommonData.token = "";
+            CommonUtil.clearRobotFileToken(CommonData.sn);
+            CommonData.sn = "";
             SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, LoginActivity.class));
@@ -60,6 +63,8 @@ public abstract class LoggedInStringCallback extends Callback<String> {
         if (response.contains(":401,")) {
             ///登录失效
             CommonData.token = "";
+            CommonUtil.clearRobotFileToken(CommonData.sn);
+            CommonData.sn = "";
             SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, LoginActivity.class));

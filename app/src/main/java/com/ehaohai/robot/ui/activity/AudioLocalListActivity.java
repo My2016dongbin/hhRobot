@@ -23,6 +23,7 @@ import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.EmptyViewBinder;
 import com.ehaohai.robot.ui.viewmodel.AudioLocalListViewModel;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -158,7 +159,7 @@ public class AudioLocalListActivity extends BaseLiveActivity<ActivityAudioLocalL
 
 
     private void startRecordVoice() {
-        File dir = new File(getCacheDir(), "recordings");
+        File dir = new File(getCacheDir()+"/device"+"/"+ CommonData.sn, "recordings");
         if (!dir.exists()) dir.mkdirs();
         String fileName = CommonUtil.parseLongTime(System.currentTimeMillis()) + ".mp3";
         obtainViewModel().outputFilePath = new File(dir, fileName).getPath();

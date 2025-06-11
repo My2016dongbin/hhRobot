@@ -55,9 +55,15 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.ui.activity.AudioListActivity;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -68,6 +74,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class CommonUtil {
@@ -994,6 +1001,230 @@ public class CommonUtil {
             }
         }
         return v;
+    }
+
+
+    /**
+     * 文件路径 getCacheDir()
+     *              -device
+     *                  -SHDASUd678as65dD(Sn码)
+     *                  -SHDASUd678aASDFF(Sn码)
+     *                      -config.json
+     *                      -picture
+     *                          -a.png
+     *                          -b.png
+     *                      -face
+     *                          -张三
+     *                              -a.png
+     *                              -b.png
+     *                          -李四
+     *                              -a.png
+     *                              -b.png
+     * @param snCode
+     * @param IP
+     */
+    public static void refreshRobotFileIP(String snCode,String IP) {
+        try {
+            // 找到文件路径
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "config.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "配置文件不存在");
+                return;
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+            JSONObject jsonObject = new JSONObject(builder.toString());
+
+            // 示例读取字段
+            String ip = jsonObject.getString("ip");
+            String sn = jsonObject.getString("sn");
+            JSONObject config = jsonObject.getJSONObject("config");
+
+            HhLog.e("Config", "读取到的: " + jsonObject);
+            HhLog.e("Config", "读取到的IP: " + ip);
+            HhLog.e("Config", "设备SN: " + sn);
+
+            // 修改字段
+            jsonObject.put("ip", IP);//修改IP
+            jsonObject.put("sn", snCode);//修改SN
+
+            if(Objects.equals(snCode, CommonData.sn)){
+                ///当前设备-修改当前离线IP
+                URLConstant.setLocalPath(IP);
+            }
+
+            // 保存回文件
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(jsonObject.toString(4)); // 缩进4个空格，便于阅读
+                writer.flush();
+            }
+            HhLog.e("Config", "配置文件已更新");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+    }
+    public static void clearRobotFileToken(String snCode) {
+        try {
+            // 找到文件路径
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "config.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "配置文件不存在");
+                return;
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+            JSONObject jsonObject = new JSONObject(builder.toString());
+
+            // 示例读取字段
+            String ip = jsonObject.getString("ip");
+            String sn = jsonObject.getString("sn");
+            JSONObject config = jsonObject.getJSONObject("config");
+
+            HhLog.e("Config", "读取到的: " + jsonObject);
+            HhLog.e("Config", "读取到的IP: " + ip);
+            HhLog.e("Config", "设备SN: " + sn);
+
+            // 清空token
+            jsonObject.put("token", "");//清空token
+
+            // 保存回文件
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(jsonObject.toString(4)); // 缩进4个空格，便于阅读
+                writer.flush();
+            }
+            HhLog.e("Config", "配置文件已更新");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+    }
+    public static String getRobotFileToken(String snCode) {
+        try {
+            // 找到文件路径
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "config.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "配置文件不存在");
+                return "";
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+            JSONObject jsonObject = new JSONObject(builder.toString());
+
+            // 示例读取字段
+            String token = jsonObject.getString("token");
+
+            HhLog.e("Config", "读取到的: " + jsonObject);
+            return token;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+        return "";
+    }
+    public static List<String> getRobotFileList() {
+        List<String> folderNames = new ArrayList<>();
+        File cacheDir = new File(HhApplication.getInstance().getCacheDir(), "device");
+        File[] files = cacheDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    folderNames.add(file.getName());
+                }
+            }
+        }
+        return folderNames;
+    }
+    public static String getRobotFileIP(String snCode) {
+        try {
+            // 找到文件路径
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "config.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "配置文件不存在");
+                return "";
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+            JSONObject jsonObject = new JSONObject(builder.toString());
+
+            // 示例读取字段
+            String ip = jsonObject.getString("ip");
+
+            HhLog.e("Config", "读取到的IP: " + ip);
+            return  ip;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+        return "";
+    }
+    public static JSONObject getRobotFileConfigJson(String snCode) {
+        try {
+            // 找到文件路径
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "config.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "配置文件不存在");
+                return new JSONObject();
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+
+            return new JSONObject(builder.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+        return new JSONObject();
     }
 
     public static long times = 0;

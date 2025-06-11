@@ -13,6 +13,7 @@ import com.ehaohai.robot.base.BaseViewModel;
 import com.ehaohai.robot.ui.multitype.Audio;
 import com.ehaohai.robot.ui.multitype.AudioLocal;
 import com.ehaohai.robot.ui.multitype.Empty;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 
@@ -46,7 +47,7 @@ public class AudioLocalListViewModel extends BaseViewModel {
 
     public void getAudioList() {
         audioList = new ArrayList<>();
-        File dir = new File(context.getCacheDir(), "recordings");
+        File dir = new File(context.getCacheDir()+"/device"+"/"+ CommonData.sn, "recordings");
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
             if (files != null) {

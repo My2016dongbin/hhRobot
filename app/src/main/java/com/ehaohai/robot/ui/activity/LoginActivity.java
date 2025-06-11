@@ -23,12 +23,21 @@ import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityLoginBinding;
 import com.ehaohai.robot.ui.viewmodel.LoginViewModel;
+import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 import com.ehaohai.robot.utils.StringData;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 
 public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginViewModel> {
 
@@ -88,20 +97,28 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
             SPUtils.put(HhApplication.getInstance(), SPValue.userName, binding.usernameEdit.getText().toString());
             SPUtils.put(HhApplication.getInstance(), SPValue.password, binding.passwordEdit.getText().toString());
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            ///创建文件夹
+            createFiles("GHDWD7SAFG5A76");
             finish();
         });
-        binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 CommonData.networkMode = !b;
                 if(b){
                     startActivity(new Intent(LoginActivity.this, DeviceSearchActivity.class));
                 }else{
-                    /*TODO 登出
+                    *//*TODO 登出
                     obtainViewModel().loginOut();
                     CommonData.offlineModeSN = "";
-                    CommonData.offlineModeIP = "";*/
+                    CommonData.offlineModeIP = "";*//*
                 }
+            }
+        });*/
+        CommonUtil.click(binding.offline, new Action() {
+            @Override
+            public void click() {
+                startActivity(new Intent(LoginActivity.this, DeviceListActivity.class));
             }
         });
         CommonUtil.click(binding.confirm, () -> {
@@ -114,10 +131,82 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
         });
     }
 
+    private void createFiles(String snCode) {
+        // 创建目录
+        File deviceDir = new File(getCacheDir()+"/device", snCode);
+        if (!deviceDir.exists()) deviceDir.mkdirs();
+        File picture = new File(getCacheDir()+"/device"+"/"+snCode, "picture");
+        if (!picture.exists()) picture.mkdirs();
+        File face = new File(getCacheDir()+"/device"+"/"+snCode, "face");
+        if (!face.exists()) face.mkdirs();
+        try {
+            // 创建 config 对象
+            JSONObject configObject = new JSONObject();
+
+            // 创建主 JSON 对象
+            JSONObject root = new JSONObject();
+            root.put("ip", "116.222.43.102");
+            root.put("sn", "GHDWD7SAFG5A76");
+            root.put("name", "浩海机器狗");
+            root.put("account", "admin");
+            root.put("password", "Haohai@123");
+            root.put("token", "easahuiofhsa568das56fas8s5w56dDSADAS");
+            root.put("config", configObject); // 空对象，可后续添加内容
+
+            // 写入文件
+            File configFile = new File(deviceDir, "config.json");
+            try (FileOutputStream fos = new FileOutputStream(configFile)) {
+                fos.write(root.toString(4).getBytes(StandardCharsets.UTF_8)); // 缩进4空格
+            }
+
+            HhLog.e("Config", "配置文件已创建: " + configFile.getAbsolutePath());
+
+            ///读取json文件
+            readConfigJson(snCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "创建配置文件失败: " + e.getMessage());
+        }
+    }
+
+    public void readConfigJson(String snCode) {
+        try {
+            // 找到文件路径
+            File configFile = new File(getCacheDir()+"/device/"+snCode, "config.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "配置文件不存在");
+                return;
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+            JSONObject jsonObject = new JSONObject(builder.toString());
+
+            // 示例读取字段
+            String ip = jsonObject.getString("ip");
+            String sn = jsonObject.getString("sn");
+            JSONObject config = jsonObject.getJSONObject("config");
+
+            HhLog.e("Config", "读取到的IP: " + ip);
+            HhLog.e("Config", "设备SN: " + sn);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        binding.offline.setChecked(false);
     }
 
     @Override

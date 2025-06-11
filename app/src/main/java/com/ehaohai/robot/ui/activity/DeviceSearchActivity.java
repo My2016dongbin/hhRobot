@@ -93,9 +93,9 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
         new Thread(udpReceiver).start();
 
 
-        ///TODO 暂时绕过校验
+        /*///TODO 暂时绕过校验
         binding.name1Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineSn,"浩海机器狗"));
-        binding.name2Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineIp,URLConstant.LOCAL_IP));
+        binding.name2Edit.setText((String) SPUtils.get(DeviceSearchActivity.this,SPValue.offlineIp,URLConstant.LOCAL_IP));*/
     }
 
     private void bind_() {
@@ -120,9 +120,10 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
                     String ip = binding.name2Edit.getText().toString();
                     String sn = binding.name1Edit.getText().toString();
                     SPUtils.put(DeviceSearchActivity.this, SPValue.offlineIp,ip);
-                    SPUtils.put(DeviceSearchActivity.this, SPValue.offlineSn,sn);
                     URLConstant.setLocalPath(ip);
-                    startActivity(new Intent(DeviceSearchActivity.this,OfflineLoginActivity.class));
+                    Intent intent = new Intent(DeviceSearchActivity.this, OfflineLoginActivity.class);
+                    intent.putExtra("sn",sn);
+                    startActivity(intent);
                     finish();
                 }
             }
@@ -177,8 +178,8 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
         udpReceiver.stop();
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 }

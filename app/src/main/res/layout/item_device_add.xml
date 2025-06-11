@@ -8,7 +8,6 @@
         android:layout_height="255dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="15dp"
-        android:orientation="vertical"
         android:background="@drawable/bg_device_list_add">
         <TextView
             android:text="添加设备"

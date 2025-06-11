@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -52,21 +53,16 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
                         Object login = SPUtils.get(HhApplication.getInstance(), SPValue.login, false);
                         if(login!=null && (boolean)login){
                             CommonData.token = (String) SPUtils.get(HhApplication.getInstance(), SPValue.token, "");
+                            CommonData.sn = (String) SPUtils.get(HhApplication.getInstance(), SPValue.sn, "");
                             URLConstant.setLocalPath((String) SPUtils.get(HhApplication.getInstance(), SPValue.offlineIp, ""));
-                            String userName = (String) SPUtils.get(HhApplication.getInstance(), SPValue.userName, "");
-                            String password = (String) SPUtils.get(HhApplication.getInstance(), SPValue.password, "");
-
-//                            obtainViewModel().login(userName,password);
                             new Handler().postDelayed(() -> {
                                 startActivity(new Intent(LaunchActivity.this, MainActivity.class));
                                 finish();
-//                                playExitAnimation(1);
                             },2000);
                         }else{
                             new Handler().postDelayed(() -> {
                                 startActivity(new Intent(LaunchActivity.this, LoginActivity.class));
                                 finish();
-//                                playExitAnimation(0);
                             },2000);
                         }
                     }
@@ -86,92 +82,6 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
     protected void onResume() {
         super.onResume();
 
-    }
-    private void playExitAnimation(int home) {
-        Bitmap splashBitmap = getBitmapFromView(binding.splashContainer);
-        if (splashBitmap == null) {
-            if (home == 1) {
-                goHome();
-            } else {
-                goLogin();
-            }
-            return;
-        }
-
-        int width = splashBitmap.getWidth();
-        int height = splashBitmap.getHeight();
-
-        Bitmap leftBitmap = Bitmap.createBitmap(splashBitmap, 0, 0, width / 2, height);
-        Bitmap rightBitmap = Bitmap.createBitmap(splashBitmap, width / 2, 0, width / 2, height);
-
-        ImageView leftView = new ImageView(this);
-        ImageView rightView = new ImageView(this);
-        leftView.setImageBitmap(leftBitmap);
-        rightView.setImageBitmap(rightBitmap);
-
-        FrameLayout root = (FrameLayout) binding.splashContainer.getParent();
-        root.addView(leftView);
-        root.addView(rightView);
-
-        binding.splashContainer.setVisibility(View.GONE);
-
-        FrameLayout.LayoutParams leftParams = new FrameLayout.LayoutParams(width / 2, height);
-        FrameLayout.LayoutParams rightParams = new FrameLayout.LayoutParams(width / 2, height);
-        leftParams.leftMargin = 0;
-        rightParams.leftMargin = width / 2;
-        leftView.setLayoutParams(leftParams);
-        rightView.setLayoutParams(rightParams);
-
-        // 将主页或登录页先设置为透明（假设是 activity_root 背后的 View）
-        View rootView = root.getChildAt(0); // 假设主页内容在第0个
-        rootView.setAlpha(0f);
-        rootView.setVisibility(View.VISIBLE); // 显示主页内容
-
-        // 向左右滑动 + 淡出
-        leftView.animate()
-                .translationXBy(-width / 2f)
-                .alpha(0f)
-                .setDuration(600)
-                .start();
-
-        rightView.animate()
-                .translationXBy(width / 2f)
-                .alpha(0f)
-                .setDuration(600)
-                .start();
-
-        // 背景页面逐渐显现
-        rootView.animate()
-                .alpha(1f)
-                .setDuration(600)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .withEndAction(() -> {
-                    if (home == 1) {
-                        goHome();
-                    } else {
-                        goLogin();
-                    }
-                })
-                .start();
-    }
-
-    private void goHome() {
-        startActivity(new Intent(this, MainActivity.class));
-        overridePendingTransition(0, 0); // 去除默认转场
-        finish();
-    }
-    private void goLogin() {
-        startActivity(new Intent(this, LoginActivity.class));
-        overridePendingTransition(0, 0); // 去除默认转场
-        finish();
-    }
-
-    private Bitmap getBitmapFromView(View view) {
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache(true);
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-        view.setDrawingCacheEnabled(false);
-        return bitmap;
     }
 
 

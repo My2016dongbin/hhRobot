@@ -16,6 +16,9 @@ import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class OfflineLoginActivity extends BaseLiveActivity<ActivityOfflineLoginBinding, OfflineLoginViewModel> {
 
     @Override
@@ -28,12 +31,26 @@ public class OfflineLoginActivity extends BaseLiveActivity<ActivityOfflineLoginB
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     private void init_() {
-        binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userNameOff,""));
-        binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.passwordOff,""));
+        obtainViewModel().sn = getIntent().getStringExtra("sn");
+        JSONObject robotJson = CommonUtil.getRobotFileConfigJson(obtainViewModel().sn);
+        String account = "";
+        String password = "";
+        try {
+            account = robotJson.getString("account");
+            binding.usernameEdit.setText(account);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            password = robotJson.getString("password");
+            binding.passwordEdit.setText(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         ///TODO 暂时绕过校验
-        binding.usernameEdit.setText("admin");
-        binding.passwordEdit.setText("Haohai@123");
+        //binding.usernameEdit.setText("admin");
+        //binding.passwordEdit.setText("Haohai@123");
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

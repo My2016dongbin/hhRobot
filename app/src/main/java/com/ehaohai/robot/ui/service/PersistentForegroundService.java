@@ -4,7 +4,9 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,6 +21,7 @@ import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.model.Heart;
 import com.ehaohai.robot.utils.HhLog;
+import com.ehaohai.robot.wifi.UDPReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -31,10 +34,19 @@ public class PersistentForegroundService extends Service {
     private static final String CHANNEL_ID = "qc_service_channel";
     private Handler handler = new Handler();
     private Runnable taskRunnable;
+    UDPReceiver udpReceiver;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        ///UDP消息监听
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        // 启动接收线程
+        udpReceiver = new UDPReceiver(wifiManager);
+        new Thread(udpReceiver).start();
+
+        ///心跳服务
         startForegroundService();
         Log.d(TAG, "Foreground service created");
 
@@ -115,6 +127,7 @@ public class PersistentForegroundService extends Service {
 
     @Override
     public void onDestroy() {
+        udpReceiver.stop();
         handler.removeCallbacks(taskRunnable);
         Log.d(TAG, "Foreground service destroyed");
         super.onDestroy();
