@@ -62,6 +62,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -112,7 +114,7 @@ public class CommonUtil {
 
         PixelCopy.request(surface, bitmap, copyResult -> {
             if (copyResult == PixelCopy.SUCCESS) {
-                saveBitmapToGallery(activity, bitmap);
+                saveBitmapToFilePicture(activity, bitmap);
             } else {
 //                Toast.makeText(activity, "截图失败: " + copyResult, Toast.LENGTH_SHORT).show();
                 Toast.makeText(activity, "截图失败: 未播放视频", Toast.LENGTH_SHORT).show();
@@ -141,7 +143,7 @@ public class CommonUtil {
                     if (resultRight == PixelCopy.SUCCESS) {
                         // 拼接两个 bitmap
                         Bitmap combined = combineBitmaps(leftBitmap, rightBitmap);
-                        saveBitmapToGallery(activity, combined);
+                        saveBitmapToFilePicture(activity, combined);
                     } else {
                         Toast.makeText(activity, "截图失败: 未播放视频", Toast.LENGTH_SHORT).show();
                     }
@@ -164,6 +166,60 @@ public class CommonUtil {
     }
 
     public static long screenShootTimes = 0;
+
+
+    public static void saveVideoToGallery(Context context, File file) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Video.Media.DISPLAY_NAME, file.getName());
+            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+            values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES + "/ScreenRecords");
+
+            Uri uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+            if (uri == null) {
+                Log.e("ScreenRecordService", "保存视频失败：uri为空");
+                return;
+            }
+
+            try (OutputStream os = context.getContentResolver().openOutputStream(uri);
+                 FileInputStream fis = new FileInputStream(file)) {
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = fis.read(buffer)) != -1) {
+                    os.write(buffer, 0, len);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void saveVideoToFilePicture(Context context, File file) {
+        try {
+            // 构建目标文件夹路径
+            File dir = new File(context.getCacheDir(), "device/" + CommonData.sn + "/picture");
+            if (!dir.exists()) dir.mkdirs();
+
+            // 构建目标文件路径
+            File destFile = new File(dir, file.getName());
+
+            try (FileInputStream fis = new FileInputStream(file);
+                 FileOutputStream fos = new FileOutputStream(destFile)) {
+
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = fis.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len);
+                }
+
+                fos.flush();
+                Log.d("SaveToCache", "视频保存成功：" + destFile.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("SaveToCache", "保存视频失败：" + e.getMessage());
+        }
+    }
+
     public static void saveBitmapToGallery(Context context, Bitmap bitmap) {
         String filename = "screenshot_" + System.currentTimeMillis() + ".png";
         ContentValues values = new ContentValues();
@@ -185,6 +241,33 @@ public class CommonUtil {
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+    public static void saveBitmapToFilePicture(Context context, Bitmap bitmap) {
+        try {
+            // 构造目录：.../cache/device/{snCode}/picture
+            File dir = new File(context.getCacheDir(), "device/" + CommonData.sn + "/picture");
+            if (!dir.exists()) dir.mkdirs();
+
+            // 文件名
+            String filename = "screenshot_" + System.currentTimeMillis() + ".png";
+            File file = new File(dir, filename);
+
+            // 保存图片
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+
+                long now = System.currentTimeMillis();
+                if (now - screenShootTimes < 2000) return;
+                screenShootTimes = now;
+
+                Toast.makeText(context, "截图已保存", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "保存失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1165,6 +1248,22 @@ public class CommonUtil {
         }
         return folderNames;
     }
+    public static List<String> getRobotPictureList(String snCode) {
+        List<String> imageNames = new ArrayList<>();
+        File cacheDir = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode, "picture");
+        File[] files = cacheDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    String name = file.getName().toLowerCase();
+                    if (name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".mp4")) {
+                        imageNames.add(file.getName());
+                    }
+                }
+            }
+        }
+        return imageNames;
+    }
     public static String getRobotFileIP(String snCode) {
         try {
             // 找到文件路径
@@ -1197,6 +1296,17 @@ public class CommonUtil {
             HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
         }
         return "";
+    }
+    public static String getRobotFilePath(String snCode) {
+        String path = "";
+        try{
+            File file = new File(HhApplication.getInstance().getCacheDir()+"/device",  snCode);
+            path = file.getPath();
+        }catch (Exception e){
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+        return path;
     }
     public static JSONObject getRobotFileConfigJson(String snCode) {
         try {

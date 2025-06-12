@@ -7,10 +7,15 @@ import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.base.BaseViewModel;
 import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.Picture;
+import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,10 @@ public class PictureListViewModel extends BaseViewModel {
 
     public void postPictureList(){
         pictureList = new ArrayList<>();
+
+        List<String> robotPictureList = CommonUtil.getRobotPictureList(CommonData.sn);
+        HhLog.e("robotPictureList " + robotPictureList);
+
         pictureList.add(new Picture("1","1.png","http://web.ehaohai.com:2018/SatelliteData/H9-FIR/china/2025-04-08/Fire_Result/16/H9-FIR_2025-04-08_0800__16_321_fp.jpg",state,false));
         pictureList.add(new Picture("2","2.png","http://112.6.162.92:8000/group1/M00/60/65/CgoCG2fvfImAWkNuAAfbJPvAeSA137.jpg",state,false));
         pictureList.add(new Picture("3","3.png","http://112.6.162.92:8000/group1/M00/60/65/CgoCG2fvfImAZKwSAAE61I1Cyao644.jpg",state,false));

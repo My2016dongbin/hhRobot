@@ -30,6 +30,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.ehaohai.robot.utils.CommonUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
@@ -98,7 +100,7 @@ public class ScreenRecordService extends Service {
             int dpi = getResources().getDisplayMetrics().densityDpi;
 
             mediaRecorder = new MediaRecorder();
-            videoPath = getExternalCacheDir() + "/record_" + UUID.randomUUID() + ".mp4";
+            videoPath = getExternalCacheDir() + "/record_" + /*UUID.randomUUID()*/System.currentTimeMillis() + ".mp4";
 
             mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -145,7 +147,7 @@ public class ScreenRecordService extends Service {
                 virtualDisplay = null;
             }
 
-            saveToGallery(this, new File(videoPath));
+            CommonUtil.saveVideoToFilePicture(this, new File(videoPath));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -175,32 +177,6 @@ public class ScreenRecordService extends Service {
                 .setSmallIcon(android.R.drawable.ic_media_play)
                 .setOngoing(true)
                 .build();
-    }
-
-    private void saveToGallery(Context context, File file) {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Video.Media.DISPLAY_NAME, file.getName());
-            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-            values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES + "/ScreenRecords");
-
-            Uri uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-            if (uri == null) {
-                Log.e("ScreenRecordService", "保存视频失败：uri为空");
-                return;
-            }
-
-            try (OutputStream os = context.getContentResolver().openOutputStream(uri);
-                 FileInputStream fis = new FileInputStream(file)) {
-                byte[] buffer = new byte[4096];
-                int len;
-                while ((len = fis.read(buffer)) != -1) {
-                    os.write(buffer, 0, len);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Nullable
