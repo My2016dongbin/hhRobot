@@ -23,6 +23,8 @@ import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ActivityLaunchBinding;
 import com.ehaohai.robot.ui.viewmodel.LaunchViewModel;
 import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -54,7 +56,16 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
                         if(login!=null && (boolean)login){
                             CommonData.token = (String) SPUtils.get(HhApplication.getInstance(), SPValue.token, "");
                             CommonData.sn = (String) SPUtils.get(HhApplication.getInstance(), SPValue.sn, "");
-                            URLConstant.setLocalPath((String) SPUtils.get(HhApplication.getInstance(), SPValue.offlineIp, ""));
+                            String offlineIp = (String)SPUtils.get(HhApplication.getInstance(), SPValue.offlineIp, "");
+                            HhLog.e("offlineIp " + offlineIp);
+                            ///防止空Ip异常
+                            if(offlineIp==null || offlineIp.isEmpty()){
+                                Toast.makeText(LaunchActivity.this, "登录信息失效", Toast.LENGTH_SHORT).show();
+                                CommonUtil.accountClear();
+                                finish();
+                                return;
+                            }
+                            URLConstant.setLocalPath(offlineIp);
                             new Handler().postDelayed(() -> {
                                 startActivity(new Intent(LaunchActivity.this, MainActivity.class));
                                 finish();

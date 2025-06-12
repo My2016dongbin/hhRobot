@@ -93,9 +93,10 @@
                     android:layout_height="wrap_content"/>
 
                 <LinearLayout
+                    android:visibility="visible"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginStart="50dp"
                     android:background="@drawable/black_input_bg"
                     android:gravity="center_vertical"
@@ -104,52 +105,12 @@
                     <EditText
                         android:id="@+id/name1_edit"
                         android:enabled="false"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:background="@color/black_input_back"
-                        android:hint="Go2 EDU"
-                        android:inputType="text"
-                        android:minHeight="48dp"
-                        android:textColor="@color/text_color12"
-                        android:textColorHint="@color/text_color9"
-                        android:textCursorDrawable="@drawable/edit_cursor_color"
-                        android:textSize="14sp"
-                        tools:ignore="TextContrastCheck" />
-
-                    <TextView
-                        android:text="已绑定"
-                        android:textColor="@color/gray1"
-                        android:textSize="12sp"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:background="@drawable/bg_bind"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginStart="50dp"
-                    android:background="@drawable/black_input_bg"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/name2_edit"
-                        android:enabled="false"
+                        android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:layout_weight="1"
                         android:background="@color/black_input_back"
                         android:hint="Go2 EDU"
                         android:inputType="text"
@@ -171,6 +132,48 @@
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:background="@drawable/bg_button_conner4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="50dp"
+                    android:background="@drawable/black_input_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/name2_edit"
+                        android:enabled="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/black_input_back"
+                        android:hint="Go2 EDU"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:textColor="@color/text_color12"
+                        android:textColorHint="@color/text_color9"
+                        android:textCursorDrawable="@drawable/edit_cursor_color"
+                        android:textSize="14sp"
+                        tools:ignore="TextContrastCheck" />
+
+
+                    <TextView
+                        android:text="已绑定"
+                        android:textColor="@color/gray1"
+                        android:textSize="12sp"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:background="@drawable/bg_bind"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>

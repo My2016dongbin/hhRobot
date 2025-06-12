@@ -35,7 +35,7 @@ public class UDPReceiver implements Runnable {
                 String message = new String(packet.getData(), 0, packet.getLength());
                 InetAddress senderIp = packet.getAddress();
                 int senderPort = packet.getPort();
-                HhLog.e( "📩 收到 UDP 消息：" + message + " 来自 " + senderIp + ":" + senderPort);
+                //HhLog.e( "📩 收到 UDP 消息：" + message + " 来自 " + senderIp + ":" + senderPort);
                 processMessage(message,senderIp,senderPort);
             }
         } catch (Exception e) {

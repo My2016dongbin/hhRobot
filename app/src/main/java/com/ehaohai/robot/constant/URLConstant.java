@@ -9,6 +9,7 @@ public class URLConstant {
     public static String LOCAL_PATH = "http://172.16.50.185:8001/";//测试本地离线模式
 
     public static void setLocalPath(String ip){
+        LOCAL_IP = ip;
         LOCAL_PATH = "http://" + ip + ":8001/";
     }
 
@@ -60,6 +61,23 @@ public class URLConstant {
     //心跳-
     public static String HEART(){
         return LOCAL_PATH+"robot/v1/machine/app/heartbeats";
+    }
+
+    //上传音频-post
+    public static String UPLOAD_AUDIO(){
+        return LOCAL_PATH+"robot/v1/app/upload_video";
+    }
+    //删除音频-post
+    public static String DELETE_AUDIO(){
+        return LOCAL_PATH+"robot/v1/app/delete_video";
+    }
+    //重命名音频-post
+    public static String RENAME_AUDIO(){
+        return LOCAL_PATH+"robot/v1/app/rename_video";
+    }
+    //获取音频列表-post
+    public static String GET_AUDIO_LIST(){
+        return LOCAL_PATH+"robot/v1/app/search_video";
     }
 
 }

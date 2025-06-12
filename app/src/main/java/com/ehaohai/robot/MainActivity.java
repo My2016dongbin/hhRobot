@@ -186,11 +186,7 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
 
     @Override
     public void onBackPressed() {
-        if(CommonData.networkMode){
-            exit();
-        }else{
-            finish();
-        }
+        exit();
     }
 
     private boolean isExit = false;

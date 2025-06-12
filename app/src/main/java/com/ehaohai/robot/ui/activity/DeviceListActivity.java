@@ -16,6 +16,7 @@ import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ActivityDeviceListBinding;
 import com.ehaohai.robot.event.DeviceRefresh;
 import com.ehaohai.robot.ui.viewmodel.DeviceListViewModel;
@@ -112,6 +113,7 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
                     //startActivity(new Intent(DeviceListActivity.this, DeviceSettingActivity.class));
                     String robotToken = CommonUtil.getRobotFileToken(finalSn);
                     String robotIp = CommonUtil.getRobotFileIP(finalSn);
+                    URLConstant.setLocalPath(robotIp);
                     if(robotToken.isEmpty()){
                         Intent intent = new Intent(DeviceListActivity.this, OfflineLoginActivity.class);
                         intent.putExtra("sn",finalSn);

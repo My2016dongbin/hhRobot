@@ -57,6 +57,8 @@ import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.ui.activity.AudioListActivity;
+import com.ehaohai.robot.ui.activity.LoginActivity;
+import com.ehaohai.robot.ui.service.PersistentForegroundService;
 
 import org.json.JSONObject;
 
@@ -1096,6 +1098,9 @@ public class CommonUtil {
      *                      -picture
      *                          -a.png
      *                          -b.png
+     *                      -recordings
+     *                          -a.mp3
+     *                          -b.mp3
      *                      -face
      *                          -张三
      *                              -a.png
@@ -1132,9 +1137,9 @@ public class CommonUtil {
             String sn = jsonObject.getString("sn");
             JSONObject config = jsonObject.getJSONObject("config");
 
-            HhLog.e("Config", "读取到的: " + jsonObject);
-            HhLog.e("Config", "读取到的IP: " + ip);
-            HhLog.e("Config", "设备SN: " + sn);
+            HhLog.e("Config refreshRobotFileIP", "读取到的: " + jsonObject);
+            HhLog.e("Config refreshRobotFileIP", "读取到的IP: " + ip);
+            HhLog.e("Config refreshRobotFileIP", "设备SN: " + sn);
 
             // 修改字段
             jsonObject.put("ip", IP);//修改IP
@@ -1183,9 +1188,9 @@ public class CommonUtil {
             String sn = jsonObject.getString("sn");
             JSONObject config = jsonObject.getJSONObject("config");
 
-            HhLog.e("Config", "读取到的: " + jsonObject);
-            HhLog.e("Config", "读取到的IP: " + ip);
-            HhLog.e("Config", "设备SN: " + sn);
+            HhLog.e("Config clearRobotFileToken", "读取到的: " + jsonObject);
+            HhLog.e("Config clearRobotFileToken", "读取到的IP: " + ip);
+            HhLog.e("Config clearRobotFileToken", "设备SN: " + sn);
 
             // 清空token
             jsonObject.put("token", "");//清空token
@@ -1288,7 +1293,7 @@ public class CommonUtil {
             // 示例读取字段
             String ip = jsonObject.getString("ip");
 
-            HhLog.e("Config", "读取到的IP: " + ip);
+            HhLog.e("Config getRobotFileIP", "读取到的IP: " + ip);
             return  ip;
 
         } catch (Exception e) {
@@ -1590,4 +1595,69 @@ public class CommonUtil {
         });
         dialog.show();
     }
+
+    public static void accountClear() {
+        CommonData.token = "";
+        CommonUtil.clearRobotFileToken(CommonData.sn);
+        CommonData.sn = "";
+        SPUtils.clear(HhApplication.getInstance());
+        Intent login = new Intent(HhApplication.getInstance(), LoginActivity.class);
+        login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        HhApplication.getInstance().startActivity(login);
+        Intent intent = new Intent(HhApplication.getInstance(), PersistentForegroundService.class);
+        HhApplication.getInstance().stopService(intent);
+    }
+
+    public static void accountClearNoJump() {
+        CommonData.token = "";
+        CommonUtil.clearRobotFileToken(CommonData.sn);
+        CommonData.sn = "";
+        SPUtils.clear(HhApplication.getInstance());
+    }
+
+    public static void saveFileToken() {
+        String content = CommonData.token;
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "iot_token.txt");
+
+        try {
+            // 创建文件（如果不存在）
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // 写入内容
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(content.getBytes());
+                fos.flush();
+                Log.d("SaveToken", "文件保存成功：");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("SaveToken", "文件保存失败：" + e.getMessage());
+        }
+    }
+    public static String getFileToken() {
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "iot_token.txt");
+        if (!file.exists()) {
+            Log.e("readIotToken", "文件不存在: " + file.getAbsolutePath());
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return builder.toString();
+    }
+
+
 }

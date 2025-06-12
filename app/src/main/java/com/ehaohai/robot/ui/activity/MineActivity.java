@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
@@ -48,16 +49,8 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
                     @Override
                     public void click() {
                         obtainViewModel().loginOut();
-                        ///清空账号数据 TODO
-                        CommonData.token = "";
-                        CommonUtil.clearRobotFileToken(CommonData.sn);
-                        CommonData.sn = "";
-                        SPUtils.clear(MineActivity.this);
-
-                        startActivity(new Intent(MineActivity.this, LoginActivity.class));
-                        EventBus.getDefault().post(new Exit());
-                        Intent intent = new Intent(MineActivity.this, PersistentForegroundService.class);
-                        stopService(intent);
+                        ///清空账号数据
+                        CommonUtil.accountClear();
                         finish();
                     }
                 }, new Action() {

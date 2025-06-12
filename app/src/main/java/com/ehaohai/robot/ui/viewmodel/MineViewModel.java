@@ -50,10 +50,7 @@ public class MineViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             ///清空账号数据
-                            CommonData.token = "";
-                            CommonUtil.clearRobotFileToken(CommonData.sn);
-                            CommonData.sn = "";
-                            SPUtils.clear(context);
+                            CommonUtil.accountClearNoJump();
 
                         } catch (Exception e) {
                             e.printStackTrace();

@@ -1,6 +1,8 @@
 package com.ehaohai.robot.utils;
 
 
+import com.ehaohai.robot.constant.URLConstant;
+
 /**
  * Created by qc
  * on 2023/7/22.
@@ -21,10 +23,18 @@ public class CommonData {
 
     public static long loginDownLong = 0;//登出计时器
 
-    public static String dogUrl = "rtsp://172.16.10.162:554/live.stream";
-    public static String lightUrl = "rtsp://172.16.10.162:554/visible";
-    public static String hotUrl = "rtsp://172.16.10.162:554/thermal";
     public static String sn = "";
+
+
+    public static String dogUrl(){
+        return "rtsp://" + URLConstant.LOCAL_IP + ":554/live.stream";
+    }
+    public static String lightUrl(){
+        return "rtsp://" + URLConstant.LOCAL_IP + ":554/visible";
+    }
+    public static String hotUrl(){
+        return "rtsp://" + URLConstant.LOCAL_IP + ":554/thermal";
+    }
 
 
     public static void clear() {

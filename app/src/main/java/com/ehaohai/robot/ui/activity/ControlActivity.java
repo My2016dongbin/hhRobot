@@ -194,7 +194,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         //播放器
         binding.llPlayer.setOnClickListener(view -> {
-            startActivity(new Intent(this,AudioLocalListActivity.class));
+            //startActivity(new Intent(this,AudioLocalListActivity.class));
+            startActivity(new Intent(this,AudioListActivity.class));
         });
         //设置
         binding.setting.setOnClickListener(view -> {
@@ -1110,7 +1111,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVoutDog.setVideoView(binding.dogLive);
         ivlcVoutDog.attachViews();
 
-        mediaDog = new Media(libVLCDog, Uri.parse(CommonData.dogUrl));
+        mediaDog = new Media(libVLCDog, Uri.parse(CommonData.dogUrl()));
 //        mediaDog.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaDog.setHWDecoderEnabled(true, true);
         int cache = 150;
@@ -1202,7 +1203,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVoutLight.setVideoView(binding.cloudLightLive);
         ivlcVoutLight.attachViews();
 
-        mediaLight = new Media(libVLCLight, Uri.parse(CommonData.lightUrl));
+        mediaLight = new Media(libVLCLight, Uri.parse(CommonData.lightUrl()));
 //        mediaLight.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaLight.setHWDecoderEnabled(true, true);
         int cache = 150;
@@ -1294,7 +1295,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         ivlcVoutHot.setVideoView(binding.cloudHotLive);
         ivlcVoutHot.attachViews();
 
-        mediaHot = new Media(libVLCHot, Uri.parse(CommonData.hotUrl));
+        mediaHot = new Media(libVLCHot, Uri.parse(CommonData.hotUrl()));
 //        mediaHot.addOption(":rtsp-tcp");//RTSP采用TCP传输方式
         mediaHot.setHWDecoderEnabled(true, true);
         int cache = 150;

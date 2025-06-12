@@ -46,14 +46,8 @@ public abstract class LoggedInStringCallback extends Callback<String> {
         CommonData.loginDownLong = now;
         if (e.toString().contains("401")) {
             ///登录失效
-            CommonData.token = "";
-            CommonUtil.clearRobotFileToken(CommonData.sn);
-            CommonData.sn = "";
-            SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
-            context.startActivity(new Intent(context, LoginActivity.class));
-            Intent intent = new Intent(context, PersistentForegroundService.class);
-            context.stopService(intent);
+            CommonUtil.accountClear();
         }
         onFailure(call, e, id);
     }
@@ -61,15 +55,8 @@ public abstract class LoggedInStringCallback extends Callback<String> {
     @Override
     public void onResponse(String response, int id) {
         if (response.contains(":401,")) {
-            ///登录失效
-            CommonData.token = "";
-            CommonUtil.clearRobotFileToken(CommonData.sn);
-            CommonData.sn = "";
-            SPUtils.clear(context);
             Toast.makeText(context, "登录信息失效，请重新登录", Toast.LENGTH_SHORT).show();
-            context.startActivity(new Intent(context, LoginActivity.class));
-            Intent intent = new Intent(context, PersistentForegroundService.class);
-            context.stopService(intent);
+            CommonUtil.accountClear();
         } else {
             ///正常返回
             onSuccess(response, id);

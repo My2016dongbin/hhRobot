@@ -207,6 +207,8 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     @Override
     protected void onResume() {
         super.onResume();
+
+        //obtainViewModel().loginOut();
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.ehaohai.robot.permission.CommonPermission;
 import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.ui.activity.LoginActivity;
 import com.ehaohai.robot.utils.CommonData;
+import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
@@ -103,6 +104,12 @@ public class LoginViewModel extends BaseViewModel {
 
     public void loginOut() {
         Log.e("TAG", "onSuccess: OFFLINE_LOGIN_OUT = " + URLConstant.OFFLINE_LOGIN_OUT());
+        String fileToken = CommonUtil.getFileToken();
+        HhLog.e("OFFLINE_LOGIN_OUT " + fileToken);
+        CommonData.token = fileToken;
+        CommonData.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3ODQ0NzAsInN1YiI6IjEifQ.Rbgz4TIglH0-I-Ta3kcolRRpwuA1IHjy6fP_YP-rxvk";
+        CommonData.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3ODQ0NzAsInN1YiI6IjEifQ.Rbgz4TIglH0-I-Ta3kcolRRpwuA1IHjy6fP_YP-rxvk";
+        HhLog.e("OFFLINE_LOGIN_OUT " + CommonData.token);
         HhHttp.post()
                 .url(URLConstant.OFFLINE_LOGIN_OUT())
                 .build()
