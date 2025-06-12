@@ -118,6 +118,7 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
                         Intent intent = new Intent(DeviceListActivity.this, OfflineLoginActivity.class);
                         intent.putExtra("sn",finalSn);
                         startActivity(intent);
+                        ///TODO 此处可能返回没有登录所选新设备，返回后应通过CommonData.sn查询设备信息重新设置ip（URLConstant.setLocalPath(robotIp);）
                     }else{
                         startActivity(new Intent(DeviceListActivity.this, MainActivity.class));
                         CommonData.token = robotToken;

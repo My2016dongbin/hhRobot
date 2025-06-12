@@ -119,6 +119,38 @@ public class AudioListViewModel extends BaseViewModel {
 
     public void uploadAudio() {
         loading.setValue(new LoadingEvent(true,"正在提交.."));
+        HhHttp.post()
+                .url(URLConstant.UPLOAD_AUDIO()).addFile("file",  "record_" + System.currentTimeMillis(),new File(outputFilePath))
+                .build()
+                .execute(new LoggedInStringCallback(this,context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        HhLog.e("onSuccess: post UPLOAD_AUDIO " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String code = jsonObject.getString("code");
+                            if (code.equals("200")) {
+
+                            } else {
+                                Toast.makeText(context, "提交失败", Toast.LENGTH_SHORT).show();
+                                loading.setValue(new LoadingEvent(false));
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        msg.setValue(e.getMessage());
+                        loading.setValue(new LoadingEvent(false));
+                    }
+                });
+    }
+    public void uploadAudio2() {
+        loading.setValue(new LoadingEvent(true,"正在提交.."));
         PostFormBuilder postFormBuilder = HhHttp.post()
                 .url(URLConstant.UPLOAD_AUDIO());
         try{
