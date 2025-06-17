@@ -5,7 +5,7 @@ import com.ehaohai.robot.utils.CommonData;
 public class URLConstant {
 
     public static final String BASE_PATH = "http://192.168.1.88:8444/";//Release-穿透 //平台8081
-    public static String LOCAL_IP = "172.16.50.185";//测试本地离线模式
+    public static String LOCAL_IP = "172.16.10.162";//测试本地离线模式
     public static String LOCAL_PATH = "http://172.16.50.185:8001/";//测试本地离线模式
 
     public static void setLocalPath(String ip){
