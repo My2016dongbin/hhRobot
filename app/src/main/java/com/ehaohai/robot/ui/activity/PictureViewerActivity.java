@@ -99,7 +99,8 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         CommonUtil.click(binding.download, new Action() {
             @Override
             public void click() {
-                CommonUtil.downloadImageToGallery(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
+                CommonUtil.downLoadFile(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
+                Toast.makeText(PictureViewerActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
             }
         });
         ///删除
@@ -109,9 +110,12 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
                 CommonUtil.showConfirm(PictureViewerActivity.this, "确认删除该图片吗？", "删除", "取消", new Action() {
                     @Override
                     public void click() {
+                        CommonUtil.deleteFile(obtainViewModel().urls.get(obtainViewModel().pictureIndex));
                         Toast.makeText(PictureViewerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                        refreshUrls();
                         EventBus.getDefault().post(new PictureRefresh());
                     }
+
                 }, new Action() {
                     @Override
                     public void click() {
@@ -148,6 +152,16 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         });
     }
 
+    private void refreshUrls() {
+        obtainViewModel().urls.remove(obtainViewModel().pictureIndex);
+        if(obtainViewModel().urls.size()==0){
+            finish();
+        }
+        else{
+            obtainViewModel().pictureIndex = 0;
+            showPicAndIndex();
+        }
+    }
 
     @Override
     protected ActivityPictureViewerBinding dataBinding() {
