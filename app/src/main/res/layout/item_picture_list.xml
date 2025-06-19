@@ -32,6 +32,14 @@
             android:layout_gravity="end|bottom"
             android:src="@drawable/ic_un"
             android:scaleType="fitXY" />
+        <ImageView
+            android:id="@+id/play"
+            android:visibility="visible"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="center"
+            android:src="@drawable/video_play"
+            android:scaleType="fitXY" />
 
     </FrameLayout>
 </layout>

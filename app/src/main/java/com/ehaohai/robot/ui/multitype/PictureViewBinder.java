@@ -2,6 +2,7 @@ package com.ehaohai.robot.ui.multitype;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.ehaohai.robot.BR;
@@ -20,6 +22,9 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.databinding.ItemPictureListBinding;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
+
+import java.io.File;
 
 import me.drakeet.multitype.ItemViewProvider;
 
@@ -55,9 +60,26 @@ public class PictureViewBinder extends ItemViewProvider<Picture, PictureViewBind
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        Glide.with(context).load(picture.getUrl())
-                .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
-                .error(R.drawable.ic_no_pic).into(binding.picture);
+        if(picture.getPath().endsWith("mp4")){
+            binding.picture.post(() -> {
+                Glide.with(context)
+                        .asBitmap()
+                        .load(Uri.fromFile(new File(picture.getPath())))
+                        .apply(new RequestOptions()
+                                .frame(1000 * 1000) // 取第1秒的帧
+                                .centerCrop()
+                                .override(binding.picture.getWidth(), binding.picture.getHeight())
+                                .error(R.drawable.ic_no_pic))
+                        .into(binding.picture);
+            });
+            binding.play.setVisibility(View.VISIBLE);
+        }else{
+            Glide.with(context).load(Uri.parse(picture.getPath()))
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
+                    .error(R.drawable.ic_no_pic).into(binding.picture);
+            binding.play.setVisibility(View.GONE);
+        }
+
         if(picture.isShowChoose()){
             binding.select.setVisibility(View.VISIBLE);
         }else{

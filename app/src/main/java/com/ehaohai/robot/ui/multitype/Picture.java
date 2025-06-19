@@ -3,14 +3,14 @@ package com.ehaohai.robot.ui.multitype;
 public class Picture {
     private String id;
     private String name;
-    private String url;
+    private String path;
     private boolean showChoose;
     private boolean selected;
 
-    public Picture(String id, String name, String url, boolean showChoose, boolean selected) {
+    public Picture(String id, String name, String path, boolean showChoose, boolean selected) {
         this.id = id;
         this.name = name;
-        this.url = url;
+        this.path = path;
         this.showChoose = showChoose;
         this.selected = selected;
     }
@@ -31,12 +31,12 @@ public class Picture {
         this.name = name;
     }
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public boolean isShowChoose() {

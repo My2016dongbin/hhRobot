@@ -38,14 +38,11 @@ public class PictureListViewModel extends BaseViewModel {
 
         List<String> robotPictureList = CommonUtil.getRobotPictureList(CommonData.sn);
         HhLog.e("robotPictureList " + robotPictureList);
-
-        pictureList.add(new Picture("1","1.png","http://web.ehaohai.com:2018/SatelliteData/H9-FIR/china/2025-04-08/Fire_Result/16/H9-FIR_2025-04-08_0800__16_321_fp.jpg",state,false));
-        pictureList.add(new Picture("2","2.png","http://112.6.162.92:8000/group1/M00/60/65/CgoCG2fvfImAWkNuAAfbJPvAeSA137.jpg",state,false));
-        pictureList.add(new Picture("3","3.png","http://112.6.162.92:8000/group1/M00/60/65/CgoCG2fvfImAZKwSAAE61I1Cyao644.jpg",state,false));
-        pictureList.add(new Picture("4","4.png","http://web.ehaohai.com:2018/SatelliteData/H9-FIR/china/2025-04-08/Fire_Result/16/H9-FIR_2025-04-08_0800__16_321_fp.jpg",state,false));
-        pictureList.add(new Picture("5","5.png","http://112.6.162.92:8000/group1/M00/60/65/CgoCG2fvfImAWkNuAAfbJPvAeSA137.jpg",state,false));
-        pictureList.add(new Picture("6","6.png","http://112.6.162.92:8000/group1/M00/60/65/CgoCG2fvfImAZKwSAAE61I1Cyao644.jpg",state,false));
-
+        for (int i = 0; i < robotPictureList.size(); i++) {
+            String name = robotPictureList.get(i);
+            String path = CommonUtil.getRobotPicturePath(CommonData.sn) + "/" + name;
+            pictureList.add(new Picture(i+"",name,path,state,false));
+        }
         updateData();
     }
 
@@ -60,6 +57,22 @@ public class PictureListViewModel extends BaseViewModel {
 
         assertAllRegistered(adapter, items);
         adapter.notifyDataSetChanged();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateDataSelected(Picture picture) {
+        items.clear();
+        if (pictureList != null && pictureList.size()!=0) {
+            items.addAll(pictureList);
+        }else{
+            items.add(new Empty());
+        }
+
+        assertAllRegistered(adapter, items);
+        try{
+            adapter.notifyItemChanged(Integer.parseInt(picture.getId()));
+        }catch (Exception e){
+            adapter.notifyDataSetChanged();
+        }
     }
 
 }

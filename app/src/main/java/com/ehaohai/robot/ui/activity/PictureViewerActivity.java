@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.media3.common.MediaItem;
+import androidx.media3.exoplayer.ExoPlayer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -32,12 +34,11 @@ import com.ehaohai.robot.event.PictureRefresh;
 import com.ehaohai.robot.ui.viewmodel.PictureViewerViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
+import java.io.File;
 
 public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewerBinding, PictureViewerViewModel> {
     @Override
@@ -69,7 +70,24 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
 
     @SuppressLint("SetTextI18n")
     private void showPicAndIndex() {
-        binding.mBigImage.showImage(Uri.parse(obtainViewModel().urls.get(obtainViewModel().pictureIndex)));
+        HhLog.e("show " + obtainViewModel().urls.get(obtainViewModel().pictureIndex));
+        String path = obtainViewModel().urls.get(obtainViewModel().pictureIndex);
+        if(path.endsWith("mp4")){
+            binding.videoView.setVisibility(View.VISIBLE);
+            binding.mBigImage.setVisibility(View.GONE);
+
+            ExoPlayer player = new ExoPlayer.Builder(this).build();
+            binding.videoView.setPlayer(player);
+
+            MediaItem mediaItem = MediaItem.fromUri(path);
+            player.setMediaItem(mediaItem);
+            player.prepare();
+
+        }else{
+            binding.mBigImage.setVisibility(View.VISIBLE);
+            binding.videoView.setVisibility(View.GONE);
+            binding.mBigImage.showImage(Uri.fromFile(new File(path)));
+        }
         binding.number.setText(obtainViewModel().pictureIndex+1+"/"+obtainViewModel().urls.size());
     }
 

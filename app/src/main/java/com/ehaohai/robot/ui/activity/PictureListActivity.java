@@ -123,6 +123,10 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                     CommonUtil.showConfirm(PictureListActivity.this, "确认删除选中的图片吗？", "删除", "取消", new Action() {
                         @Override
                         public void click() {
+                            for (int i = 0; i < list.size(); i++) {
+                                Picture picture = list.get(i);
+                                CommonUtil.deleteFile(picture.getPath());
+                            }
                             Toast.makeText(PictureListActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                             EventBus.getDefault().post(new PictureRefresh());
                         }
@@ -148,6 +152,10 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 if(list.isEmpty()){
                     Toast.makeText(PictureListActivity.this, "您还没有选择图片", Toast.LENGTH_SHORT).show();
                 }else{
+                    for (int i = 0; i < list.size(); i++) {
+                        Picture picture = list.get(i);
+                        CommonUtil.downLoadFile(PictureListActivity.this,picture.getPath());
+                    }
                     Toast.makeText(PictureListActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -218,7 +226,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             //-多图片预览
             ///选择模式-点击未选图片
             if(!pic.isSelected()){
-                picUrls.add(pic.getUrl());
+                picUrls.add(pic.getPath());
                 Intent intent = new Intent(this, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
                 intent.putExtra("delete",true);
@@ -230,18 +238,18 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
                 Picture picture = obtainViewModel().pictureList.get(i);
                 if(picture.isSelected()){
-                    picUrls.add(picture.getUrl());
+                    picUrls.add(picture.getPath());
                 }
             }
             //已选0张图片
             if(picUrls.isEmpty()){
-                picUrls.add(pic.getUrl());
+                picUrls.add(pic.getPath());
             }
 
             int index = 0;
             for (int m = 0; m < picUrls.size(); m++) {
                 String url = picUrls.get(m);
-                if(Objects.equals(url, pic.getUrl())){
+                if(Objects.equals(url, pic.getPath())){
                     index = m;
                     break;
                 }
@@ -253,7 +261,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
         }else{
             //-单图片预览
             Intent intent = new Intent(this, PictureViewerActivity.class);
-            picUrls.add(pic.getUrl());
+            picUrls.add(pic.getPath());
             intent.putStringArrayListExtra("urls", picUrls);
             intent.putExtra("delete",true);
             startActivity(intent);
@@ -266,7 +274,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             Picture picture = obtainViewModel().pictureList.get(i);
             if(Objects.equals(picture.getId(), pic.getId())){
                 picture.setSelected(!picture.isSelected());
-                obtainViewModel().updateData();
+                obtainViewModel().updateDataSelected(pic);
                 return;
             }
         }

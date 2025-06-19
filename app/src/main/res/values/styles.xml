@@ -18,6 +18,12 @@
         <item name="android:windowIsTranslucent">false</item>
         <!--<item name="android:windowSplashscreenContent" tools:targetApi="o">@mipmap/test1</item>-->
     </style>
+
+    <style name="ShapeAppearanceOverlay.Rounded16" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
     <!--loading-->
     <style name="LoadingDialogStyle">
         <item name="android:windowBackground">@color/transparent</item>

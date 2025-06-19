@@ -69,6 +69,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -273,10 +274,88 @@ public class CommonUtil {
         }
     }
 
+    public static void downLoadFile(Context context, String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            Toast.makeText(context, "文件不存在", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String fileName = file.getName().toLowerCase();
+        boolean isImage = fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".webp");
+        boolean isVideo = fileName.endsWith(".mp4") || fileName.endsWith(".3gp") || fileName.endsWith(".avi") || fileName.endsWith(".mkv");
+
+        if (!isImage && !isVideo) {
+            Toast.makeText(context, "仅支持图片或视频格式", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Android 10+
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
+            values.put(MediaStore.MediaColumns.MIME_TYPE, isImage ? "image/*" : "video/*");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH,
+                    (isImage ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES) + "/MyApp");
+
+            Uri externalUri = isImage
+                    ? MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    : MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+
+            ContentResolver resolver = context.getContentResolver();
+            Uri uri = resolver.insert(externalUri, values);
+            if (uri == null) {
+                //Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try (InputStream in = new FileInputStream(file);
+                 OutputStream out = resolver.openOutputStream(uri)) {
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+                //Toast.makeText(context, "已保存到相册", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                //Toast.makeText(context, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            // Android 9 及以下
+            File destDir = new File(Environment.getExternalStoragePublicDirectory(
+                    isImage ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES), "MyApp");
+            if (!destDir.exists()) destDir.mkdirs();
+
+            File destFile = new File(destDir, file.getName());
+            try {
+                copyFile(file, destFile);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(destFile)));
+                //Toast.makeText(context, "已保存到相册", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                //Toast.makeText(context, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private static void copyFile(File source, File dest) throws IOException {
+        try (InputStream in = new FileInputStream(source);
+             OutputStream out = new FileOutputStream(dest)) {
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+        }
+    }
 
 
 
-        public static void downloadImageToGallery(Context context, String imageUrl) {
+
+
+    public static void downloadImageToGallery(Context context, String imageUrl) {
         Glide.with(context)
                 .asBitmap()
                 .load(imageUrl)
@@ -1268,6 +1347,12 @@ public class CommonUtil {
             }
         }
         return imageNames;
+    }
+    public static String getRobotPicturePath(String snCode) {
+        String path = "";
+        File cacheDir = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode, "picture");
+        path = cacheDir.getPath();
+        return path;
     }
     public static String getRobotFileIP(String snCode) {
         try {
