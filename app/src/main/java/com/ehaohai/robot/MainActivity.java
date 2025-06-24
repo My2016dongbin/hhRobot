@@ -96,7 +96,7 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         CommonUtil.click(binding.guide, new Action() {
             @Override
             public void click() {
-                Toast.makeText(MainActivity.this, "暂未开放", Toast.LENGTH_SHORT).show();
+
             }
         });
         CommonUtil.click(binding.llDeviceChoose, new Action() {

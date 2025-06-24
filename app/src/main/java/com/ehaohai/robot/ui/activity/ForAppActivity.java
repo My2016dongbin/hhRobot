@@ -3,29 +3,19 @@ package com.ehaohai.robot.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
-import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
-import com.ehaohai.robot.databinding.ActivityMineBinding;
-import com.ehaohai.robot.event.Exit;
-import com.ehaohai.robot.ui.service.PersistentForegroundService;
-import com.ehaohai.robot.ui.viewmodel.MineViewModel;
+import com.ehaohai.robot.databinding.ActivityForAppBinding;
+import com.ehaohai.robot.ui.viewmodel.ForAppViewModel;
 import com.ehaohai.robot.utils.Action;
-import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
-import com.ehaohai.robot.utils.SPUtils;
 
-import org.greenrobot.eventbus.EventBus;
-
-public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineViewModel> {
+public class ForAppActivity extends BaseLiveActivity<ActivityForAppBinding, ForAppViewModel> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,35 +32,47 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
 
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
-        CommonUtil.click(binding.app, new Action() {
+        CommonUtil.click(binding.list, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(MineActivity.this,ForAppActivity.class));
+
             }
         });
-        CommonUtil.click(binding.feedback, new Action() {
+        CommonUtil.click(binding.guide, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(MineActivity.this,FeedBackActivity.class));
+                startActivity(new Intent(ForAppActivity.this,GuideActivity.class));
             }
         });
-        CommonUtil.click(binding.baseSetting, new Action() {
+        CommonUtil.click(binding.update, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(MineActivity.this,BaseConfigActivity.class));
+
             }
         });
-        CommonUtil.click(binding.accountSafe, new Action() {
+        CommonUtil.click(binding.one, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(MineActivity.this,AccountSafeActivity.class));
+
+            }
+        });
+        CommonUtil.click(binding.two, new Action() {
+            @Override
+            public void click() {
+
+            }
+        });
+        CommonUtil.click(binding.three, new Action() {
+            @Override
+            public void click() {
+
             }
         });
     }
 
     @Override
-    protected ActivityMineBinding dataBinding() {
-        return DataBindingUtil.setContentView(this, R.layout.activity_mine);
+    protected ActivityForAppBinding dataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_for_app);
     }
 
     @Override
@@ -81,8 +83,8 @@ public class MineActivity extends BaseLiveActivity<ActivityMineBinding, MineView
     }
 
     @Override
-    public MineViewModel obtainViewModel() {
-        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(MineViewModel.class);
+    public ForAppViewModel obtainViewModel() {
+        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(ForAppViewModel.class);
     }
 
 

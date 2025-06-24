@@ -169,13 +169,13 @@
                                 android:layout_width="36dp"
                                 android:layout_height="34dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/ic_guide" />
+                                android:src="@drawable/icon_guide" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="11dp"
-                                android:text="引导"
+                                android:text="巡检"
                                 android:textColor="@color/white"
                                 android:textSize="18sp" />
                         </LinearLayout>
