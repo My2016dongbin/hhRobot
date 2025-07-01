@@ -8,6 +8,14 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Poi;
+import com.amap.api.navi.AmapNaviPage;
+import com.amap.api.navi.AmapNaviParams;
+import com.amap.api.navi.AmapNaviType;
+import com.amap.api.navi.AmapPageType;
+import com.amap.api.navi.NaviSetting;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMainBinding;
@@ -15,6 +23,7 @@ import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.event.UDPMessage;
 import com.ehaohai.robot.model.UdpMessage;
 import com.ehaohai.robot.ui.activity.ControlActivity;
+import com.ehaohai.robot.ui.activity.CustomNaviActivity;
 import com.ehaohai.robot.ui.activity.DeviceListActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.activity.ModeActivity;
@@ -96,6 +105,26 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         CommonUtil.click(binding.guide, new Action() {
             @Override
             public void click() {
+                NaviSetting.updatePrivacyShow(MainActivity.this, true, true);
+                NaviSetting.updatePrivacyAgree(MainActivity.this, true);
+                //起点
+                /*Poi start = new Poi("北京首都机场", new LatLng(40.080525,116.603039), "B000A28DAE");
+                //途经点
+                List<Poi> poiList = new ArrayList();
+                poiList.add(new Poi("故宫", new LatLng(39.918058,116.397026), "B000A8UIN8"));
+                //终点
+                Poi end = new Poi("北京大学", new LatLng(39.941823,116.426319), "B000A816R6");
+                // 组件参数配置
+                AmapNaviParams params = new AmapNaviParams(start, poiList, end, AmapNaviType.DRIVER, AmapPageType.ROUTE);
+                // 启动组件
+                AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), params, null);*/
+
+                Intent intent = new Intent(MainActivity.this, CustomNaviActivity.class);
+                intent.putExtra("start_lat", CommonData.lat);
+                intent.putExtra("start_lng", CommonData.lng);
+                intent.putExtra("end_lat", 39.917337);
+                intent.putExtra("end_lng", 116.397056);
+                startActivity(intent);
 
             }
         });
