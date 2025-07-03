@@ -79,5 +79,9 @@ public class URLConstant {
     public static String GET_AUDIO_LIST(){
         return LOCAL_PATH+"robot/v1/app/search_video";
     }
+    //播放音频-post
+    public static String PLAY_AUDIO(){
+        return LOCAL_PATH+"robot/v1/app/play_video";
+    }
 
 }

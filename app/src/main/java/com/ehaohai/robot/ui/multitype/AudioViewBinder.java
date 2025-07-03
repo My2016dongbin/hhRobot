@@ -1,18 +1,16 @@
 package com.ehaohai.robot.ui.multitype;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -20,20 +18,27 @@ import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
+import com.ehaohai.robot.constant.HhHttp;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ItemAudioListBinding;
-import com.ehaohai.robot.ui.activity.AudioListActivity;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
-import com.kongzue.dialogx.DialogX;
+import com.ehaohai.robot.utils.HhLog;
+import com.google.gson.Gson;
 import com.kongzue.dialogx.dialogs.InputDialog;
-import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kongzue.dialogx.util.InputInfo;
 import com.kongzue.dialogx.util.TextInfo;
 
 import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.drakeet.multitype.ItemViewProvider;
 
@@ -71,8 +76,8 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        binding.name.setText(audio.getName());
-        binding.time.setText(audio.getTime());
+        binding.name.setText(audio.getFilename());
+        binding.time.setText(CommonUtil.parse19String(audio.getModified_time(),""));
         CommonUtil.click(binding.play, new Action() {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
@@ -82,7 +87,8 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
                     stopMp3();
                 }else{
                     binding.play.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause));
-                    playMp3(audio.getPath(),binding.play);
+                    playMp3(URLConstant.LOCAL_PATH.substring(0,URLConstant.LOCAL_PATH.length()-1)+audio.getFilepath(),binding.play);
+                    postPlay(audio.getFilename());
                 }
             }
         });
@@ -107,11 +113,11 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
                     TextInfo textInfo = new TextInfo();
                     textInfo.setFontColor(context.getResources().getColor(R.color.gray1));
                     InputInfo inputInfo = new InputInfo();
-                    inputInfo.setMAX_LENGTH(20);
+                    inputInfo.setMAX_LENGTH(50);
                     inputInfo.setSelectAllText(true);
                     TextInfo okTextInfo = new TextInfo();
                     okTextInfo.setFontColor(context.getResources().getColor(R.color.text_color_blue));
-                    InputDialog.show("重命名文件","","确定","取消",audio.getName())
+                    InputDialog.show("重命名文件","","确定","取消",audio.getFilename().replace(".wav",""))
                             .setButtonOrientation(LinearLayout.VERTICAL)
                             .setOkTextInfo(okTextInfo)
                             .setCancelTextInfo(titleInfo)
@@ -122,10 +128,12 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
                             .setOkButtonClickListener((dialog, v1) -> {
                                 String newName = dialog.getInputText().trim();
                                 if (!newName.isEmpty()) {
-                                    if (renameFile(new File(audio.getPath()), newName)) {
+                                    /*
+                                    //本地文件操作
+                                    if (renameFile(new File(audio.getFilepath()), newName)) {
                                         Toast.makeText(context, "文件重命名成功", Toast.LENGTH_SHORT).show();
-                                        listener.notifyClick(audio);
-                                    }
+                                    }*/
+                                    listener.notifyClick(audio.getFilename(),newName+".wav");
                                 }
                                 return false;
                             })
@@ -145,6 +153,40 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
 
     }
 
+    public void postPlay(String fileName) {
+        List<String> stringList = new ArrayList<>();
+        stringList.add(fileName);
+        RequestParams params = new RequestParams(URLConstant.PLAY_AUDIO());
+        params.addParameter("command",1);
+        String content = new Gson().toJson(stringList);
+        params.setBodyContent(content);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + URLConstant.PLAY_AUDIO());
+        HhLog.e("onSuccess: post PLAY_AUDIO " + params);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + content);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + CommonData.token);
+        HhHttp.postX(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                HhLog.e("onSuccess: post PLAY_AUDIO " + result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                HhLog.e("onFailure: PLAY_AUDIO " + ex.toString());
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
     public boolean renameFile(File file, String newName) {
         //创建新文件对象，使用相同的父路径和新的文件名
         File newFile = new File(file.getParent(), newName);
@@ -160,7 +202,11 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
         try {
             LibVLC libVLC = new LibVLC(context);
             player = new MediaPlayer(libVLC);
-            player.play(path);
+            Media media = new Media(libVLC, Uri.parse(path));
+//            Media media = new Media(libVLC, Uri.parse(path/*"http://music.163.com/song/media/outer/url?id=447925558.mp3"*/));
+//            Media media = new Media(libVLC, Uri.parse("https://s1.aigei.com/src/aud/wav/4c/4c012b48872f41c88392677d9402cfd3.wav?download/%E6%B5%8B%E8%AF%95%28test%29_%E7%88%B1%E7%BB%99%E7%BD%91_aigei_com.wav&e=1751531220&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:FVLmIxPxgg2fs3sPEL7cDUnU6q4="));
+            player.setMedia(media);
+            player.play();
             isPlayingMp3 = true;
 
             player.setEventListener(new MediaPlayer.EventListener() {
@@ -171,6 +217,10 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
                         view.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play));
                         isPlayingMp3 = false;
                         player.release();
+                    }
+                    if(event.type == MediaPlayer.Event.EncounteredError){
+                        isPlayingMp3 = false;
+                        view.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play));
                     }
                 }
             });
@@ -205,6 +255,6 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
     public interface OnItemClickListener{
         void onItemClick(Audio audio);
         void onItemDeleteClick(Audio audio);
-        void notifyClick(Audio audio);
+        void notifyClick(String oldName,String newName);
     }
 }

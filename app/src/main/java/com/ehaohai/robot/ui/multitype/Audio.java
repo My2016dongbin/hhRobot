@@ -1,37 +1,50 @@
 package com.ehaohai.robot.ui.multitype;
 
 public class Audio {
-    private String name;
-    private String time;
-    private String path;
+    private String filename;
+    private String filepath;
+    private String modified_time;
+    private String size;
 
-    public Audio(String name, String time, String path) {
-        this.name = name;
-        this.time = time;
-        this.path = path;
+    public Audio() {
     }
 
-    public String getName() {
-        return name;
+    public Audio(String filename, String filepath, String modified_time, String size) {
+        this.filename = filename;
+        this.filepath = filepath;
+        this.modified_time = modified_time;
+        this.size = size;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getFilename() {
+        return filename;
     }
 
-    public String getTime() {
-        return time;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public String getFilepath() {
+        return filepath;
     }
 
-    public String getPath() {
-        return path;
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public String getModified_time() {
+        return modified_time;
+    }
+
+    public void setModified_time(String modified_time) {
+        this.modified_time = modified_time;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }

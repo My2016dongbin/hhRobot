@@ -1018,8 +1018,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     private void startRecordVoice() {
         File dir = new File(getCacheDir()+"/device"+"/"+ CommonData.sn, "speaking");
         if (!dir.exists()) dir.mkdirs();
-        String fileName = CommonUtil.parseLongTime(System.currentTimeMillis()) + ".mp3";
-        obtainViewModel().outputFilePath = new File(dir, fileName).getPath();
+        obtainViewModel().fileName = "speak_"+System.currentTimeMillis() + ".wav";
+        obtainViewModel().outputFilePath = new File(dir, obtainViewModel().fileName).getPath();
 
         obtainViewModel().mediaRecorder = new MediaRecorder();
         obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -1043,7 +1043,8 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().mediaRecorder.stop();
                 obtainViewModel().mediaRecorder.release();
                 Toast.makeText(this, "已发送", Toast.LENGTH_SHORT).show();
-                playMp3();
+                //playMp3();
+                obtainViewModel().uploadAudio();
             }catch (Exception e){
                 //
             }

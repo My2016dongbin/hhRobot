@@ -17,15 +17,22 @@ import com.ehaohai.robot.constant.HhHttp;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.ui.activity.LoginActivity;
+import com.ehaohai.robot.ui.multitype.Audio;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,6 +79,7 @@ public class ControlViewModel extends BaseViewModel {
     public long timesCloud = 0;
     public static final int REQUEST_PERMISSION_CODE = 100;
     public MediaRecorder mediaRecorder;
+    public String fileName;
     public String outputFilePath;
 
     public double vxPost = 0;
@@ -101,6 +109,76 @@ public class ControlViewModel extends BaseViewModel {
         dateVoice.set(Calendar.SECOND,0);
         voiceTimes.postValue(CommonUtil.parseZero(dateVoice.get(Calendar.HOUR_OF_DAY))+":"+CommonUtil.parseZero(dateVoice.get(Calendar.MINUTE))+":"+CommonUtil.parseZero(dateVoice.get(Calendar.SECOND)));
         runTimesVoice();
+    }
+
+    public void uploadAudio() {
+        loading.setValue(new LoadingEvent(true,"正在提交.."));
+        HhLog.e("onSuccess: post UPLOAD_AUDIO " + URLConstant.UPLOAD_AUDIO());
+        HhHttp.post()
+                .url(URLConstant.UPLOAD_AUDIO())
+                .addFile("file",  fileName,new File(outputFilePath))
+                .build()
+                .execute(new LoggedInStringCallback(this,context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        loading.setValue(new LoadingEvent(false));
+                        HhLog.e("onSuccess: post UPLOAD_AUDIO " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String code = jsonObject.getString("code");
+                            if (code.equals("200")) {
+                                //Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
+                                postPlay();
+                            } else {
+                                //Toast.makeText(context, "提交失败", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        msg.setValue(e.getMessage());
+                        loading.setValue(new LoadingEvent(false));
+                    }
+                });
+    }
+
+    public void postPlay() {
+        List<String> stringList = new ArrayList<>();
+        stringList.add(fileName);
+        RequestParams params = new RequestParams(URLConstant.PLAY_AUDIO());
+        params.addParameter("command",1);
+        String content = new Gson().toJson(stringList);
+        params.setBodyContent(content);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + URLConstant.PLAY_AUDIO());
+        HhLog.e("onSuccess: post PLAY_AUDIO " + params);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + content);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + CommonData.token);
+        HhHttp.postX(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                HhLog.e("onSuccess: post PLAY_AUDIO " + result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                HhLog.e("onFailure: PLAY_AUDIO " + ex.toString());
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     public void sportControl(String type,String cmd,String param) {

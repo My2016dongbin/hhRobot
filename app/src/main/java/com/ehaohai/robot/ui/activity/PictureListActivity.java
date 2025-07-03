@@ -83,7 +83,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
         PictureViewBinder pictureViewBinder = new PictureViewBinder(this);
         pictureViewBinder.setListener(this);
         obtainViewModel().adapter.register(Picture.class, pictureViewBinder);
-        obtainViewModel().adapter.register(Empty.class, new EmptyViewBinder(this));
+        //obtainViewModel().adapter.register(Empty.class, new EmptyViewBinder(this));
         binding.recycle.setAdapter(obtainViewModel().adapter);
         assertHasTheSameAdapter(binding.recycle, obtainViewModel().adapter);
 

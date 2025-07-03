@@ -43,6 +43,7 @@ import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 
 import me.drakeet.multitype.MultiTypeAdapter;
@@ -150,8 +151,8 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
     }
 
     @Override
-    public void notifyClick(Audio audio) {
-        obtainViewModel().getAudioList();
+    public void notifyClick(String oldName,String newName) {
+        obtainViewModel().renameAudio(oldName,newName);
     }
 
     @Override
@@ -159,11 +160,14 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
         CommonUtil.showConfirm(this,"确认删除该音频吗？", "删除", "取消", new Action() {
             @Override
             public void click() {
-                boolean delete = new File(audio.getPath()).delete();
+                /*
+                //本地文件操作
+                boolean delete = new File(audio.getFilepath()).delete();
                 if(delete){
                     obtainViewModel().getAudioList();
                     Toast.makeText(AudioListActivity.this, "已删除", Toast.LENGTH_SHORT).show();
-                }
+                }*/
+                obtainViewModel().deleteAudio(audio.getFilename());
             }
         }, new Action() {
             @Override
@@ -177,8 +181,8 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
     private void startRecordVoice() {
         File dir = new File(getCacheDir()+"/device"+"/"+ CommonData.sn, "recordings");
         if (!dir.exists()) dir.mkdirs();
-        String fileName = CommonUtil.parseLongTime(System.currentTimeMillis()) + ".mp3";
-        obtainViewModel().outputFilePath = new File(dir, fileName).getPath();
+        obtainViewModel().fileName = "record_"+System.currentTimeMillis() + ".wav";
+        obtainViewModel().outputFilePath = new File(dir, Objects.requireNonNull(obtainViewModel().fileName)).getPath();
 
         obtainViewModel().mediaRecorder = new MediaRecorder();
         obtainViewModel().mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
