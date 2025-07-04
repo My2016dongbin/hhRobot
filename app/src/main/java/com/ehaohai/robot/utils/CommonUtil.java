@@ -1501,8 +1501,8 @@ public class CommonUtil {
     //按下缩小
     public static void applyClickDownAnimation(View view) {
         ScaleAnimation scaleAnimation = new ScaleAnimation(
-                1.0f, 0.93f,  // 从正常缩放到缩小
-                1.0f, 0.93f,
+                1.0f, 0.98f,  // 从正常缩放到缩小
+                1.0f, 0.98f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setDuration(100); // 动画时长
@@ -1512,8 +1512,8 @@ public class CommonUtil {
     //松手放大
     public static void applyClickUpAnimation(View view) {
         ScaleAnimation scaleAnimation = new ScaleAnimation(
-                0.93f, 1.0f,  // 从缩小恢复到原始大小
-                0.93f, 1.0f,
+                0.98f, 1.0f,  // 从缩小恢复到原始大小
+                0.98f, 1.0f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setDuration(100); // 动画时长
