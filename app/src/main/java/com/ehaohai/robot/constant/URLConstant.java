@@ -84,4 +84,28 @@ public class URLConstant {
         return LOCAL_PATH+"robot/v1/app/play_video";
     }
 
+    //新增人脸文件夹POST
+    public static String ADD_FACE_FILE(){
+        return LOCAL_PATH+"robot/v1/faces/add_face";
+    }
+    //获取人脸照片列表GET
+    public static String GET_FACE_LIST(){
+        return LOCAL_PATH+"robot/v1/faces";
+    }
+    //获取人脸照片列表DELETE /delete_face/{face_uuid}/{img_name}
+    public static String DELETE_FACE_PICTURE(){
+        return LOCAL_PATH+"robot/v1/faces/delete_face";
+    }
+    //获取人脸照片列表DELETE /delete_folder/{face_uuid}
+    public static String DELETE_FACE_FILE(){
+        return LOCAL_PATH+"robot/v1/faces/delete_folder";
+    }
+
+
+    //任务相关
+    public static String TASK_COMMAND(){
+        //return LOCAL_PATH+"robot/v1/task";
+        return LOCAL_PATH+"robot/v1/app/control";
+    }
+
 }

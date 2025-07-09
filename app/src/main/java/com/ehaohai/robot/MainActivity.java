@@ -28,6 +28,7 @@ import com.ehaohai.robot.ui.activity.DeviceListActivity;
 import com.ehaohai.robot.ui.activity.MineActivity;
 import com.ehaohai.robot.ui.activity.ModeActivity;
 import com.ehaohai.robot.ui.activity.PictureListActivity;
+import com.ehaohai.robot.ui.activity.TaskListActivity;
 import com.ehaohai.robot.ui.activity.WarnListActivity;
 import com.ehaohai.robot.ui.service.PersistentForegroundService;
 import com.ehaohai.robot.ui.viewmodel.MainViewModel;
@@ -105,8 +106,6 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         CommonUtil.click(binding.guide, new Action() {
             @Override
             public void click() {
-                NaviSetting.updatePrivacyShow(MainActivity.this, true, true);
-                NaviSetting.updatePrivacyAgree(MainActivity.this, true);
                 //起点
                 /*Poi start = new Poi("北京首都机场", new LatLng(40.080525,116.603039), "B000A28DAE");
                 //途经点
@@ -119,12 +118,17 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
                 // 启动组件
                 AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), params, null);*/
 
+
+                /*NaviSetting.updatePrivacyShow(MainActivity.this, true, true);
+                NaviSetting.updatePrivacyAgree(MainActivity.this, true);
                 Intent intent = new Intent(MainActivity.this, CustomNaviActivity.class);
                 intent.putExtra("start_lat", CommonData.lat);
                 intent.putExtra("start_lng", CommonData.lng);
                 intent.putExtra("end_lat", 39.917337);
                 intent.putExtra("end_lng", 116.397056);
-                startActivity(intent);
+                startActivity(intent);*/
+
+                startActivity(new Intent(MainActivity.this, TaskListActivity.class));
 
             }
         });
