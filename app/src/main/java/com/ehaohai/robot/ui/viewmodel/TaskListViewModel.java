@@ -36,8 +36,10 @@ public class TaskListViewModel extends BaseViewModel {
     @SuppressLint("StaticFieldLeak")
     public Context context;
     public final MutableLiveData<String> warn = new MutableLiveData<>();
-    //drawerState 侧边栏页面状态  0：新增巡检；1：新增-选择任务周期； 2：编辑-巡检详情；3：编辑-选择任务周期；
-    public final MutableLiveData<Integer> filterState = new MutableLiveData<>();
+    //drawerState 侧边栏页面状态  1：新增巡检；3：新增-选择任务周期; ... || 2：编辑-巡检详情；4：编辑-选择任务周期; ...
+    public final MutableLiveData<Integer> drawerState = new MutableLiveData<>(1);
+    public final MutableLiveData<Integer> aroundHour = new MutableLiveData<>(2);
+    public int hour = 2;
     public MultiTypeAdapter aiAdapter;
     public List<Object> aiItems = new ArrayList<>();
     public List<Task> taskList = new ArrayList<>();
@@ -59,9 +61,6 @@ public class TaskListViewModel extends BaseViewModel {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e("TAG", "onSuccess: TASK_COMMAND = " + URLConstant.TASK_COMMAND());
-        Log.e("TAG", "onSuccess: TASK_COMMAND = " + jsonObject);
-        Log.e("TAG", "onSuccess: TASK_COMMAND = " + CommonData.token);
         HhHttp.postString()
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())

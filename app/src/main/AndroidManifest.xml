@@ -122,6 +122,10 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.PictureViewerActivity"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.TaskRouteActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PointListActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
             android:screenOrientation="landscape">
             <intent-filter>
