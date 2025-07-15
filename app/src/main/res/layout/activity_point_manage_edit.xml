@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.ehaohai.robot.ui.viewmodel.PointEditViewModel" />
+            type="com.ehaohai.robot.ui.viewmodel.PointManageEditViewModel" />
     </data>
 
     <FrameLayout
@@ -106,92 +106,6 @@
                             android:src="@drawable/ic_right_gray" />
                     </LinearLayout>
                 </LinearLayout>
-            </FrameLayout>
-            <!--类型-->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/circle_set_4">
-                <LinearLayout
-                    android:id="@+id/tap_type"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center">
-                    <TextView
-                        android:id="@+id/type"
-                        android:layout_weight="2"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/gray1"
-                        android:textSize="14sp"
-                        android:text=""
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"/>
-                    <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:gravity="end|center_vertical"
-                        android:layout_marginEnd="5dp">
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center_vertical"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_down" />
-                    </LinearLayout>
-                </LinearLayout>
-            </FrameLayout>
-            <!--楼层-->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/circle_set_4">
-                <LinearLayout
-                    android:id="@+id/tap_floor"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center">
-                    <TextView
-                        android:id="@+id/floor"
-                        android:layout_weight="2"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/gray1"
-                        android:textSize="14sp"
-                        android:text="要去的楼层"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"/>
-                    <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:gravity="end|center_vertical"
-                        android:layout_marginEnd="5dp">
-                        <TextView
-                            android:layout_gravity="center_vertical"
-                            android:textColor="@color/gray1"
-                            android:textSize="14sp"
-                            android:text=""
-                            android:layout_marginEnd="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center_vertical"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_right_gray" />
-                    </LinearLayout>
-                </LinearLayout>
-
-
             </FrameLayout>
         </LinearLayout>
 

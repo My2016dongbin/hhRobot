@@ -4,35 +4,27 @@ import static me.drakeet.multitype.MultiTypeAsserts.assertAllRegistered;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.base.BaseViewModel;
 import com.ehaohai.robot.base.LoggedInStringCallback;
 import com.ehaohai.robot.constant.HhHttp;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
-import com.ehaohai.robot.event.PictureRefresh;
-import com.ehaohai.robot.ui.multitype.Empty;
-import com.ehaohai.robot.ui.multitype.Face;
 import com.ehaohai.robot.ui.multitype.Picture;
 import com.ehaohai.robot.ui.multitype.Point;
+import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
-import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
+import com.google.gson.Gson;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.common.Callback;
-import org.xutils.http.RequestParams;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +33,7 @@ import java.util.Random;
 import me.drakeet.multitype.MultiTypeAdapter;
 import okhttp3.Call;
 
-public class PointListViewModel extends BaseViewModel {
+public class PointManageViewModel extends BaseViewModel {
     public Context context;
     public final MutableLiveData<String> picture = new MutableLiveData<>();
     public boolean state = false;
@@ -146,6 +138,76 @@ public class PointListViewModel extends BaseViewModel {
             pointList.add(index,editPoint);
 
             updateData();
+
+            ///点位修改提交
+            postEditName();
         }
+    }
+
+    /**
+     * 点位修改提交
+     */
+    public void postEditName(){
+        loading.setValue(new LoadingEvent(true));
+        List<List<String>> points = new ArrayList<>();
+        ///处理数据
+        for (int i = 0; i < pointList.size(); i++) {
+            Point pointModel = pointList.get(i);
+            List<String> model = new ArrayList<>();
+            model.add(pointModel.getId());
+            model.add(pointModel.getX());
+            model.add(pointModel.getY());
+            model.add(pointModel.getZ());
+            model.add(pointModel.getYaw());
+            model.add(pointModel.getA());
+            model.add(pointModel.getB());
+            model.add(pointModel.getC());
+            model.add(pointModel.getD());
+            model.add(pointModel.getFloor());
+            model.add(pointModel.getName());
+            points.add(model);
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        JSONObject param = new JSONObject();
+        try {
+            param.put("points",points);
+
+            jsonObject.put("type","points");
+            jsonObject.put("cmd","points_download");
+            jsonObject.put("seq",new Random().nextInt(10000));
+            jsonObject.put("param",new Gson().toJson(param));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.e("TAG", "onSuccess: TASK_COMMAND up = " + URLConstant.TASK_COMMAND());
+        Log.e("TAG", "onSuccess: TASK_COMMAND up = " + jsonObject);
+        Log.e("TAG", "onSuccess: TASK_COMMAND up = " + CommonData.token);
+        HhHttp.postString()
+                .url(URLConstant.TASK_COMMAND())
+                .content(jsonObject.toString())
+                .build()
+                .connTimeOut(10000)
+                .execute(new LoggedInStringCallback(this, context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        loading.setValue(new LoadingEvent(false));
+                        Log.e("TAG", "onSuccess: TASK_COMMAND up = " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        loading.setValue(new LoadingEvent(false));
+                    }
+                });
     }
 }

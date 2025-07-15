@@ -160,4 +160,24 @@ public class Point {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "id='" + id + '\'' +
+                ", x='" + x + '\'' +
+                ", y='" + y + '\'' +
+                ", z='" + z + '\'' +
+                ", yaw='" + yaw + '\'' +
+                ", a='" + a + '\'' +
+                ", b='" + b + '\'' +
+                ", c='" + c + '\'' +
+                ", d='" + d + '\'' +
+                ", floor='" + floor + '\'' +
+                ", name='" + name + '\'' +
+                ", index=" + index +
+                ", type='" + type + '\'' +
+                ", taskFloor=" + taskFloor +
+                '}';
+    }
 }

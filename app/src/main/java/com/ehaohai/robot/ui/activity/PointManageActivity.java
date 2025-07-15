@@ -1,75 +1,33 @@
 package com.ehaohai.robot.ui.activity;
 
 import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
-
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
-import com.ehaohai.robot.databinding.ActivityPictureListBinding;
-import com.ehaohai.robot.databinding.ActivityPointListBinding;
-import com.ehaohai.robot.event.PictureRefresh;
-import com.ehaohai.robot.ui.cell.OnInputConfirmListener;
-import com.ehaohai.robot.ui.multitype.Face;
-import com.ehaohai.robot.ui.multitype.FaceViewBinder;
-import com.ehaohai.robot.ui.multitype.Picture;
-import com.ehaohai.robot.ui.multitype.PictureViewBinder;
+import com.ehaohai.robot.databinding.ActivityPointManageBinding;
 import com.ehaohai.robot.ui.multitype.Point;
 import com.ehaohai.robot.ui.multitype.PointViewBinder;
-import com.ehaohai.robot.ui.viewmodel.PictureListViewModel;
-import com.ehaohai.robot.ui.viewmodel.PointListViewModel;
+import com.ehaohai.robot.ui.viewmodel.PointManageViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
-import com.ehaohai.robot.utils.HhLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
-
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import me.drakeet.multitype.MultiTypeAdapter;
 
-;
 
-public class PointListActivity extends BaseLiveActivity<ActivityPointListBinding, PointListViewModel> implements PointViewBinder.OnItemClickListener {
+public class PointManageActivity extends BaseLiveActivity<ActivityPointManageBinding, PointManageViewModel> implements PointViewBinder.OnItemClickListener {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +93,8 @@ public class PointListActivity extends BaseLiveActivity<ActivityPointListBinding
     }
 
     @Override
-    protected ActivityPointListBinding dataBinding() {
-        return DataBindingUtil.setContentView(this, R.layout.activity_point_list);
+    protected ActivityPointManageBinding dataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_point_manage);
     }
 
     @Override
@@ -147,8 +105,8 @@ public class PointListActivity extends BaseLiveActivity<ActivityPointListBinding
     }
 
     @Override
-    public PointListViewModel obtainViewModel() {
-        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(PointListViewModel.class);
+    public PointManageViewModel obtainViewModel() {
+        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(PointManageViewModel.class);
     }
 
 
@@ -171,7 +129,7 @@ public class PointListActivity extends BaseLiveActivity<ActivityPointListBinding
 
     @Override
     public void onPointEditClick(Point face) {
-        Intent intent = new Intent(this, PointEditActivity.class);
+        Intent intent = new Intent(this, PointManageEditActivity.class);
         intent.putExtra("point",new Gson().toJson(face));
         activityResultLauncher.launch(intent);
     }

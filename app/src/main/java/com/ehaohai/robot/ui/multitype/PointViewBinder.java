@@ -62,10 +62,10 @@ public class PointViewBinder extends ItemViewProvider<Point, PointViewBinder.Vie
         binding.executePendingBindings(); //防止闪烁
 
 
-        binding.name.setText(face.getName());
+        binding.name.setText(face.getName()+"");
         binding.xy.setText(face.getX()+","+face.getY());
-        binding.type.setText("普通点");
-        binding.floor.setText(face.getFloor());
+        binding.type.setText(CommonUtil.parsePointTypeByCode(face.getType()+""));
+        binding.floor.setText(face.getTaskFloor()+"");
         CommonUtil.click(binding.click, new Action() {
             @Override
             public void click() {
@@ -88,9 +88,7 @@ public class PointViewBinder extends ItemViewProvider<Point, PointViewBinder.Vie
                 //点位修改
                 popupView.findViewById(R.id.edit).setOnClickListener(view -> {
                     popupWindow.dismiss();
-                    Intent intent = new Intent(context, PointEditActivity.class);
-                    intent.putExtra("point",new Gson().toJson(face));
-                    context.startActivity(intent);
+                    listener.onPointEditClick(face);
                 });
 
                 // 显示位置：相对点击的按钮（菜单图标）
@@ -115,5 +113,6 @@ public class PointViewBinder extends ItemViewProvider<Point, PointViewBinder.Vie
 
     public interface OnItemClickListener{
         void onPointClick(Point face);
+        void onPointEditClick(Point face);
     }
 }

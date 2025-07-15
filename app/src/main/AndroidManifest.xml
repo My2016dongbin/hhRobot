@@ -106,6 +106,10 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.PointEditActivity"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PointManageActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PointManageEditActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.SingleWarnListActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.PictureListActivity"

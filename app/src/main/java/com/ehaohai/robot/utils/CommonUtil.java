@@ -56,6 +56,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.ehaohai.robot.HhApplication;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.constant.URLConstant;
+import com.ehaohai.robot.model.PointType;
 import com.ehaohai.robot.ui.activity.AudioListActivity;
 import com.ehaohai.robot.ui.activity.LoginActivity;
 import com.ehaohai.robot.ui.multitype.Audio;
@@ -1818,6 +1819,43 @@ public class CommonUtil {
     public static String parseCircleShow(int timer) {
         int hour = timer/60/60;
         return hour+"小时";
+    }
+
+    /**
+     * 任务点类型
+     * @return
+     */
+    public static List<PointType> getPointTypeList() {
+        List<PointType> typeList = new ArrayList<>();
+        typeList.add(new PointType("normal","普通点"));
+        typeList.add(new PointType("charge","充电点"));
+        typeList.add(new PointType("lift_out","电梯外部点"));
+        typeList.add(new PointType("lift_inside","电梯内部点"));
+        return typeList;
+    }
+    public static String parsePointTypeByName(String name) {
+        String code = "normal";
+        List<PointType> typeList = getPointTypeList();
+        for (int i = 0; i < typeList.size(); i++) {
+            PointType pointType = typeList.get(i);
+            if(Objects.equals(pointType.getName(), name)){
+                code = pointType.getCode();
+                return code;
+            }
+        }
+        return code;
+    }
+    public static String parsePointTypeByCode(String code) {
+        String name = "普通点";
+        List<PointType> typeList = getPointTypeList();
+        for (int i = 0; i < typeList.size(); i++) {
+            PointType pointType = typeList.get(i);
+            if(Objects.equals(pointType.getCode(), code)){
+                name = pointType.getName();
+                return name;
+            }
+        }
+        return name;
     }
 
     public static String parseRouteShow(List<Task.Route> routeList) {
