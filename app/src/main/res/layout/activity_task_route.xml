@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="33dp"
-            android:text="选择点位"
+            android:text="任务路径"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />

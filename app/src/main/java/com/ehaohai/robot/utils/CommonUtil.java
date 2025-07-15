@@ -58,7 +58,11 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.ui.activity.AudioListActivity;
 import com.ehaohai.robot.ui.activity.LoginActivity;
+import com.ehaohai.robot.ui.multitype.Audio;
+import com.ehaohai.robot.ui.multitype.Task;
 import com.ehaohai.robot.ui.service.PersistentForegroundService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
@@ -1187,6 +1191,9 @@ public class CommonUtil {
      *                          -李四
      *                              -a.png
      *                              -b.png
+     *               -task
+     *                   -SHDASUd678as65dD(Sn码)
+     *      *            -SHDASUd678aASDFF(Sn码)
      * @param snCode
      * @param IP
      */
@@ -1231,7 +1238,7 @@ public class CommonUtil {
 
             // 保存回文件
             try (FileWriter writer = new FileWriter(configFile)) {
-                writer.write(jsonObject.toString(4)); // 缩进4个空格，便于阅读
+                writer.write(jsonObject.toString());
                 writer.flush();
             }
             HhLog.e("Config", "配置文件已更新");
@@ -1276,7 +1283,7 @@ public class CommonUtil {
 
             // 保存回文件
             try (FileWriter writer = new FileWriter(configFile)) {
-                writer.write(jsonObject.toString(4)); // 缩进4个空格，便于阅读
+                writer.write(jsonObject.toString());
                 writer.flush();
             }
             HhLog.e("Config", "配置文件已更新");
@@ -1397,6 +1404,111 @@ public class CommonUtil {
             HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
         }
         return path;
+    }
+    public static void addRobotTask(String snCode,Task task) {
+        try{
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            List<Task> robotTask = getRobotTask(snCode);
+            robotTask.add(task);
+            String toJson = new Gson().toJson(robotTask);
+            // 保存回文件
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(toJson);
+                writer.flush();
+            }
+            HhLog.e("Config", "配置文件已更新");
+            Toast.makeText(HhApplication.getInstance(), "添加成功", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+    }
+    public static void editRobotTask(String snCode,Task task) {
+        try{
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            List<Task> robotTask = getRobotTask(snCode);
+            int index = -1;
+            for (int i = 0; i < robotTask.size(); i++) {
+                if(Objects.equals(robotTask.get(i).getTask_id(), task.getTask_id())){
+                    index = i;
+                    break;
+                }
+            }
+            if(index >= 0){
+                robotTask.remove(index);
+                robotTask.add(index,task);
+            }
+            String toJson = new Gson().toJson(robotTask);
+            // 保存回文件
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(toJson);
+                writer.flush();
+            }
+            HhLog.e("Config", "配置文件已更新");
+            Toast.makeText(HhApplication.getInstance(), "修改成功", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+    }
+    public static void deleteRobotTask(String snCode,Task task) {
+        try{
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            List<Task> robotTask = getRobotTask(snCode);
+            int index = -1;
+            for (int i = 0; i < robotTask.size(); i++) {
+                if(Objects.equals(robotTask.get(i).getTask_id(), task.getTask_id())){
+                    index = i;
+                    break;
+                }
+            }
+            if(index >= 0){
+                robotTask.remove(index);
+            }
+            String toJson = new Gson().toJson(robotTask);
+            // 保存回文件
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(toJson);
+                writer.flush();
+            }
+            HhLog.e("Config", "配置文件已更新");
+            Toast.makeText(HhApplication.getInstance(), "删除成功", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            HhLog.e("Config", "读取配置文件失败: " + e.getMessage());
+        }
+    }
+    public static List<Task> getRobotTask(String snCode) {
+        List<Task> list = new ArrayList<>();
+        String path = "";
+        try{
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            if (!configFile.exists()) {
+                HhLog.e("Config", "任务配置文件不存在");
+                return list;
+            }
+
+            // 读取文件内容
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+
+            // 解析 JSON
+
+            String jsonString = builder.toString();
+            HhLog.e("Config", "任务读取 " + jsonString);
+            list = new Gson().fromJson(jsonString, new TypeToken<List<Task>>(){}.getType());
+            return list;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            HhLog.e("Config", "读取任务配置文件失败: " + e.getMessage());
+        }
+        return list;
     }
     public static JSONObject getRobotFileConfigJson(String snCode) {
         try {
@@ -1691,6 +1803,33 @@ public class CommonUtil {
         HhApplication.getInstance().startActivity(login);
         Intent intent = new Intent(HhApplication.getInstance(), PersistentForegroundService.class);
         HhApplication.getInstance().stopService(intent);
+    }
+
+
+
+    public static String parseTaskStatusShow(String taskStatus) {
+        String status = "未开始";
+        if(Objects.equals(taskStatus, "1")){
+            status = "任务中";
+        }
+        return status;
+    }
+
+    public static String parseCircleShow(int timer) {
+        int hour = timer/60/60;
+        return hour+"小时";
+    }
+
+    public static String parseRouteShow(List<Task.Route> routeList) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < routeList.size(); i++) {
+            Task.Route route = routeList.get(i);
+            if(i>0){
+                builder.append(";");
+            }
+            builder.append(route.getPoi_name());
+        }
+        return builder.toString();
     }
 
     public static void accountClearNoJump() {

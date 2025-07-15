@@ -8,8 +8,10 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ehaohai.robot.base.BaseViewModel;
+import com.ehaohai.robot.ui.multitype.AddRoute;
 import com.ehaohai.robot.ui.multitype.Picture;
 import com.ehaohai.robot.ui.multitype.Point;
+import com.ehaohai.robot.utils.HhLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,31 +30,17 @@ public class TaskRouteViewModel extends BaseViewModel {
         this.context = context;
     }
 
-
-    public void postList(){
-        pointList = new ArrayList<>();
-
-        pointList.add(new Point("1","张三","",state,false));
-        pointList.add(new Point("2","李四","",state,false));
-        pointList.add(new Point("3","王五","",state,false));
-        pointList.add(new Point("4","赵六","",state,false));
-        pointList.add(new Point("5","张张","",state,false));
-        pointList.add(new Point("6","李李","",state,false));
-        pointList.add(new Point("7","宋宋","",state,false));
-        pointList.add(new Point("8","王王","",state,false));
-        pointList.add(new Point("9","京东","",state,false));
-        updateData();
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     public void updateData() {
         items.clear();
         if (pointList != null && pointList.size()!=0) {
+            for (int i = 0; i < pointList.size(); i++) {
+                Point point = pointList.get(i);
+                point.setIndex(i);
+            }
             items.addAll(pointList);
-        }else{
-            //items.add(new Empty());
-            return;
         }
+        items.add(new AddRoute());
 
         assertAllRegistered(adapter, items);
         adapter.notifyDataSetChanged();
@@ -62,9 +50,8 @@ public class TaskRouteViewModel extends BaseViewModel {
         items.clear();
         if (pointList != null && pointList.size()!=0) {
             items.addAll(pointList);
-        }else{
-            //items.add(new Empty());
         }
+        items.add(new AddRoute());
 
         assertAllRegistered(adapter, items);
         try{

@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,15 +33,18 @@ import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityTaskListBinding;
+import com.ehaohai.robot.event.TaskRoute;
 import com.ehaohai.robot.ui.cell.OnInputConfirmListener;
 import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.EmptyViewBinder;
+import com.ehaohai.robot.ui.multitype.Point;
 import com.ehaohai.robot.ui.multitype.Task;
 import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.multitype.WarnBugViewBinder;
 import com.ehaohai.robot.ui.multitype.TaskViewBinder;
 import com.ehaohai.robot.ui.viewmodel.TaskListViewModel;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -48,22 +52,59 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
-public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, TaskListViewModel> implements TaskViewBinder.OnItemClickListener, WarnBugViewBinder.OnItemClickListener {
+public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, TaskListViewModel> implements TaskViewBinder.OnItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fullScreen(this);
+        EventBus.getDefault().register(this);
         init_();
         bind_();
     }
 
+    ///接收任务路径
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(TaskRoute taskRoute) {
+        obtainViewModel().routeList = taskRoute.getRoute();
+        HhLog.e("CommonData.routeList " + CommonData.routeList.size() + "," + CommonData.routeList);
+        //处理任务路径-回显
+        parseRouteToShow();
+    }
+    ///任务刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(Task task) {
+        obtainViewModel().postTaskListLocal();
+    }
+
+    private void parseRouteToShow() {
+        StringBuilder names = new StringBuilder();
+        for (int i = 0; i < obtainViewModel().routeList.size(); i++) {
+            Point point = obtainViewModel().routeList.get(i);
+            if(names.length() == 0){
+                names.append(point.getName());
+            }else{
+                names.append(";").append(point.getName());
+            }
+        }
+        obtainViewModel().routeNames = names.toString();
+        binding.tapRouteText.setText(obtainViewModel().routeNames);
+    }
+
     private void init_() {
-        ///AI报警列表
+        ///任务列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         binding.aiRecycle.setLayoutManager(linearLayoutManager);
         obtainViewModel().aiAdapter = new MultiTypeAdapter(obtainViewModel().aiItems);
@@ -76,14 +117,14 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 obtainViewModel().pageNum = 1;
-                obtainViewModel().postTaskList();
+                obtainViewModel().postTaskListLocal();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                obtainViewModel().pageNum++;
-                obtainViewModel().postTaskList();
+                //obtainViewModel().pageNum++;
+                obtainViewModel().postTaskListLocal();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -94,7 +135,7 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
         binding.aiRecycle.setAdapter(obtainViewModel().aiAdapter);
         assertHasTheSameAdapter(binding.aiRecycle, obtainViewModel().aiAdapter);
 
-        obtainViewModel().postTaskList();
+        obtainViewModel().postTaskListLocal();
     }
 
     private void bind_() {
@@ -105,21 +146,78 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
             }
         });
         CommonUtil.click(binding.add, new Action() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void click() {
+                binding.drawerNameEdit.setText("");
+                obtainViewModel().aroundHour.postValue(2);
+                obtainViewModel().hour = 2;
+                binding.tapAroundText.setText(obtainViewModel().hour+"小时");
+                binding.tapStatusText.setText(CommonUtil.parseTaskStatusShow(""));
+                binding.tapRouteText.setText("");
+                obtainViewModel().routeList.clear();
+                binding.tapStartTimeText.setText("");
+
+                obtainViewModel().drawerState.postValue(1);
                 binding.warnLayout.openDrawer(GravityCompat.END);
             }
         });
         CommonUtil.click(binding.addConfirm, new Action() {
             @Override
             public void click() {
+                if(binding.drawerNameEdit.getText().toString().isEmpty()){
+                    Toast.makeText(TaskListActivity.this, "请输入任务名称", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(binding.tapRouteText.getText().toString().isEmpty()){
+                    Toast.makeText(TaskListActivity.this, "请选择任务路径", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(binding.tapStartTimeText.getText().toString().isEmpty()){
+                    Toast.makeText(TaskListActivity.this, "请选择任务开始时间", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 binding.warnLayout.closeDrawer(GravityCompat.END);
+                int value = obtainViewModel().drawerState.getValue();
+                if(value == 1){
+                    ///添加
+                    obtainViewModel().postAddTaskOnline(binding.drawerNameEdit.getText().toString(),binding.tapStartTimeText.getText().toString());
+                }
+                if(value == 2){
+                    ///修改
+                    Task task = new Task();
+                    List<Task.Route> routeArrayList = new ArrayList<>();
+                    for (int i = 0; i < obtainViewModel().routeList.size(); i++) {
+                        Point point = obtainViewModel().routeList.get(i);
+                        Task.Route route = new Task.Route();
+                        route.setPoint_index(Integer.parseInt(point.getId()));
+                        route.setPoi_name(point.getName());
+                        route.setPoint_type(point.getType());
+                        route.setLift_param(point.getTaskFloor());
+                        route.setX(point.getX());
+                        route.setY(point.getY());
+                        route.setZ(point.getZ());
+                        routeArrayList.add(route);
+                    }
+                    task.setTask_id(obtainViewModel().task.getTask_id());
+                    task.setTask_name(binding.drawerNameEdit.getText().toString());
+                    task.setStart_time(binding.tapStartTimeText.getText().toString());
+                    task.setTask_timer(obtainViewModel().hour*60*60);
+                    task.setTask_route(routeArrayList);
+                    CommonUtil.editRobotTask(CommonData.sn,task);
+                    obtainViewModel().delayTaskListLocal();
+                }
             }
         });
         CommonUtil.click(binding.tapLines, new Action() {
             @Override
             public void click() {
                 ///任务路径选择
+                if(obtainViewModel().routeList.isEmpty()){
+                    CommonData.routeList = new ArrayList<>();
+                }else{
+                    CommonData.routeList = new ArrayList<>(obtainViewModel().routeList);
+                }
                 startActivity(new Intent(TaskListActivity.this,TaskRouteActivity.class));
             }
         });
@@ -127,10 +225,10 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
             @Override
             public void click() {
                 TimePickerView pvTime = new TimePickerBuilder(TaskListActivity.this, (date, v) -> {
-                    String time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date);
-                    binding.startTimeText.setText(time);
+                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(date);
+                    binding.tapStartTimeText.setText(time);
                 })
-                        .setType(new boolean[]{false, false, false, true, true, true})
+                        .setType(new boolean[]{true, true, true, true, true, true})
                         .setTitleText("请选择任务开始时间")
                         .setCancelText("取消")
                         .setSubmitText("确定")
@@ -171,7 +269,12 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
         CommonUtil.click(binding.tapAround, new Action() {
             @Override
             public void click() {
-                obtainViewModel().drawerState.postValue(3);
+                int value = obtainViewModel().drawerState.getValue();
+                if(value==1){
+                    obtainViewModel().drawerState.postValue(3);
+                }else{
+                    obtainViewModel().drawerState.postValue(4);
+                }
             }
         });
         CommonUtil.click(binding.around4Hour, new Action() {
@@ -214,7 +317,12 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
             @SuppressLint("SetTextI18n")
             @Override
             public void click() {
-                obtainViewModel().drawerState.postValue(1);
+                int value = obtainViewModel().drawerState.getValue();
+                if(value==3){
+                    obtainViewModel().drawerState.postValue(1);
+                }else{
+                    obtainViewModel().drawerState.postValue(2);
+                }
                 binding.tapAroundText.setText(obtainViewModel().hour+"小时");
             }
         });
@@ -333,11 +441,33 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
     private void drawerStateChanged(int drawerState) {
         ///侧边栏页面状态  1：新增巡检；3：新增-选择任务周期; ... || 2：编辑-巡检详情；4：编辑-选择任务周期; ...
         if(drawerState == 1){
+            binding.drawerTitleText.setText("新增巡检");
+            binding.llAdd.setVisibility(View.VISIBLE);
+            binding.llAround.setVisibility(View.GONE);
+            binding.taskStatus.setVisibility(View.GONE);
+            binding.taskStatusLine.setVisibility(View.GONE);
+        }
+        ///侧边栏页面状态  1：新增巡检；3：新增-选择任务周期; ... || 2：编辑-巡检详情；4：编辑-选择任务周期; ...
+        if(drawerState == 3){
+            binding.drawerTitleText.setText("新增巡检");
+            binding.llAround.setVisibility(View.VISIBLE);
+            binding.llAdd.setVisibility(View.GONE);
+            binding.taskStatus.setVisibility(View.GONE);
+            binding.taskStatusLine.setVisibility(View.GONE);
+        }
+        ///侧边栏页面状态  1：新增巡检；3：新增-选择任务周期; ... || 2：编辑-巡检详情；4：编辑-选择任务周期; ...
+        if(drawerState == 2){
+            binding.drawerTitleText.setText("巡检详情");
+            binding.taskStatus.setVisibility(View.VISIBLE);
+            binding.taskStatusLine.setVisibility(View.VISIBLE);
             binding.llAdd.setVisibility(View.VISIBLE);
             binding.llAround.setVisibility(View.GONE);
         }
         ///侧边栏页面状态  1：新增巡检；3：新增-选择任务周期; ... || 2：编辑-巡检详情；4：编辑-选择任务周期; ...
-        if(drawerState == 3){
+        if(drawerState == 4){
+            binding.drawerTitleText.setText("巡检详情");
+            binding.taskStatus.setVisibility(View.VISIBLE);
+            binding.taskStatusLine.setVisibility(View.VISIBLE);
             binding.llAround.setVisibility(View.VISIBLE);
             binding.llAdd.setVisibility(View.GONE);
         }
@@ -349,6 +479,7 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -358,31 +489,108 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
 
     @Override
     public void onStartClick(Task task) {
+        if(Objects.equals(CommonData.taskId+"", task.getTask_id()+"")){
+            ///当前任务已下发
+            if(!Objects.equals(CommonData.taskStatus, "1")){
+                //任务执行中
+                Toast.makeText(this, "当前任务正在执行中", Toast.LENGTH_SHORT).show();
+            }else{
+                //任务未开始
+                CommonUtil.showConfirm(this, "确定要开始此任务吗？", "确定", "取消", new Action() {
+                    @Override
+                    public void click() {
+                        obtainViewModel().startTask();
+                    }
+                }, new Action() {
+                    @Override
+                    public void click() {
 
+                    }
+                },false);
+            }
+        }else{
+            ///当前任务未下发
+            CommonUtil.showConfirm(this, "确定要下发并开始此任务吗？", "确定", "取消", new Action() {
+                @Override
+                public void click() {
+                    obtainViewModel().postAndStartTaskOnline(task);
+                }
+            }, new Action() {
+                @Override
+                public void click() {
+
+                }
+            },false);
+        }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onEditClick(Task task) {
+        obtainViewModel().task = task;
+        binding.drawerNameEdit.setText(task.getTask_name()+"");
+        binding.tapAroundText.setText(CommonUtil.parseCircleShow(task.getTask_timer()));
+        int timer = task.getTask_timer()/60/60;
+        obtainViewModel().aroundHour.postValue(timer);
+        binding.tapStatusText.setText(CommonUtil.parseTaskStatusShow(task.getTaskStatus()));
+        binding.tapRouteText.setText(CommonUtil.parseRouteShow(task.getTask_route()));
+        obtainViewModel().routeList.clear();
+        for (int i = 0; i < task.getTask_route().size(); i++) {
+            Task.Route route = task.getTask_route().get(i);
+            obtainViewModel().routeList.add(new Point(route.getPoint_index()+"",route.getX(),route.getY(),route.getZ(),"","","","","",route.getLift_param()+"",route.getPoi_name()));
+        }
+        binding.tapStartTimeText.setText(task.getStart_time()+"");
 
+        obtainViewModel().drawerState.postValue(2);
+        binding.warnLayout.openDrawer(GravityCompat.END);
     }
 
     @Override
     public void onDeleteClick(Task task) {
-        CommonUtil.showConfirm(this,"确认删除当前任务吗？", "删除", "取消", new Action() {
-            @Override
-            public void click() {
+        if(Objects.equals(CommonData.taskId+"", task.getTask_id()+"")){
+            ///当前任务已下发
+            if(Objects.equals(CommonData.taskStatus, "1")){
+                //任务执行中
+                CommonUtil.showConfirm(this,"当前任务正在进行中，确定结束任务后删除？", "删除", "取消", new Action() {
+                    @Override
+                    public void click() {
+                        obtainViewModel().endTaskAndDelete();
+                    }
+                }, new Action() {
+                    @Override
+                    public void click() {
 
+                    }
+                },true);
+            }else{
+                ///任务未执行
+                CommonUtil.showConfirm(this,"确认删除当前任务吗？", "删除", "取消", new Action() {
+                    @Override
+                    public void click() {
+                        CommonUtil.deleteRobotTask(CommonData.sn,task);
+                        obtainViewModel().delayTaskListLocal();
+                    }
+                }, new Action() {
+                    @Override
+                    public void click() {
+
+                    }
+                },true);
             }
-        }, new Action() {
-            @Override
-            public void click() {
+        }else{
+            ///当前任务未下发
+            CommonUtil.showConfirm(this,"确认删除当前任务吗？", "删除", "取消", new Action() {
+                @Override
+                public void click() {
+                    CommonUtil.deleteRobotTask(CommonData.sn,task);
+                    obtainViewModel().delayTaskListLocal();
+                }
+            }, new Action() {
+                @Override
+                public void click() {
 
-            }
-        },true);
-    }
-
-    @Override
-    public void onBugItemClick(Warn warn) {
-
+                }
+            },true);
+        }
     }
 }

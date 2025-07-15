@@ -23,11 +23,16 @@ import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityTaskRouteBinding;
 import com.ehaohai.robot.event.PictureRefresh;
+import com.ehaohai.robot.event.TaskRoute;
 import com.ehaohai.robot.ui.cell.OnInputConfirmListener;
+import com.ehaohai.robot.ui.multitype.AddRoute;
+import com.ehaohai.robot.ui.multitype.AddRouteViewBinder;
 import com.ehaohai.robot.ui.multitype.Point;
 import com.ehaohai.robot.ui.multitype.PointViewBinder;
+import com.ehaohai.robot.ui.multitype.RoutePointViewBinder;
 import com.ehaohai.robot.ui.viewmodel.TaskRouteViewModel;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -39,7 +44,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
-public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding, TaskRouteViewModel> implements PointViewBinder.OnItemClickListener {
+public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding, TaskRouteViewModel> implements RoutePointViewBinder.OnItemClickListener, AddRouteViewBinder.OnItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +54,19 @@ public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding
         bind_();
     }
 
-    ///图片列表刷新
+    ///接收选点数据
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGetMessage(PictureRefresh event) {
-        obtainViewModel().postList();
+    public void onGetMessage(Point point) {
+        obtainViewModel().pointList.add(point);
+        obtainViewModel().updateData();
     }
 
     private void init_() {
+        //获取上个页面已选的点位
+        if(!CommonData.routeList.isEmpty()){
+            obtainViewModel().pointList = CommonData.routeList;
+        }
+
         ///任务点列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         binding.recycle.setLayoutManager(linearLayoutManager);
@@ -67,7 +78,7 @@ public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding
         binding.refresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                obtainViewModel().postList();
+                obtainViewModel().updateData();
                 refreshLayout.finishRefresh(1000);
             }
 
@@ -76,13 +87,16 @@ public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding
                 refreshLayout.finishLoadMore(1000);
             }
         });
-        PointViewBinder pointViewBinder = new PointViewBinder(this);
+        RoutePointViewBinder pointViewBinder = new RoutePointViewBinder(this);
         pointViewBinder.setListener(this);
         obtainViewModel().adapter.register(Point.class, pointViewBinder);
+        AddRouteViewBinder addRouteViewBinder = new AddRouteViewBinder(this);
+        addRouteViewBinder.setListener(this);
+        obtainViewModel().adapter.register(AddRoute.class, addRouteViewBinder);
         binding.recycle.setAdapter(obtainViewModel().adapter);
         assertHasTheSameAdapter(binding.recycle, obtainViewModel().adapter);
 
-        obtainViewModel().postList();
+        obtainViewModel().updateData();
     }
 
     private void bind_() {
@@ -92,7 +106,13 @@ public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding
         CommonUtil.click(binding.confirm, new Action() {
             @Override
             public void click() {
-                TaskRouteActivity.this.startActivity(new Intent(TaskRouteActivity.this,PointListActivity.class));
+                if(obtainViewModel().pointList.size()>0){
+                    ///Eventbus发送
+                    EventBus.getDefault().post(new TaskRoute(obtainViewModel().pointList));
+                    finish();
+                }else{
+                    Toast.makeText(TaskRouteActivity.this, "请先添加任务路径", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -172,5 +192,10 @@ public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding
     @Override
     public void onPointClick(Point face) {
 
+    }
+
+    @Override
+    public void onAddRouteClick() {
+        TaskRouteActivity.this.startActivity(new Intent(TaskRouteActivity.this,PointListActivity.class));
     }
 }

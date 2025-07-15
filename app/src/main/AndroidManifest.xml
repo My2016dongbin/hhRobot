@@ -95,7 +95,7 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.DeviceListActivity"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.ControlActivity"
             android:exported="true"
@@ -103,6 +103,8 @@
         <activity android:name=".ui.activity.WarnListActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.TaskListActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PointEditActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.SingleWarnListActivity"
             android:screenOrientation="landscape"/>

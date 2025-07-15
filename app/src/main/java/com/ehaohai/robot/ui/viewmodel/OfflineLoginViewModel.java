@@ -123,6 +123,8 @@ public class OfflineLoginViewModel extends BaseViewModel {
         if (!face.exists()) face.mkdirs();
         File recordings = new File(context.getCacheDir()+"/device"+"/"+snCode, "recordings");
         if (!recordings.exists()) recordings.mkdirs();
+        File taskDir = new File(context.getCacheDir()+"/task", snCode);
+        if (!taskDir.exists()) taskDir.mkdirs();
         try {
             // 创建 config 对象
             JSONObject configObject = new JSONObject();
@@ -140,7 +142,12 @@ public class OfflineLoginViewModel extends BaseViewModel {
             // 写入文件
             File configFile = new File(deviceDir, "config.json");
             try (FileOutputStream fos = new FileOutputStream(configFile)) {
-                fos.write(root.toString(4).getBytes(StandardCharsets.UTF_8)); // 缩进4空格
+                fos.write(root.toString().getBytes(StandardCharsets.UTF_8));
+            }
+            JSONArray taskList = new JSONArray();
+            File taskFile = new File(taskDir, "task.json");
+            try (FileOutputStream fos = new FileOutputStream(taskFile)) {
+                fos.write(taskList.toString().getBytes(StandardCharsets.UTF_8));
             }
 
             HhLog.e("Config", "配置文件已创建: " + configFile.getAbsolutePath());

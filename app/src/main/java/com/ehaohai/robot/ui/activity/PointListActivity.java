@@ -196,7 +196,8 @@ public class PointListActivity extends BaseLiveActivity<ActivityPointListBinding
     }
 
     @Override
-    public void onPointClick(Point face) {
-
+    public void onPointClick(Point point) {
+        EventBus.getDefault().post(point);
+        finish();
     }
 }

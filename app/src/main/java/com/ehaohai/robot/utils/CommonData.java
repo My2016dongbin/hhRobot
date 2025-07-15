@@ -2,6 +2,10 @@ package com.ehaohai.robot.utils;
 
 
 import com.ehaohai.robot.constant.URLConstant;
+import com.ehaohai.robot.ui.multitype.Point;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by qc
@@ -17,6 +21,7 @@ public class CommonData {
     public static double lat_old = 0;
     public static double lng_old = 0;
     public static String mode = "常规模式";
+    public static List<Point> routeList = new ArrayList<>();
 
 
     public static boolean networkMode = false;//在线模式&&离线模式
@@ -24,6 +29,8 @@ public class CommonData {
     public static long loginDownLong = 0;//登出计时器
 
     public static String sn = "";
+    public static String taskId = "";
+    public static String taskStatus = "";
 
 
     public static String dogUrl(){

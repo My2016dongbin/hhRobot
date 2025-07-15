@@ -20,11 +20,15 @@ import com.ehaohai.robot.constant.HhHttp;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.model.Heart;
+import com.ehaohai.robot.ui.multitype.Task;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.wifi.UDPReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 import okhttp3.Call;
 
@@ -82,6 +86,26 @@ public class PersistentForegroundService extends Service {
                                     data.getInt("batteryPercentage"),
                                     data.getInt("somkeValue")
                                     ));
+                            ///刷新任务列表任务状态
+                            try{
+                                String taskID = data.getString("taskID");
+                                if(!Objects.equals(CommonData.taskId, taskID)){
+                                    EventBus.getDefault().post(new Task());
+                                }
+                                CommonData.taskId = taskID;
+                            }catch (Exception e){
+                             //
+                            }
+                            ///刷新任务列表任务状态
+                            try{
+                                String taskStatus = data.getString("taskStatus");
+                                if(!Objects.equals(CommonData.taskStatus, taskStatus)){
+                                    EventBus.getDefault().post(new Task());
+                                }
+                                CommonData.taskStatus = taskStatus;
+                            }catch (Exception e){
+                             //
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();

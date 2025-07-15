@@ -156,7 +156,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
             // 写入文件
             File configFile = new File(deviceDir, "config.json");
             try (FileOutputStream fos = new FileOutputStream(configFile)) {
-                fos.write(root.toString(4).getBytes(StandardCharsets.UTF_8)); // 缩进4空格
+                fos.write(root.toString().getBytes(StandardCharsets.UTF_8));
             }
 
             HhLog.e("Config", "配置文件已创建: " + configFile.getAbsolutePath());

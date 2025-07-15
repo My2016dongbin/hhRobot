@@ -14,7 +14,11 @@ import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.databinding.ItemTaskListBinding;
 import com.ehaohai.robot.utils.Action;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
+
+import java.util.List;
+import java.util.Objects;
 
 import me.drakeet.multitype.ItemViewProvider;
 
@@ -41,7 +45,7 @@ public class TaskViewBinder extends ItemViewProvider<Task, TaskViewBinder.ViewHo
         return new ViewHolder(dataBinding);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder viewHolder, @NonNull final Task task) {
 
@@ -50,11 +54,10 @@ public class TaskViewBinder extends ItemViewProvider<Task, TaskViewBinder.ViewHo
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        binding.taskName.setText(task.getTaskName());
-        binding.taskCircle.setText(task.getTaskCircle());
-        binding.taskRoute.setText(task.getTaskRoute());
-        binding.taskStatus.setText(task.getTaskStatus());
-        binding.taskStartTime.setText(task.getTaskStartTime());
+        binding.taskName.setText(task.getTask_name()+"");
+        binding.taskCircle.setText(CommonUtil.parseCircleShow(task.getTask_timer()));
+        binding.taskRoute.setText(CommonUtil.parseRouteShow(task.getTask_route()));
+        binding.taskStartTime.setText(task.getStart_time()+"");
         CommonUtil.click(binding.start, new Action() {
             @Override
             public void click() {
@@ -73,6 +76,17 @@ public class TaskViewBinder extends ItemViewProvider<Task, TaskViewBinder.ViewHo
                 listener.onDeleteClick(task);
             }
         });
+
+        ///心跳中返回当前任务id和状态
+        if(Objects.equals(CommonData.taskId+"", task.getTask_id()+"")){
+            binding.taskStatus.setText(CommonUtil.parseTaskStatusShow(CommonData.taskStatus));
+            binding.taskStatus.setTextColor(context.getResources().getColor(R.color.theme_color_blue));
+            binding.start.setImageDrawable(context.getResources().getDrawable(R.drawable.task_start_blue));
+        }else{
+            binding.taskStatus.setText(CommonUtil.parseTaskStatusShow(task.getTaskStatus()));
+            binding.taskStatus.setTextColor(context.getResources().getColor(R.color.gray1));
+            binding.start.setImageDrawable(context.getResources().getDrawable(R.drawable.task_start));
+        }
 
     }
 

@@ -5,6 +5,7 @@ import static me.drakeet.multitype.MultiTypeAsserts.assertAllRegistered;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
@@ -25,6 +26,7 @@ import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.Callback;
@@ -33,6 +35,7 @@ import org.xutils.http.RequestParams;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 import okhttp3.Call;
@@ -50,19 +53,69 @@ public class PointListViewModel extends BaseViewModel {
     }
 
 
-    public void postList(){
+    public void postListLocal(){
         pointList = new ArrayList<>();
 
-        pointList.add(new Point("1","张三","",state,false));
-        pointList.add(new Point("2","李四","",state,false));
-        pointList.add(new Point("3","王五","",state,false));
-        pointList.add(new Point("4","赵六","",state,false));
-        pointList.add(new Point("5","张张","",state,false));
-        pointList.add(new Point("6","李李","",state,false));
-        pointList.add(new Point("7","宋宋","",state,false));
-        pointList.add(new Point("8","王王","",state,false));
-        pointList.add(new Point("9","京东","",state,false));
+        pointList.add(new Point("1","","","","","","","","","1","张三"));
+        pointList.add(new Point("2","","","","","","","","","1","李四"));
+        pointList.add(new Point("3","","","","","","","","","1","王五"));
+        pointList.add(new Point("4","","","","","","","","","1","赵六"));
+        pointList.add(new Point("5","","","","","","","","","1","张张"));
+        pointList.add(new Point("6","","","","","","","","","1","李李"));
+        pointList.add(new Point("7","","","","","","","","","1","宋宋"));
+        pointList.add(new Point("8","","","","","","","","","1","王王"));
+        pointList.add(new Point("9","","","","","","","","","1","京东"));
         updateData();
+    }
+
+
+    public void postList(){
+        loading.setValue(new LoadingEvent(true));
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("type","points");
+            jsonObject.put("cmd","points_upload");
+            jsonObject.put("seq",new Random().nextInt(10000));
+            jsonObject.put("param","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.e("TAG", "onSuccess: TASK_COMMAND = " + URLConstant.TASK_COMMAND());
+        Log.e("TAG", "onSuccess: TASK_COMMAND = " + jsonObject);
+        Log.e("TAG", "onSuccess: TASK_COMMAND = " + CommonData.token);
+        HhHttp.postString()
+                .url(URLConstant.TASK_COMMAND())
+                .content(jsonObject.toString())
+                .build()
+                .connTimeOut(10000)
+                .execute(new LoggedInStringCallback(this, context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        loading.setValue(new LoadingEvent(false));
+                        Log.e("TAG", "onSuccess: TASK_COMMAND = " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONObject result = jsonObject.getJSONObject("param");
+                            JSONObject points_json = result.getJSONObject("points_json");
+                            JSONArray points = points_json.getJSONArray("points");
+                            for (int i = 0; i < points.length(); i++) {
+                                JSONArray point = (JSONArray) points.get(i);
+                                pointList.add(new Point(point.get(0)+"",point.get(1)+"",point.get(2)+"",point.get(3)+"",point.get(4)+"",point.get(5)+"",point.get(6)+"",point.get(7)+"",point.get(8)+"",point.get(9)+"",point.get(10)+""));
+                            }
+                            updateData();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        loading.setValue(new LoadingEvent(false, ""));
+                    }
+                });
     }
 
     @SuppressLint("NotifyDataSetChanged")

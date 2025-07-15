@@ -75,48 +75,58 @@
                     android:layout_width="match_parent"
                     android:layout_height="44dp">
                     <TextView
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
                         android:text="任务名称"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
                         android:text="任务周期"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
                         android:text="任务路径"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
                     <TextView
                         android:layout_marginStart="3dp"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
                         android:text="任务状态"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
                         android:text="任务开始时间"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
@@ -158,6 +168,7 @@
                     android:orientation="vertical">
                     <!--新增巡检-->
                     <TextView
+                        android:id="@+id/drawer_title_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="新增巡检"
@@ -186,7 +197,7 @@
                             android:paddingStart="25dp"
                             />
                         <EditText
-                            android:id="@+id/filter_name_edit"
+                            android:id="@+id/drawer_name_edit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -194,7 +205,7 @@
                             android:layout_marginEnd="20dp"
                             android:gravity="center_vertical|end"
                             android:background="@color/black_input_back"
-                            android:text="一楼巡检"
+                            android:text=""
                             android:hint="请输入任务名称"
                             android:inputType="text"
                             android:minHeight="48dp"
@@ -233,7 +244,7 @@
                             android:id="@+id/tap_around_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="每天"
+                            android:text="2小时"
                             android:textSize="14sp"
                             android:textColor="@color/gray1"
                             android:layout_gravity="center_vertical|end"
@@ -275,15 +286,17 @@
                             android:paddingStart="25dp"
                             />
                         <TextView
+                            android:id="@+id/tap_route_text"
                             android:layout_weight="5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="站点1；站点2；站点3；站点5；站点4"
+                            android:text=""
                             android:maxLines="1"
                             android:ellipsize="end"
                             android:textSize="14sp"
                             android:textColor="@color/gray1"
                             android:layout_gravity="center_vertical|end"
+                            android:gravity="end"
                             android:paddingTop="16dp"
                             android:paddingBottom="16dp"
                             android:layout_marginStart="20dp"
@@ -297,6 +310,50 @@
                             android:src="@drawable/ic_right_gray" />
                     </LinearLayout>
                     <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+                    <!--任务状态-->
+                    <LinearLayout
+                        android:id="@+id/task_status"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="任务状态"
+                            android:maxLines="1"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:paddingStart="25dp"
+                            />
+                        <TextView
+                            android:id="@+id/tap_status_text"
+                            android:layout_weight="5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:layout_gravity="center_vertical|end"
+                            android:gravity="end"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="25dp"
+                            />
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/task_status_line"
                         android:background="@color/line_color2"
                         android:layout_width="match_parent"
                         android:layout_marginStart="15dp"
@@ -321,10 +378,10 @@
                             android:paddingStart="25dp"
                             />
                         <TextView
-                            android:id="@+id/start_time_text"
+                            android:id="@+id/tap_start_time_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="10:00:00"
+                            android:text=""
                             android:textSize="14sp"
                             android:textColor="@color/gray1"
                             android:layout_gravity="center_vertical|end"

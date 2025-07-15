@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="adapter"
+            type="com.ehaohai.robot.ui.multitype.AddRouteViewBinder" />
+        <variable
+            name="item"
+            type="com.ehaohai.robot.ui.multitype.AddRoute" />
+    </data>
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle_set_4_line">
+
+        <LinearLayout
+            android:id="@+id/click"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_device_add" />
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/gray1"
+                android:textSize="14sp"
+                android:text="添加任务路径"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!--<ImageView
+            android:id="@+id/unread"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="top|start"
+            android:src="@drawable/unread" />-->
+
+    </FrameLayout>
+</layout>
