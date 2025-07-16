@@ -47,6 +47,7 @@ import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -494,8 +495,10 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
     }
 
     @Override
-    public void onItemClick(Task warn) {
-
+    public void onItemClick(Task task) {
+        Intent intent = new Intent(this, TaskControlActivity.class);
+        intent.putExtra("task",new Gson().toJson(task));
+        startActivity(intent);
     }
 
     @Override
