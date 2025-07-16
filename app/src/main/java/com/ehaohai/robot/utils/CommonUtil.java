@@ -1192,9 +1192,7 @@ public class CommonUtil {
      *                          -李四
      *                              -a.png
      *                              -b.png
-     *               -task
-     *                   -SHDASUd678as65dD(Sn码)
-     *      *            -SHDASUd678aASDFF(Sn码)
+     *                      -task.json
      * @param snCode
      * @param IP
      */
@@ -1408,7 +1406,7 @@ public class CommonUtil {
     }
     public static void addRobotTask(String snCode,Task task) {
         try{
-            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "task.json");
             List<Task> robotTask = getRobotTask(snCode);
             robotTask.add(task);
             String toJson = new Gson().toJson(robotTask);
@@ -1426,7 +1424,7 @@ public class CommonUtil {
     }
     public static void editRobotTask(String snCode,Task task) {
         try{
-            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "task.json");
             List<Task> robotTask = getRobotTask(snCode);
             int index = -1;
             for (int i = 0; i < robotTask.size(); i++) {
@@ -1454,7 +1452,7 @@ public class CommonUtil {
     }
     public static void deleteRobotTask(String snCode,Task task) {
         try{
-            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "task.json");
             List<Task> robotTask = getRobotTask(snCode);
             int index = -1;
             for (int i = 0; i < robotTask.size(); i++) {
@@ -1483,7 +1481,7 @@ public class CommonUtil {
         List<Task> list = new ArrayList<>();
         String path = "";
         try{
-            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/task/"+snCode,  "task.json");
+            File configFile = new File(HhApplication.getInstance().getCacheDir()+"/device/"+snCode,  "task.json");
             if (!configFile.exists()) {
                 HhLog.e("Config", "任务配置文件不存在");
                 return list;
@@ -1818,6 +1816,9 @@ public class CommonUtil {
 
     public static String parseCircleShow(int timer) {
         int hour = timer/60/60;
+        if(hour == 24){
+            return "每天";
+        }
         return hour+"小时";
     }
 
@@ -1856,6 +1857,30 @@ public class CommonUtil {
             }
         }
         return name;
+    }
+    public static int parsePointTypeIndexByCode(String code) {
+        int index = 0;
+        List<PointType> typeList = getPointTypeList();
+        for (int i = 0; i < typeList.size(); i++) {
+            PointType pointType = typeList.get(i);
+            if(Objects.equals(pointType.getCode(), code)){
+                index = i;
+                return index;
+            }
+        }
+        return index;
+    }
+    public static int parsePointTypeIndexByName(String name) {
+        int index = 0;
+        List<PointType> typeList = getPointTypeList();
+        for (int i = 0; i < typeList.size(); i++) {
+            PointType pointType = typeList.get(i);
+            if(Objects.equals(pointType.getName(), name)){
+                index = i;
+                return index;
+            }
+        }
+        return index;
     }
 
     public static String parseRouteShow(List<Task.Route> routeList) {

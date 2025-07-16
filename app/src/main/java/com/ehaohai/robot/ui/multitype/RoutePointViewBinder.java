@@ -53,10 +53,10 @@ public class RoutePointViewBinder extends ItemViewProvider<Point, RoutePointView
 
 
         binding.index.setText(face.getIndex()+1+"");
-        binding.name.setText(face.getName());
+        binding.name.setText(face.getName()+"");
         binding.xy.setText(face.getX()+","+face.getY());
-        binding.type.setText("普通点");
-        binding.floor.setText(face.getFloor());
+        binding.type.setText(CommonUtil.parsePointTypeByCode(face.getType()+""));
+        binding.floor.setText(face.getTaskFloor()+"");
         CommonUtil.click(binding.click, new Action() {
             @Override
             public void click() {

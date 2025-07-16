@@ -196,9 +196,9 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
                     for (int i = 0; i < obtainViewModel().routeList.size(); i++) {
                         Point point = obtainViewModel().routeList.get(i);
                         Task.Route route = new Task.Route();
-                        route.setPoint_index(Integer.parseInt(point.getId()));
-                        route.setPoi_name(point.getName());
-                        route.setPoint_type(point.getType());
+                        route.setPoint_index(Integer.parseInt(point.getId()+""));
+                        route.setPoi_name(point.getName()+"");
+                        route.setPoint_type(point.getType()+"");
                         route.setLift_param(point.getTaskFloor());
                         route.setX(point.getX());
                         route.setY(point.getY());
@@ -223,6 +223,7 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
                     CommonData.routeList = new ArrayList<>();
                 }else{
                     CommonData.routeList = new ArrayList<>(obtainViewModel().routeList);
+                    HhLog.e("CommonData.routeList " + CommonData.routeList);
                 }
                 startActivity(new Intent(TaskListActivity.this,TaskRouteActivity.class));
             }
@@ -401,37 +402,41 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     private void aroundHourChanged(int aroundHour) {
-        if(aroundHour == 4 && obtainViewModel().hour!=4){
+        if(aroundHour == 4){
             binding.around4HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
 
             binding.around8HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around12HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around24HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.aroundSumHourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+            binding.aroundSumText.setText("2小时");
         }
-        else if(aroundHour == 8 && obtainViewModel().hour!=8){
+        else if(aroundHour == 8){
             binding.around8HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
 
             binding.around4HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around12HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around24HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.aroundSumHourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+            binding.aroundSumText.setText("2小时");
         }
-        else if(aroundHour == 12 && obtainViewModel().hour!=12){
+        else if(aroundHour == 12){
             binding.around12HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
 
             binding.around4HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around8HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around24HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.aroundSumHourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+            binding.aroundSumText.setText("2小时");
         }
-        else if(aroundHour == 24 && obtainViewModel().hour!=24){
+        else if(aroundHour == 24){
             binding.around24HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
 
             binding.around4HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around8HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.around12HourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             binding.aroundSumHourState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+            binding.aroundSumText.setText("2小时");
         }
         else{
             binding.aroundSumText.setText(obtainViewModel().hour+"小时");
@@ -543,7 +548,7 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
         obtainViewModel().routeList.clear();
         for (int i = 0; i < task.getTask_route().size(); i++) {
             Task.Route route = task.getTask_route().get(i);
-            obtainViewModel().routeList.add(new Point(route.getPoint_index()+"",route.getX(),route.getY(),route.getZ(),"","","","","",route.getLift_param()+"",route.getPoi_name()));
+            obtainViewModel().routeList.add(new Point(route.getPoint_index()+"",route.getX(),route.getY(),route.getZ(),"","","","","",route.getLift_param()+"",route.getPoi_name(),route.getPoint_type()+"",route.getLift_param()));
         }
         binding.tapStartTimeText.setText(task.getStart_time()+"");
 

@@ -48,6 +48,21 @@ public class Point {
         this.floor = floor;
         this.name = name;
     }
+    public Point(String id, String x, String y, String z, String yaw, String a, String b, String c, String d, String floor, String name, String type, int taskFloor) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.floor = floor;
+        this.name = name;
+        this.type = type;
+        this.taskFloor = taskFloor;
+    }
 
     public int getTaskFloor() {
         return taskFloor;

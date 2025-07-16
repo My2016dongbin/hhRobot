@@ -84,7 +84,7 @@ public class PointEditActivity extends BaseLiveActivity<ActivityPointEditBinding
         CommonUtil.click(binding.tapType, new Action() {
             @Override
             public void click() {
-                showStationTypePicker(PointEditActivity.this, new OnStationTypeSelectedListener() {
+                showStationTypePicker(PointEditActivity.this, binding.type.getText().toString(),new OnStationTypeSelectedListener() {
                     @Override
                     public void onSelected(String typeName) {
                         binding.type.setText(typeName);
@@ -106,7 +106,7 @@ public class PointEditActivity extends BaseLiveActivity<ActivityPointEditBinding
             }
         });
     }
-    private void showStationTypePicker(Context context, OnStationTypeSelectedListener listener) {
+    private void showStationTypePicker(Context context, String type,OnStationTypeSelectedListener listener) {
         List<PointType> pointTypeList = CommonUtil.getPointTypeList();
         List<String> stationTypes = new ArrayList<>();
         for (int i = 0; i < pointTypeList.size(); i++) {
@@ -132,6 +132,7 @@ public class PointEditActivity extends BaseLiveActivity<ActivityPointEditBinding
                 .build();
 
         pickerView.setPicker(stationTypes);
+        pickerView.setSelectOptions(CommonUtil.parsePointTypeIndexByName(type));
         pickerView.show();
     }
 

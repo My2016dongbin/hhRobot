@@ -123,8 +123,6 @@ public class OfflineLoginViewModel extends BaseViewModel {
         if (!face.exists()) face.mkdirs();
         File recordings = new File(context.getCacheDir()+"/device"+"/"+snCode, "recordings");
         if (!recordings.exists()) recordings.mkdirs();
-        File taskDir = new File(context.getCacheDir()+"/task", snCode);
-        if (!taskDir.exists()) taskDir.mkdirs();
         try {
             // 创建 config 对象
             JSONObject configObject = new JSONObject();
@@ -145,7 +143,7 @@ public class OfflineLoginViewModel extends BaseViewModel {
                 fos.write(root.toString().getBytes(StandardCharsets.UTF_8));
             }
             JSONArray taskList = new JSONArray();
-            File taskFile = new File(taskDir, "task.json");
+            File taskFile = new File(deviceDir, "task.json");
             try (FileOutputStream fos = new FileOutputStream(taskFile)) {
                 fos.write(taskList.toString().getBytes(StandardCharsets.UTF_8));
             }
