@@ -90,6 +90,18 @@ public class PointManageActivity extends BaseLiveActivity<ActivityPointManageBin
                 finish();
             }
         });
+        CommonUtil.click(binding.map, new Action() {
+            @Override
+            public void click() {
+                startActivity(new Intent(PointManageActivity.this,MapModeActivity.class));
+            }
+        });
+        CommonUtil.click(binding.point, new Action() {
+            @Override
+            public void click() {
+                startActivity(new Intent(PointManageActivity.this,PointModeActivity.class));
+            }
+        });
     }
 
     @Override

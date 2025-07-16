@@ -98,7 +98,7 @@ public class PointListViewModel extends BaseViewModel {
                     @Override
                     public void onFailure(Call call, Exception e, int id) {
                         HhLog.e("onFailure: " + e.toString());
-                        loading.setValue(new LoadingEvent(false, ""));
+                        loading.setValue(new LoadingEvent(false));
                     }
                 });
     }

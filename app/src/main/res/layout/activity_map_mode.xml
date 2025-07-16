@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ehaohai.robot.ui.viewmodel.MapModeViewModel" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/fl_all"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        tools:context=".MineActivity">
+
+        <FrameLayout
+            android:id="@+id/fl_live"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!--机器狗流播放器-->
+            <SurfaceView
+                android:id="@+id/dog_live"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <LinearLayout
+                android:id="@+id/ll_cloud"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!--云台可见光流播放器-->
+                <SurfaceView
+                    android:id="@+id/cloud_light_live"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+                <!--云台热成像流播放器-->
+                <SurfaceView
+                    android:id="@+id/cloud_hot_live"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!--返回-->
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="35dp"
+            android:padding="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/back" />
+
+        <!--电量-->
+        <com.ehaohai.robot.ui.cell.BatteryView
+            android:id="@+id/horizontalBattery"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="40dp"
+            android:background="#00000000"
+            android:gravity="center"
+            app:batteryPower="100"
+            app:batteryOrientation="horizontal" />
+
+        <!--温度-->
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="126dp"
+            android:layout_marginTop="40dp"
+            android:textColor="@color/whiteColor"
+            android:textSize="14sp"
+            android:text="39°C"/>
+
+        <!--建图模式-->
+        <TextView
+            android:id="@+id/tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_red"
+            android:layout_marginTop="40dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:text="建图模式"/>
+
+        <!--机器狗-控制-->
+        <ImageView
+            android:id="@+id/control_left"
+            android:layout_width="116dp"
+            android:layout_height="116dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_control" />
+        <ImageView
+            android:id="@+id/control_right"
+            android:layout_width="116dp"
+            android:layout_height="116dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom|end"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_control" />
+
+        <!--按钮-->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="70dp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!--停止建图-->
+            <ImageView
+                android:id="@+id/map_stop"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/map_stop" />
+            <!--开始建图-->
+            <ImageView
+                android:id="@+id/map_start"
+                android:layout_marginTop="10dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/point_add" />
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

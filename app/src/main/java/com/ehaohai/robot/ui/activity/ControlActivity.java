@@ -83,6 +83,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         binding.horizontalBattery.setPower(heart.getBatteryPercentage());
         binding.speed.setText(heart.getLinearSpeed()+"m/s");
         binding.temperature2.setText(heart.getAmbTemperature()+"°C");
+        binding.temperature.setText(heart.getAmbTemperature()+"°C");
         binding.humidity.setText(heart.getAmbHumidity()+"%RH");
         binding.smoke.setText(heart.getSomkeValue()+"PPM");
     }
