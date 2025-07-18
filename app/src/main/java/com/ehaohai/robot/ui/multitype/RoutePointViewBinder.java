@@ -57,10 +57,17 @@ public class RoutePointViewBinder extends ItemViewProvider<Point, RoutePointView
         binding.xy.setText(face.getX()+","+face.getY());
         binding.type.setText(CommonUtil.parsePointTypeByCode(face.getType()+""));
         binding.floor.setText(face.getTaskFloor()+"");
-        CommonUtil.click(binding.click, new Action() {
+        binding.scroll.scrollTo(0,0);
+        /*CommonUtil.click(binding.click, new Action() {
             @Override
             public void click() {
                 listener.onPointClick(face);
+            }
+        });*/
+        CommonUtil.click(binding.delete, new Action() {
+            @Override
+            public void click() {
+                listener.onPointDeleteClick(face);
             }
         });
 
@@ -81,5 +88,6 @@ public class RoutePointViewBinder extends ItemViewProvider<Point, RoutePointView
 
     public interface OnItemClickListener{
         void onPointClick(Point face);
+        void onPointDeleteClick(Point face);
     }
 }

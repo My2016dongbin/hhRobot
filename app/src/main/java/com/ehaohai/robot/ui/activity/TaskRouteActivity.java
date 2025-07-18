@@ -191,6 +191,11 @@ public class TaskRouteActivity extends BaseLiveActivity<ActivityTaskRouteBinding
     public void onPointClick(Point face) {
 
     }
+    @Override
+    public void onPointDeleteClick(Point face) {
+        obtainViewModel().pointList.remove(face);
+        obtainViewModel().updateData();
+    }
 
     @Override
     public void onAddRouteClick() {

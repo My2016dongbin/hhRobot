@@ -47,6 +47,7 @@
     <color name="text_color_orange">#FE841E</color>
     <color name="text_color_green">#22E73D</color>
     <color name="text_color_red">#DE0B0B</color>
+    <color name="back_color_red">#F7605E</color>
     <color name="red">#DE0B0B</color>
     <color name="blue_trans">#ee6593cb</color>
     <color name="theme_primary_trans_">#88283345</color>
