@@ -1,16 +1,22 @@
 package com.ehaohai.robot.ui.multitype;
 
+import java.util.List;
+
 public class Face {
     private String id;
-    private String name;
-    private String path;
+    private String faceName;
+    private List<Pic> list;
+
     private boolean showChoose;
     private boolean selected;
 
-    public Face(String id, String name, String path, boolean showChoose, boolean selected) {
+    public Face() {
+    }
+
+    public Face(String id, String faceName, List<Pic> list, boolean showChoose, boolean selected) {
         this.id = id;
-        this.name = name;
-        this.path = path;
+        this.faceName = faceName;
+        this.list = list;
         this.showChoose = showChoose;
         this.selected = selected;
     }
@@ -23,20 +29,20 @@ public class Face {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFaceName() {
+        return faceName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFaceName(String faceName) {
+        this.faceName = faceName;
     }
 
-    public String getPath() {
-        return path;
+    public List<Pic> getList() {
+        return list;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setList(List<Pic> list) {
+        this.list = list;
     }
 
     public boolean isShowChoose() {
@@ -53,5 +59,65 @@ public class Face {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public static class Pic{
+        private String faceName;
+        private String imgName;
+        private String imgUrl;
+
+        public Pic() {
+        }
+
+        public Pic(String faceName, String imgName, String imgUrl) {
+            this.faceName = faceName;
+            this.imgName = imgName;
+            this.imgUrl = imgUrl;
+        }
+
+        public String getFaceName() {
+            return faceName;
+        }
+
+        public void setFaceName(String faceName) {
+            this.faceName = faceName;
+        }
+
+        public String getImgName() {
+            return imgName;
+        }
+
+        public void setImgName(String imgName) {
+            this.imgName = imgName;
+        }
+
+        public String getImgUrl() {
+            return imgUrl;
+        }
+
+        public void setImgUrl(String imgUrl) {
+            this.imgUrl = imgUrl;
+        }
+
+        @Override
+        public String toString() {
+            return "Pic{" +
+                    "faceName='" + faceName + '\'' +
+                    ", imgName='" + imgName + '\'' +
+                    ", imgUrl='" + imgUrl + '\'' +
+                    '}';
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        return "Face{" +
+                "id='" + id + '\'' +
+                ", faceName='" + faceName + '\'' +
+                ", list=" + list +
+                ", showChoose=" + showChoose +
+                ", selected=" + selected +
+                '}';
     }
 }

@@ -13,6 +13,7 @@ public class PictureViewerViewModel extends BaseViewModel {
     public final MutableLiveData<String> message = new MutableLiveData<>();
     public int pictureIndex = 0;
     public boolean canDelete = false;
+    public boolean online = false;
     public ArrayList<String> urls = new ArrayList<>();
 
     public void start(Context context) {

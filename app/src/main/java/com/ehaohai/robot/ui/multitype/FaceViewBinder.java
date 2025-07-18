@@ -50,7 +50,7 @@ public class FaceViewBinder extends ItemViewProvider<Face, FaceViewBinder.ViewHo
         binding.executePendingBindings(); //防止闪烁
 
 
-        binding.name.setText(face.getName());
+        binding.name.setText(face.getFaceName());
         CommonUtil.click(binding.llFile, new Action() {
             @Override
             public void click() {

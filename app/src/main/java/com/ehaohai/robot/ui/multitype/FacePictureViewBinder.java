@@ -14,15 +14,13 @@ import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
-import com.ehaohai.robot.databinding.ItemPictureListBinding;
+import com.ehaohai.robot.databinding.ItemFacePictureListBinding;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
-import com.ehaohai.robot.utils.HhLog;
 
 import java.io.File;
 
@@ -33,9 +31,9 @@ import me.drakeet.multitype.ItemViewProvider;
  * on 2023/5/31.
  * Copyright © 2018 青岛浩海网络科技股份有限公司 版权所有
  */
-public class PictureViewBinder extends ItemViewProvider<Picture, PictureViewBinder.ViewHolder> {
+public class FacePictureViewBinder extends ItemViewProvider<FacePicture, FacePictureViewBinder.ViewHolder> {
     public Context context;
-    public PictureViewBinder(Context context) {
+    public FacePictureViewBinder(Context context) {
         this.context = context;
     }
     public OnItemClickListener listener;
@@ -47,38 +45,22 @@ public class PictureViewBinder extends ItemViewProvider<Picture, PictureViewBind
     @Override
     protected ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
         ViewDataBinding dataBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.item_picture_list, parent, false);
+                R.layout.item_face_picture_list, parent, false);
         return new ViewHolder(dataBinding);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder viewHolder, @NonNull final Picture picture) {
+    protected void onBindViewHolder(@NonNull ViewHolder viewHolder, @NonNull final FacePicture picture) {
 
-        ItemPictureListBinding binding = (ItemPictureListBinding) viewHolder.getBinding();
+        ItemFacePictureListBinding binding = (ItemFacePictureListBinding) viewHolder.getBinding();
         binding.setVariable(BR.item, picture);
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        if(picture.getPath().endsWith("mp4")){
-            binding.picture.post(() -> {
-                Glide.with(context)
-                        .asBitmap()
-                        .load(Uri.fromFile(new File(picture.getPath())))
-                        .apply(new RequestOptions()
-                                .frame(1000 * 1000) // 取第1秒的帧
-                                .centerCrop()
-                                .override(binding.picture.getWidth(), binding.picture.getHeight())
-                                .error(R.drawable.ic_no_pic))
-                        .into(binding.picture);
-            });
-            binding.play.setVisibility(View.VISIBLE);
-        }else{
-            Glide.with(context).load(Uri.parse(picture.getPath()))
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
-                    .error(R.drawable.ic_no_pic).into(binding.picture);
-            binding.play.setVisibility(View.GONE);
-        }
+        Glide.with(context).load(Uri.parse(picture.getImgUrl()))
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
+                .error(R.drawable.ic_no_pic).into(binding.picture);
 
         if(picture.isShowChoose()){
             binding.select.setVisibility(View.VISIBLE);
@@ -118,7 +100,7 @@ public class PictureViewBinder extends ItemViewProvider<Picture, PictureViewBind
     }
 
     public interface OnItemClickListener{
-        void onItemClick(Picture taskList);
-        void onItemSelected(Picture taskList);
+        void onItemClick(FacePicture taskList);
+        void onItemSelected(FacePicture taskList);
     }
 }

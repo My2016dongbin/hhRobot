@@ -144,8 +144,10 @@ public class OfflineLoginViewModel extends BaseViewModel {
             }
             JSONArray taskList = new JSONArray();
             File taskFile = new File(deviceDir, "task.json");
-            try (FileOutputStream fos = new FileOutputStream(taskFile)) {
-                fos.write(taskList.toString().getBytes(StandardCharsets.UTF_8));
+            if (!taskFile.exists()) {
+                try (FileOutputStream fos = new FileOutputStream(taskFile)) {
+                    fos.write(taskList.toString().getBytes(StandardCharsets.UTF_8));
+                }
             }
 
             HhLog.e("Config", "配置文件已创建: " + configFile.getAbsolutePath());

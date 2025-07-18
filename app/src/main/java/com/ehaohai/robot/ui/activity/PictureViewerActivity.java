@@ -54,6 +54,7 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         obtainViewModel().urls = intent.getStringArrayListExtra("urls");
         obtainViewModel().pictureIndex = intent.getIntExtra("index",0);
         obtainViewModel().canDelete = intent.getBooleanExtra("delete",false);
+        obtainViewModel().online = intent.getBooleanExtra("online",false);
         //是否显示删除按钮
         if(obtainViewModel().canDelete){
             binding.delete.setVisibility(View.VISIBLE);
@@ -72,21 +73,31 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
     private void showPicAndIndex() {
         HhLog.e("show " + obtainViewModel().urls.get(obtainViewModel().pictureIndex));
         String path = obtainViewModel().urls.get(obtainViewModel().pictureIndex);
-        if(path.endsWith("mp4")){
-            binding.videoView.setVisibility(View.VISIBLE);
-            binding.mBigImage.setVisibility(View.GONE);
 
-            ExoPlayer player = new ExoPlayer.Builder(this).build();
-            binding.videoView.setPlayer(player);
-
-            MediaItem mediaItem = MediaItem.fromUri(path);
-            player.setMediaItem(mediaItem);
-            player.prepare();
-
-        }else{
+        if(obtainViewModel().online){
+            //在线图片
             binding.mBigImage.setVisibility(View.VISIBLE);
             binding.videoView.setVisibility(View.GONE);
-            binding.mBigImage.showImage(Uri.fromFile(new File(path)));
+            binding.mBigImage.showImage(Uri.parse(path));
+        }else{
+            if(path.endsWith("mp4")){
+                //本地mp4
+                binding.videoView.setVisibility(View.VISIBLE);
+                binding.mBigImage.setVisibility(View.GONE);
+
+                ExoPlayer player = new ExoPlayer.Builder(this).build();
+                binding.videoView.setPlayer(player);
+
+                MediaItem mediaItem = MediaItem.fromUri(path);
+                player.setMediaItem(mediaItem);
+                player.prepare();
+
+            }else{
+                //本地图片
+                binding.mBigImage.setVisibility(View.VISIBLE);
+                binding.videoView.setVisibility(View.GONE);
+                binding.mBigImage.showImage(Uri.fromFile(new File(path)));
+            }
         }
         binding.number.setText(obtainViewModel().pictureIndex+1+"/"+obtainViewModel().urls.size());
     }
@@ -99,8 +110,12 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         CommonUtil.click(binding.download, new Action() {
             @Override
             public void click() {
-                CommonUtil.downLoadFile(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
-                Toast.makeText(PictureViewerActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                if(obtainViewModel().online){
+
+                }else{
+                    CommonUtil.downLoadFile(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
+                    Toast.makeText(PictureViewerActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         ///删除
@@ -110,10 +125,14 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
                 CommonUtil.showConfirm(PictureViewerActivity.this, "确认删除该图片吗？", "删除", "取消", new Action() {
                     @Override
                     public void click() {
-                        CommonUtil.deleteFile(obtainViewModel().urls.get(obtainViewModel().pictureIndex));
-                        Toast.makeText(PictureViewerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                        refreshUrls();
-                        EventBus.getDefault().post(new PictureRefresh());
+                        if(obtainViewModel().online){
+
+                        }else{
+                            CommonUtil.deleteFile(obtainViewModel().urls.get(obtainViewModel().pictureIndex));
+                            Toast.makeText(PictureViewerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                            refreshUrls();
+                            EventBus.getDefault().post(new PictureRefresh());
+                        }
                     }
 
                 }, new Action() {

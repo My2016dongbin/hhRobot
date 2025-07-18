@@ -31,6 +31,7 @@ import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
 import com.ehaohai.robot.utils.StringData;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -145,7 +146,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
 
             // 创建主 JSON 对象
             JSONObject root = new JSONObject();
-            root.put("ip", "116.222.43.102");
+            root.put("ip", "172.16.10.54");
             root.put("sn", "GHDWD7SAFG5A76");
             root.put("name", "浩海机器狗");
             root.put("account", "admin");
@@ -157,6 +158,13 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
             File configFile = new File(deviceDir, "config.json");
             try (FileOutputStream fos = new FileOutputStream(configFile)) {
                 fos.write(root.toString().getBytes(StandardCharsets.UTF_8));
+            }
+            JSONArray taskList = new JSONArray();
+            File taskFile = new File(deviceDir, "task.json");
+            if (!taskFile.exists()) {
+                try (FileOutputStream fos = new FileOutputStream(taskFile)) {
+                    fos.write(taskList.toString().getBytes(StandardCharsets.UTF_8));
+                }
             }
 
             HhLog.e("Config", "配置文件已创建: " + configFile.getAbsolutePath());

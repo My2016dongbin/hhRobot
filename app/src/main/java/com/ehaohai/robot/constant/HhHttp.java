@@ -36,6 +36,13 @@ public class HhHttp {
         return postFormBuilder;
     }
 
+    public static OtherRequestBuilder delete() {
+        OtherRequestBuilder deleteFormBuilder = OkHttpUtils.delete();
+        deleteFormBuilder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));
+
+        return deleteFormBuilder;
+    }
+
     public static GetBuilder get() {
         GetBuilder getBuilder = OkHttpUtils.get();
         getBuilder.addHeader("Authorization", "Bearer " + SPUtils.get(HhApplication.getInstance(), SPValue.token, ""));

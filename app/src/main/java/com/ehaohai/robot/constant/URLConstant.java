@@ -4,9 +4,9 @@ import com.ehaohai.robot.utils.CommonData;
 
 public class URLConstant {
 
-    public static final String BASE_PATH = "http://192.168.1.88:8444/";//Release-穿透 //平台8081
-    public static String LOCAL_IP = "172.16.10.162";//测试本地离线模式
-    public static String LOCAL_PATH = "http://172.16.50.185:8001/";//测试本地离线模式
+    public static final String BASE_PATH = "http://172.16.10.54:8444/";//Release-穿透 //平台8081
+    public static String LOCAL_IP = "172.16.10.54";//测试本地离线模式 172.16.10.162
+    public static String LOCAL_PATH = "http://172.16.10.54:8001/";//测试本地离线模式
 
     public static void setLocalPath(String ip){
         LOCAL_IP = ip;
@@ -88,15 +88,19 @@ public class URLConstant {
     public static String ADD_FACE_FILE(){
         return LOCAL_PATH+"robot/v1/faces/add_face";
     }
-    //获取人脸照片列表GET
+    //获取人脸文件夹列表POST
+    public static String GET_FACE_FILE_LIST(){
+        return LOCAL_PATH+"robot/v1/faces/find";
+    }
+    //人脸照片列表GET
     public static String GET_FACE_LIST(){
         return LOCAL_PATH+"robot/v1/faces";
     }
-    //获取人脸照片列表DELETE /delete_face/{face_uuid}/{img_name}
+    //删除人脸图片DELETE /delete_face/{face_uuid}/{img_name}
     public static String DELETE_FACE_PICTURE(){
         return LOCAL_PATH+"robot/v1/faces/delete_face";
     }
-    //获取人脸照片列表DELETE /delete_folder/{face_uuid}
+    //删除文件夹DELETE /delete_folder/{face_uuid}
     public static String DELETE_FACE_FILE(){
         return LOCAL_PATH+"robot/v1/faces/delete_folder";
     }

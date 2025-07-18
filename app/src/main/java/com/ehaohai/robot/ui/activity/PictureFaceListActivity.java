@@ -5,16 +5,11 @@ import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -36,17 +30,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
-import com.ehaohai.robot.databinding.ActivityPictureListBinding;
-import com.ehaohai.robot.event.Exit;
+import com.ehaohai.robot.databinding.ActivityPictureFaceListBinding;
 import com.ehaohai.robot.event.PictureRefresh;
 import com.ehaohai.robot.ui.cell.OnInputConfirmListener;
-import com.ehaohai.robot.ui.multitype.Empty;
-import com.ehaohai.robot.ui.multitype.EmptyViewBinder;
-import com.ehaohai.robot.ui.multitype.Face;
-import com.ehaohai.robot.ui.multitype.FaceViewBinder;
-import com.ehaohai.robot.ui.multitype.Picture;
-import com.ehaohai.robot.ui.multitype.PictureViewBinder;
-import com.ehaohai.robot.ui.viewmodel.PictureListViewModel;
+import com.ehaohai.robot.ui.multitype.FacePicture;
+import com.ehaohai.robot.ui.multitype.FacePictureViewBinder;
+import com.ehaohai.robot.ui.viewmodel.PictureFaceListViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
@@ -54,7 +43,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 
-;import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -68,7 +57,7 @@ import java.util.Objects;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
-public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBinding, PictureListViewModel> implements PictureViewBinder.OnItemClickListener, FaceViewBinder.OnItemClickListener {
+public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFaceListBinding, PictureFaceListViewModel> implements FacePictureViewBinder.OnItemClickListener{
     private static final int REQUEST_CODE_TAKE_PHOTO = 1001;
     private static final int REQUEST_CODE_PICK_PHOTO = 1002;
     @Override
@@ -76,6 +65,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
         super.onCreate(savedInstanceState);
         fullScreen(this);
         EventBus.getDefault().register(this);
+        obtainViewModel().fileName = getIntent().getStringExtra("fileName");
         init_();
         bind_();
     }
@@ -83,11 +73,11 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
     ///图片列表刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(PictureRefresh event) {
-        obtainViewModel().postPictureList();
         obtainViewModel().postFaceList();
     }
 
     private void init_() {
+        binding.title.setText(obtainViewModel().fileName);
         ///图片列表
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,4,LinearLayoutManager.VERTICAL,false);
         binding.recyclePic.setLayoutManager(gridLayoutManager);
@@ -101,35 +91,8 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 //取消
                 disChoose();
+                obtainViewModel().state = false;
 
-                obtainViewModel().postPictureList();
-                refreshLayout.finishRefresh(1000);
-            }
-
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishLoadMore(1000);
-            }
-        });
-        PictureViewBinder pictureViewBinder = new PictureViewBinder(this);
-        pictureViewBinder.setListener(this);
-        obtainViewModel().adapter.register(Picture.class, pictureViewBinder);
-        //obtainViewModel().adapter.register(Empty.class, new EmptyViewBinder(this));
-        binding.recyclePic.setAdapter(obtainViewModel().adapter);
-        assertHasTheSameAdapter(binding.recyclePic, obtainViewModel().adapter);
-
-        obtainViewModel().postPictureList();
-        ///人脸库列表
-        GridLayoutManager faceLayoutManager = new GridLayoutManager(this,5,LinearLayoutManager.VERTICAL,false);
-        binding.recycleFace.setLayoutManager(faceLayoutManager);
-        obtainViewModel().adapterFace = new MultiTypeAdapter(obtainViewModel().itemsFace);
-        binding.recycleFace.setHasFixedSize(true);
-        binding.recycleFace.setNestedScrollingEnabled(false);//设置样式后面的背景颜色
-        binding.refreshFace.setRefreshHeader(new ClassicsHeader(this));
-        //设置监听器，包括顶部下拉刷新、底部上滑刷新
-        binding.refreshFace.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 obtainViewModel().postFaceList();
                 refreshLayout.finishRefresh(1000);
             }
@@ -139,11 +102,11 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 refreshLayout.finishLoadMore(1000);
             }
         });
-        FaceViewBinder faceViewBinder = new FaceViewBinder(this);
-        faceViewBinder.setListener(this);
-        obtainViewModel().adapterFace.register(Face.class, faceViewBinder);
-        binding.recycleFace.setAdapter(obtainViewModel().adapterFace);
-        assertHasTheSameAdapter(binding.recycleFace, obtainViewModel().adapterFace);
+        FacePictureViewBinder facePictureViewBinder = new FacePictureViewBinder(this);
+        facePictureViewBinder.setListener(this);
+        obtainViewModel().adapter.register(FacePicture.class, facePictureViewBinder);
+        binding.recyclePic.setAdapter(obtainViewModel().adapter);
+        assertHasTheSameAdapter(binding.recyclePic, obtainViewModel().adapter);
 
         obtainViewModel().postFaceList();
     }
@@ -155,41 +118,11 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
         CommonUtil.click(binding.add, new Action() {
             @Override
             public void click() {
-                showChooseDialog();
-            }
-        });
-        CommonUtil.click(binding.update, new Action() {
-            @Override
-            public void click() {
-                obtainViewModel().postFaceList();
-            }
-        });
-        ///图库
-        binding.pic.setOnClickListener(view -> {
-            if(!obtainViewModel().isPic){
-                obtainViewModel().isPic = true;
-                CommonUtil.applyFancyAnimation(view);
-                CommonUtil.applyFancyBackAnimation(binding.face);
-
-                binding.state.setVisibility(View.VISIBLE);
-                binding.update.setVisibility(View.GONE);
-                binding.add.setVisibility(View.GONE);
-                binding.refreshFace.setVisibility(View.GONE);
-            }
-        });
-        ///人脸库
-        binding.face.setOnClickListener(view -> {
-            if(obtainViewModel().isPic){
-                obtainViewModel().isPic = false;
-                CommonUtil.applyFancyAnimation(view);
-                CommonUtil.applyFancyBackAnimation(binding.pic);
-                obtainViewModel().state = false;
-                disChoose();
-
-                binding.state.setVisibility(View.GONE);
-                binding.update.setVisibility(View.VISIBLE);
-                binding.add.setVisibility(View.VISIBLE);
-                binding.refreshFace.setVisibility(View.VISIBLE);
+                if(obtainViewModel().pictureList.size()<3){
+                    showChooseDialog();
+                }else{
+                    Toast.makeText(PictureFaceListActivity.this, "最多上传三张人脸图片", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         CommonUtil.click(binding.state, new Action() {
@@ -208,53 +141,55 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
         CommonUtil.click(binding.delete, new Action() {
             @Override
             public void click() {
-                List<Picture> list = new ArrayList<>();
+                List<FacePicture> list = new ArrayList<>();
                 for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
-                    Picture picture = obtainViewModel().pictureList.get(i);
+                    FacePicture picture = obtainViewModel().pictureList.get(i);
                     if(picture.isSelected()){
                         list.add(picture);
                     }
                 }
                 if(list.isEmpty()){
-                    Toast.makeText(PictureListActivity.this, "您还没有选择图片", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PictureFaceListActivity.this, "您还没有选择图片", Toast.LENGTH_SHORT).show();
                 }else{
-                    CommonUtil.showConfirm(PictureListActivity.this, "确认删除选中的图片吗？", "删除", "取消", new Action() {
-                        @Override
-                        public void click() {
-                            for (int i = 0; i < list.size(); i++) {
-                                Picture picture = list.get(i);
-                                CommonUtil.deleteFile(picture.getPath());
+                    if(list.size()>=obtainViewModel().pictureList.size()){
+                        //删除全部照片-并且删除整个文件夹
+                        CommonUtil.showConfirm(PictureFaceListActivity.this, "您选择了所有人脸图片，确认要删除整个文件夹吗？", "删除", "取消", new Action() {
+                            @Override
+                            public void click() {
+                                obtainViewModel().deleteFile(new Action() {
+                                    @Override
+                                    public void click() {
+                                        finish();
+                                    }
+                                });
                             }
-                            Toast.makeText(PictureListActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                            EventBus.getDefault().post(new PictureRefresh());
-                        }
-                    }, new Action() {
-                        @Override
-                        public void click() {
+                        }, new Action() {
+                            @Override
+                            public void click() {
 
-                        }
-                    },true);
-                }
-            }
-        });
-        CommonUtil.click(binding.download, new Action() {
-            @Override
-            public void click() {
-                List<Picture> list = new ArrayList<>();
-                for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
-                    Picture picture = obtainViewModel().pictureList.get(i);
-                    if(picture.isSelected()){
-                        list.add(picture);
+                            }
+                        },true);
+                    }else{
+                        //删除部分照片
+                        CommonUtil.showConfirm(PictureFaceListActivity.this, "确认删除选中的图片吗？", "删除", "取消", new Action() {
+                            @Override
+                            public void click() {
+                                obtainViewModel().deletePicture(list, new Action() {
+                                    @Override
+                                    public void click() {
+                                        //取消
+                                        disChoose();
+                                        obtainViewModel().state = false;
+                                    }
+                                });
+                            }
+                        }, new Action() {
+                            @Override
+                            public void click() {
+
+                            }
+                        },true);
                     }
-                }
-                if(list.isEmpty()){
-                    Toast.makeText(PictureListActivity.this, "您还没有选择图片", Toast.LENGTH_SHORT).show();
-                }else{
-                    for (int i = 0; i < list.size(); i++) {
-                        Picture picture = list.get(i);
-                        CommonUtil.downLoadFile(PictureListActivity.this,picture.getPath());
-                    }
-                    Toast.makeText(PictureListActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -314,9 +249,10 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 if (obtainViewModel().facePath != null) {
                     String imagePath = obtainViewModel().facePath;
                     HhLog.e("ImagePath", "Selected image path: REQUEST_CODE_TAKE_PHOTO " + imagePath);
-                    showInputDialog("", text -> {
+                    /*showInputDialog("", text -> {
                         obtainViewModel().createFaceFile(text,imagePath);
-                    });
+                    });*/
+                    obtainViewModel().createFaceFile(obtainViewModel().fileName, imagePath);
                 }
             } else if (requestCode == REQUEST_CODE_PICK_PHOTO) {
                 Uri selectedImageUri = data.getData();
@@ -343,9 +279,10 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
 
                                 String imagePath = photoFile.getPath();
                                 HhLog.e("ImagePath", "Selected image path: REQUEST_CODE_PICK_PHOTO " + imagePath);
-                                showInputDialog("", text -> {
+                                /*showInputDialog("", text -> {
                                     obtainViewModel().createFaceFile(text,imagePath);
-                                });
+                                });*/
+                                obtainViewModel().createFaceFile(obtainViewModel().fileName, imagePath);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -407,27 +344,25 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
         binding.state.setText("选择");
         changePictureState(false);
         binding.delete.setVisibility(View.GONE);
-        binding.download.setVisibility(View.GONE);
     }
 
     private void choose() {
         binding.state.setText("取消");
         changePictureState(true);
         binding.delete.setVisibility(View.VISIBLE);
-        binding.download.setVisibility(View.VISIBLE);
     }
 
     private void changePictureState(boolean state) {
         for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
-            Picture picture = obtainViewModel().pictureList.get(i);
+            FacePicture picture = obtainViewModel().pictureList.get(i);
             picture.setShowChoose(state);
         }
         obtainViewModel().updateDataPic();
     }
 
     @Override
-    protected ActivityPictureListBinding dataBinding() {
-        return DataBindingUtil.setContentView(this, R.layout.activity_picture_list);
+    protected ActivityPictureFaceListBinding dataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_picture_face_list);
     }
 
     @Override
@@ -438,8 +373,8 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
     }
 
     @Override
-    public PictureListViewModel obtainViewModel() {
-        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(PictureListViewModel.class);
+    public PictureFaceListViewModel obtainViewModel() {
+        return ViewModelProviders.of(this, ViewModelFactory.getInstance()).get(PictureFaceListViewModel.class);
     }
 
 
@@ -461,36 +396,37 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
     }
 
     @Override
-    public void onItemClick(Picture pic) {
+    public void onItemClick(FacePicture pic) {
         ArrayList<String> picUrls = new ArrayList<>();
         if(obtainViewModel().state){
             //-多图片预览
             ///选择模式-点击未选图片
             if(!pic.isSelected()){
-                picUrls.add(pic.getPath());
+                picUrls.add(pic.getImgUrl());
                 Intent intent = new Intent(this, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
                 intent.putExtra("delete",true);
+                intent.putExtra("online",true);
                 startActivity(intent);
                 return;
             }
             ///选择模式-点击已选图片
             Intent intent = new Intent(this, PictureViewerActivity.class);
             for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
-                Picture picture = obtainViewModel().pictureList.get(i);
+                FacePicture picture = obtainViewModel().pictureList.get(i);
                 if(picture.isSelected()){
-                    picUrls.add(picture.getPath());
+                    picUrls.add(picture.getImgUrl());
                 }
             }
             //已选0张图片
             if(picUrls.isEmpty()){
-                picUrls.add(pic.getPath());
+                picUrls.add(pic.getImgUrl());
             }
 
             int index = 0;
             for (int m = 0; m < picUrls.size(); m++) {
                 String url = picUrls.get(m);
-                if(Objects.equals(url, pic.getPath())){
+                if(Objects.equals(url, pic.getImgUrl())){
                     index = m;
                     break;
                 }
@@ -498,33 +434,28 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             intent.putStringArrayListExtra("urls", picUrls);
             intent.putExtra("index",index);
             intent.putExtra("delete",true);
+            intent.putExtra("online",true);
             startActivity(intent);
         }else{
             //-单图片预览
             Intent intent = new Intent(this, PictureViewerActivity.class);
-            picUrls.add(pic.getPath());
+            picUrls.add(pic.getImgUrl());
             intent.putStringArrayListExtra("urls", picUrls);
             intent.putExtra("delete",true);
+            intent.putExtra("online",true);
             startActivity(intent);
         }
     }
 
     @Override
-    public void onItemSelected(Picture pic) {
+    public void onItemSelected(FacePicture pic) {
         for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
-            Picture picture = obtainViewModel().pictureList.get(i);
+            FacePicture picture = obtainViewModel().pictureList.get(i);
             if(Objects.equals(picture.getId(), pic.getId())){
                 picture.setSelected(!picture.isSelected());
                 obtainViewModel().updateDataSelected(i);
                 return;
             }
         }
-    }
-
-    @Override
-    public void onFaceClick(Face face) {
-        Intent intent = new Intent(this,PictureFaceListActivity.class);
-        intent.putExtra("fileName",face.getFaceName());
-        startActivity(intent);
     }
 }

@@ -120,6 +120,8 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.PictureListActivity"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.PictureFaceListActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.AudioListActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.AudioLocalListActivity"

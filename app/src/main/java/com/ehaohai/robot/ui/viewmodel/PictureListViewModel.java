@@ -19,11 +19,15 @@ import com.ehaohai.robot.event.PictureRefresh;
 import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.Face;
 import com.ehaohai.robot.ui.multitype.Picture;
+import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.Callback;
@@ -68,28 +72,20 @@ public class PictureListViewModel extends BaseViewModel {
 
     public void postFaceList(){
         faceList = new ArrayList<>();
-
-
-        HhHttp.get()
-                .url(URLConstant.GET_FACE_LIST())
-                .addParams("face_name",  "huang")
-                //.addParams("uuid",  "")
-                .addParams("pageNum",  "1")
-                .addParams("pageSize",  "20")
+        loading.setValue(new LoadingEvent(true));
+        HhHttp.post()
+                .url(URLConstant.GET_FACE_FILE_LIST())
                 .build()
                 .execute(new LoggedInStringCallback(this,context) {
                     @Override
                     public void onSuccess(String response, int id) {
                         loading.setValue(new LoadingEvent(false));
-                        HhLog.e("onSuccess: post GET_FACE_LIST " + response);
+                        HhLog.e("onSuccess: post GET_FACE_FILE_LIST " + response);
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String code = jsonObject.getString("code");
-                            if (code.equals("200")) {
+                            JSONArray jsonArray = new JSONArray(response);
+                            faceList = new Gson().fromJson(jsonArray.toString(), new TypeToken<List<Face>>(){}.getType());
 
-                            } else {
-
-                            }
+                            updateDataFace();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -103,44 +99,6 @@ public class PictureListViewModel extends BaseViewModel {
                         loading.setValue(new LoadingEvent(false));
                     }
                 });
-
-/*        RequestParams params = new RequestParams(URLConstant.GET_FACE_LIST());
-//        params.addBodyParameter("face_name","吴彦祖");
-//        params.addBodyParameter("uuid","");
-        params.addBodyParameter("pageNum","1");
-        params.addBodyParameter("pageSize","20");
-        HhHttp.getX(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                HhLog.e("onSuccess: post GET_FACE_LIST " + result);
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                HhLog.e("onError: post GET_FACE_LIST " + ex.toString());
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });*/
-
-        faceList.add(new Face("1","张三","",state,false));
-        faceList.add(new Face("2","李四","",state,false));
-        faceList.add(new Face("3","王五","",state,false));
-        faceList.add(new Face("4","赵六","",state,false));
-        faceList.add(new Face("5","张张","",state,false));
-        faceList.add(new Face("6","李李","",state,false));
-        faceList.add(new Face("7","宋宋","",state,false));
-        faceList.add(new Face("8","王王","",state,false));
-        faceList.add(new Face("9","京东","",state,false));
-        updateDataFace();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -170,7 +128,7 @@ public class PictureListViewModel extends BaseViewModel {
         adapterFace.notifyDataSetChanged();
     }
     @SuppressLint("NotifyDataSetChanged")
-    public void updateDataSelected(Picture picture) {
+    public void updateDataSelected(int index) {
         items.clear();
         if (pictureList != null && pictureList.size()!=0) {
             items.addAll(pictureList);
@@ -180,7 +138,7 @@ public class PictureListViewModel extends BaseViewModel {
 
         assertAllRegistered(adapter, items);
         try{
-            adapter.notifyItemChanged(Integer.parseInt(picture.getId()));
+            adapter.notifyItemChanged(index);
         }catch (Exception e){
             adapter.notifyDataSetChanged();
         }
