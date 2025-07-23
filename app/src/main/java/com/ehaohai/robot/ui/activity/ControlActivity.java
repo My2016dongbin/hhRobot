@@ -126,6 +126,18 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().data.postValue(false);
             }
         });
+        CommonUtil.click(binding.mapMode, new Action() {
+            @Override
+            public void click() {
+                startActivity(new Intent(ControlActivity.this,MapModeActivity.class));
+            }
+        });
+        CommonUtil.click(binding.pointMode, new Action() {
+            @Override
+            public void click() {
+                startActivity(new Intent(ControlActivity.this,PointModeActivity.class));
+            }
+        });
         binding.switchData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

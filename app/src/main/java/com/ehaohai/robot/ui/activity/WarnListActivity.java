@@ -51,14 +51,14 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
         binding.aiRefresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                obtainViewModel().pageNum = 1;
+                obtainViewModel().pageNumAi = 1;
                 obtainViewModel().postWarnList();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                obtainViewModel().pageNum++;
+                obtainViewModel().pageNumAi++;
                 obtainViewModel().postWarnList();
                 refreshLayout.finishLoadMore(1000);
             }
@@ -81,15 +81,15 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
         binding.bugRefresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//                obtainViewModel().pageNum = 1;
-//                obtainViewModel().postWarnList();
+                obtainViewModel().pageNumBug = 1;
+                obtainViewModel().postBugList();
                 refreshLayout.finishRefresh(1000);
             }
 
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//                obtainViewModel().pageNum++;
-//                obtainViewModel().postWarnList();
+                obtainViewModel().pageNumBug++;
+                obtainViewModel().postBugList();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -101,6 +101,7 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
         assertHasTheSameAdapter(binding.bugRecycle, obtainViewModel().bugAdapter);
 
         obtainViewModel().postWarnList();
+        obtainViewModel().postBugList();
     }
 
     private void bind_() {
@@ -160,13 +161,26 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
     protected void subscribeObserver() {
         super.subscribeObserver();
 
-        obtainViewModel().warn.observe(this, this::nameChanged);
+        obtainViewModel().aiNum.observe(this, this::aiNumChanged);
+        obtainViewModel().bugNum.observe(this, this::bugNumChanged);
         obtainViewModel().todayCount.observe(this, this::todayChanged);
         obtainViewModel().allCount.observe(this, this::allChanged);
     }
 
-    private void nameChanged(String changed) {
+    private void aiNumChanged(int changed) {
+        if(changed > 0){
+            binding.unreadAi.setVisibility(View.VISIBLE);
+        }else{
+            binding.unreadAi.setVisibility(View.GONE);
+        }
+    }
 
+    private void bugNumChanged(int changed) {
+        if(changed > 0){
+            binding.unreadBug.setVisibility(View.VISIBLE);
+        }else{
+            binding.unreadBug.setVisibility(View.GONE);
+        }
     }
 
     private void todayChanged(String changed) {
@@ -184,11 +198,11 @@ public class WarnListActivity extends BaseLiveActivity<ActivityWarnListBinding, 
 
     @Override
     public void onItemClick(Warn warn) {
-
+       obtainViewModel().getAlarmRead(warn);
     }
 
     @Override
     public void onBugItemClick(Warn warn) {
-
+        obtainViewModel().getBugRead(warn);
     }
 }

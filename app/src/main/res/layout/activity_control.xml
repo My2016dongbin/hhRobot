@@ -485,7 +485,7 @@
             <!--录像-->
             <LinearLayout
                 android:id="@+id/record"
-                android:layout_marginTop="185dp"
+                android:layout_marginTop="182dp"
                 android:layout_marginEnd="20dp"
                 android:orientation="vertical"
                 android:background="@drawable/circle_line_blue"
@@ -500,6 +500,30 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_record_un" />
             </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/point_mode"
+                android:layout_marginTop="182dp"
+                android:layout_marginEnd="75dp"
+                android:orientation="vertical"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_point_mode" />
+            <ImageView
+                android:id="@+id/map_mode"
+                android:layout_marginTop="130dp"
+                android:layout_marginEnd="75dp"
+                android:orientation="vertical"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_map_mode" />
 
             <!--(云台)控制-->
             <ImageView

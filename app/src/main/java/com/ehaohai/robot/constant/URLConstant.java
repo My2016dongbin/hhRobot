@@ -47,6 +47,26 @@ public class URLConstant {
     public static String ALARM_LIST(){
         return LOCAL_PATH+"robot/v1/alarm";
     }
+    //故障报警列表-
+    public static String ERROR_LIST(){
+        return LOCAL_PATH+"robot/v1/error";
+    }
+    //Ai报警已读-
+    public static String AI_READ(){
+        return LOCAL_PATH+"robot/v1/alarm/update_read";
+    }
+    //故障报警已读-
+    public static String ERROR_READ(){
+        return LOCAL_PATH+"robot/v1/error/update_read";
+    }
+    //故障报警维度数量-
+    public static String ERROR_UNREAD(){
+        return LOCAL_PATH+"robot/v1/error/unread_alarm_num";
+    }
+    //AI报警维度数量-
+    public static String ALARM_UNREAD(){
+        return LOCAL_PATH+"robot/v1/alarm/unread_alarm_num";
+    }
 
     //获取日报警数-
     public static String ALARM_DAY_COUNT(){

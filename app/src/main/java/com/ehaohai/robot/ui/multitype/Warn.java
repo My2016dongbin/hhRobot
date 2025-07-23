@@ -1,5 +1,7 @@
 package com.ehaohai.robot.ui.multitype;
 
+import java.util.List;
+
 public class Warn {
     private int count;
     private String id;
@@ -14,7 +16,63 @@ public class Warn {
     private String deviceSn;
     private String detectType;
 
+    private List<Err> errList;
+    private String created_time;
 
+    public List<Err> getErrList() {
+        return errList;
+    }
+
+    public void setErrList(List<Err> errList) {
+        this.errList = errList;
+    }
+
+    public String getCreated_time() {
+        return created_time;
+    }
+
+    public void setCreated_time(String created_time) {
+        this.created_time = created_time;
+    }
+
+    public static class Err{
+        private String description;
+        private int mask;
+        private String timeStamp;
+
+        public Err() {
+        }
+
+        public Err(String description, int mask, String timeStamp) {
+            this.description = description;
+            this.mask = mask;
+            this.timeStamp = timeStamp;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public int getMask() {
+            return mask;
+        }
+
+        public void setMask(int mask) {
+            this.mask = mask;
+        }
+
+        public String getTimeStamp() {
+            return timeStamp;
+        }
+
+        public void setTimeStamp(String timeStamp) {
+            this.timeStamp = timeStamp;
+        }
+    }
     public static class MoreInfo{
         private String name;
         private String alarmInfo;

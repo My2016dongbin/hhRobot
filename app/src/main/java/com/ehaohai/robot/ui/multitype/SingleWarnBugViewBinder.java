@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.databinding.ItemSingleWarnBugListBinding;
+import com.ehaohai.robot.utils.CommonUtil;
 
 import java.util.Objects;
 
@@ -51,10 +52,6 @@ public class SingleWarnBugViewBinder extends ItemViewProvider<Warn, SingleWarnBu
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        binding.findTime.setText(warn.getTimeStamp());
-        if(warn.getMoreInfo()!=null){
-            binding.warnType.setText(warn.getMoreInfo().getName());
-        }
         if(warn.getCount()%2==0){
             binding.click.setBackgroundResource(R.color.colorBlackBack2);
         }else{
@@ -65,6 +62,8 @@ public class SingleWarnBugViewBinder extends ItemViewProvider<Warn, SingleWarnBu
         }else{
             binding.unread.setVisibility(View.GONE);
         }
+        binding.warnType.setText(warn.getErrList().get(0).getDescription());
+        binding.findTime.setText(CommonUtil.parse19String(warn.getErrList().get(0).getTimeStamp(),""));
 
     }
 

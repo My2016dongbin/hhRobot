@@ -171,6 +171,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 CommonUtil.applyFancyAnimation(view);
                 CommonUtil.applyFancyBackAnimation(binding.face);
 
+                binding.refreshPic.setVisibility(View.VISIBLE);
                 binding.state.setVisibility(View.VISIBLE);
                 binding.update.setVisibility(View.GONE);
                 binding.add.setVisibility(View.GONE);
@@ -186,6 +187,7 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                 obtainViewModel().state = false;
                 disChoose();
 
+                binding.refreshPic.setVisibility(View.GONE);
                 binding.state.setVisibility(View.GONE);
                 binding.update.setVisibility(View.VISIBLE);
                 binding.add.setVisibility(View.VISIBLE);
