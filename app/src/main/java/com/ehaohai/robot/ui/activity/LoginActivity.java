@@ -94,13 +94,13 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
                 return;
             }
-            ///TODO 测试
+            /*///TODO 测试
             SPUtils.put(HhApplication.getInstance(), SPValue.userName, binding.usernameEdit.getText().toString());
             SPUtils.put(HhApplication.getInstance(), SPValue.password, binding.passwordEdit.getText().toString());
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             ///创建文件夹
             createFiles("GHDWD7SAFG5A76");
-            finish();
+            finish();*/
         });
         /*binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

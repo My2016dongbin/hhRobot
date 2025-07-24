@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -30,6 +31,8 @@ import com.kongzue.dialogx.dialogs.InputDialog;
 import com.kongzue.dialogx.util.InputInfo;
 import com.kongzue.dialogx.util.TextInfo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -82,14 +85,15 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void click() {
-                if(isPlayingMp3){
+                postPlay(audio.getFilename());
+                /*if(isPlayingMp3){
                     binding.play.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play));
                     stopMp3();
                 }else{
                     binding.play.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause));
-                    playMp3(URLConstant.LOCAL_PATH.substring(0,URLConstant.LOCAL_PATH.length()-1)+audio.getFilepath(),binding.play);
+                    //playMp3(URLConstant.LOCAL_PATH.substring(0,URLConstant.LOCAL_PATH.length()-1)+audio.getFilepath(),binding.play);
                     postPlay(audio.getFilename());
-                }
+                }*/
             }
         });
         CommonUtil.click(binding.more, new Action() {
@@ -154,20 +158,28 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
     }
 
     public void postPlay(String fileName) {
+        JSONObject jsonObject = new JSONObject();
         List<String> stringList = new ArrayList<>();
         stringList.add(fileName);
         RequestParams params = new RequestParams(URLConstant.PLAY_AUDIO());
-        params.addParameter("command",1);
-        String content = new Gson().toJson(stringList);
-        params.setBodyContent(content);
+//        params.addParameter("command",1);
+        try {
+            jsonObject.put("type","aplay");
+            jsonObject.put("cmd","SP");
+            jsonObject.put("seq",0);
+            jsonObject.put("param",new Gson().toJson(stringList));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        params.setBodyContent(jsonObject.toString());
         HhLog.e("onSuccess: post PLAY_AUDIO " + URLConstant.PLAY_AUDIO());
-        HhLog.e("onSuccess: post PLAY_AUDIO " + params);
-        HhLog.e("onSuccess: post PLAY_AUDIO " + content);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + jsonObject);
         HhLog.e("onSuccess: post PLAY_AUDIO " + CommonData.token);
         HhHttp.postX(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 HhLog.e("onSuccess: post PLAY_AUDIO " + result);
+                Toast.makeText(context, "已发送", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -185,14 +197,6 @@ public class AudioViewBinder extends ItemViewProvider<Audio, AudioViewBinder.Vie
 
             }
         });
-    }
-
-    public boolean renameFile(File file, String newName) {
-        //创建新文件对象，使用相同的父路径和新的文件名
-        File newFile = new File(file.getParent(), newName);
-
-        //重命名文件
-        return file.renameTo(newFile);  // 如果成功返回 true，否则返回 false
     }
 
     private void playMp3(String path, ImageView view) {

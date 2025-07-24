@@ -2,8 +2,12 @@ package com.ehaohai.robot.ui.activity;
 
 import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,7 +47,9 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Objects;
 import java.util.Random;
 
@@ -178,7 +185,150 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
     }
 
 
+    private boolean isRecording = false;
+    private Thread recordThread;
+    private AudioRecord audioRecord;
+
     private void startRecordVoice() {
+        File dir = new File(getCacheDir() + "/device/" + CommonData.sn, "speaking");
+        if (!dir.exists()) dir.mkdirs();
+
+        obtainViewModel().fileName = "speak_" + System.currentTimeMillis() + ".wav";
+        obtainViewModel().outputFilePath = new File(dir, obtainViewModel().fileName).getPath();
+
+        int sampleRate = 44100;
+        int channelConfig = AudioFormat.CHANNEL_IN_MONO;
+        int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+        int bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                sampleRate, channelConfig, audioFormat, bufferSize);
+
+        isRecording = true;
+        audioRecord.startRecording();
+
+        recordThread = new Thread(() -> {
+            FileOutputStream wavOut = null;
+            try {
+                wavOut = new FileOutputStream(obtainViewModel().outputFilePath);
+                writeWavHeader(wavOut, sampleRate, 1, 16); // 预写WAV头
+
+                byte[] buffer = new byte[bufferSize];
+                int totalAudioLen = 0;
+
+                while (isRecording) {
+                    int read = audioRecord.read(buffer, 0, buffer.length);
+                    if (read > 0) {
+                        wavOut.write(buffer, 0, read);
+                        totalAudioLen += read;
+                    }
+                }
+
+                updateWavHeader(obtainViewModel().outputFilePath, totalAudioLen, sampleRate, 1, 16);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (wavOut != null) {
+                    try {
+                        wavOut.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        recordThread.start();
+    }
+
+
+    private void writeWavHeader(FileOutputStream out, int sampleRate, int channels, int bitsPerSample) throws IOException {
+        byte[] header = new byte[44];
+
+        long byteRate = sampleRate * channels * bitsPerSample / 8;
+
+        // RIFF/WAVE header
+        header[0] = 'R'; header[1] = 'I'; header[2] = 'F'; header[3] = 'F';
+        // 4-7: file size (will update later)
+        header[8] = 'W'; header[9] = 'A'; header[10] = 'V'; header[11] = 'E';
+        header[12] = 'f'; header[13] = 'm'; header[14] = 't'; header[15] = ' ';
+        header[16] = 16; // Subchunk1Size for PCM
+        header[17] = 0; header[18] = 0; header[19] = 0;
+        header[20] = 1; header[21] = 0; // AudioFormat (1 = PCM)
+        header[22] = (byte) channels;
+        header[23] = 0;
+        header[24] = (byte) (sampleRate & 0xff);
+        header[25] = (byte) ((sampleRate >> 8) & 0xff);
+        header[26] = (byte) ((sampleRate >> 16) & 0xff);
+        header[27] = (byte) ((sampleRate >> 24) & 0xff);
+        header[28] = (byte) (byteRate & 0xff);
+        header[29] = (byte) ((byteRate >> 8) & 0xff);
+        header[30] = (byte) ((byteRate >> 16) & 0xff);
+        header[31] = (byte) ((byteRate >> 24) & 0xff);
+        header[32] = (byte) (channels * bitsPerSample / 8);
+        header[33] = 0;
+        header[34] = (byte) bitsPerSample;
+        header[35] = 0;
+        header[36] = 'd'; header[37] = 'a'; header[38] = 't'; header[39] = 'a';
+        // 40-43: data chunk size (will update later)
+
+        out.write(header, 0, 44);
+    }
+
+    private void updateWavHeader(String wavPath, int audioLen, int sampleRate, int channels, int bitsPerSample) throws IOException {
+        RandomAccessFile raf = new RandomAccessFile(wavPath, "rw");
+        long byteRate = sampleRate * channels * bitsPerSample / 8;
+        long totalDataLen = audioLen + 36;
+
+        raf.seek(4);
+        raf.write((byte) (totalDataLen & 0xff));
+        raf.write((byte) ((totalDataLen >> 8) & 0xff));
+        raf.write((byte) ((totalDataLen >> 16) & 0xff));
+        raf.write((byte) ((totalDataLen >> 24) & 0xff));
+
+        raf.seek(40);
+        raf.write((byte) (audioLen & 0xff));
+        raf.write((byte) ((audioLen >> 8) & 0xff));
+        raf.write((byte) ((audioLen >> 16) & 0xff));
+        raf.write((byte) ((audioLen >> 24) & 0xff));
+
+        raf.close();
+    }
+
+    private void stopRecordVoice() {
+        isRecording = false;
+
+        if (recordThread != null) {
+            try {
+                recordThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            recordThread = null;
+        }
+
+        if (audioRecord != null) {
+            if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
+                audioRecord.stop();
+            }
+            audioRecord.release();
+            audioRecord = null;
+        }
+
+        obtainViewModel().uploadAudio();
+    }
+
+
+    private void startRecordVoice2() {
         File dir = new File(getCacheDir()+"/device"+"/"+ CommonData.sn, "recordings");
         if (!dir.exists()) dir.mkdirs();
         obtainViewModel().fileName = "record_"+System.currentTimeMillis() + ".wav";
@@ -200,7 +350,7 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
         }
     }
 
-    private void stopRecordVoice() {
+    private void stopRecordVoice2() {
         if (obtainViewModel().mediaRecorder != null) {
             obtainViewModel().mediaRecorder.stop();
             obtainViewModel().mediaRecorder.release();

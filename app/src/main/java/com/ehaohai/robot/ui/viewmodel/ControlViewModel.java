@@ -148,20 +148,28 @@ public class ControlViewModel extends BaseViewModel {
     }
 
     public void postPlay() {
+        JSONObject jsonObject = new JSONObject();
         List<String> stringList = new ArrayList<>();
         stringList.add(fileName);
         RequestParams params = new RequestParams(URLConstant.PLAY_AUDIO());
-        params.addParameter("command",1);
-        String content = new Gson().toJson(stringList);
-        params.setBodyContent(content);
+//        params.addParameter("command",1);
+        try {
+            jsonObject.put("type","aplay");
+            jsonObject.put("cmd","SP");
+            jsonObject.put("seq",0);
+            jsonObject.put("param",new Gson().toJson(stringList));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        params.setBodyContent(jsonObject.toString());
         HhLog.e("onSuccess: post PLAY_AUDIO " + URLConstant.PLAY_AUDIO());
-        HhLog.e("onSuccess: post PLAY_AUDIO " + params);
-        HhLog.e("onSuccess: post PLAY_AUDIO " + content);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + jsonObject);
         HhLog.e("onSuccess: post PLAY_AUDIO " + CommonData.token);
         HhHttp.postX(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 HhLog.e("onSuccess: post PLAY_AUDIO " + result);
+                Toast.makeText(context, "已发送", Toast.LENGTH_SHORT).show();
             }
 
             @Override
