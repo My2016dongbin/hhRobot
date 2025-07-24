@@ -38,6 +38,12 @@ public class ForAppActivity extends BaseLiveActivity<ActivityForAppBinding, ForA
 
             }
         });
+        CommonUtil.click(binding.points, new Action() {
+            @Override
+            public void click() {
+                startActivity(new Intent(ForAppActivity.this,PointManageActivity.class));
+            }
+        });
         CommonUtil.click(binding.guide, new Action() {
             @Override
             public void click() {

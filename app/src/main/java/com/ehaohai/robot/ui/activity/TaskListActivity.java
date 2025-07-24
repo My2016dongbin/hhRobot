@@ -146,12 +146,12 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
                 finish();
             }
         });
-        CommonUtil.click(binding.pointManage, new Action() {
+        /*CommonUtil.click(binding.pointManage, new Action() {
             @Override
             public void click() {
                 startActivity(new Intent(TaskListActivity.this,PointManageActivity.class));
             }
-        });
+        });*/
         CommonUtil.click(binding.add, new Action() {
             @SuppressLint("SetTextI18n")
             @Override
