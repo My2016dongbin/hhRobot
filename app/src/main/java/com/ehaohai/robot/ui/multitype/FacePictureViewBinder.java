@@ -60,7 +60,7 @@ public class FacePictureViewBinder extends ItemViewProvider<FacePicture, FacePic
 
         Glide.with(context).load(Uri.parse(picture.getImgUrl()))
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
-                .error(R.drawable.ic_no_pic).into(binding.picture);
+                .error(R.drawable.error_pic).into(binding.picture);
 
         if(picture.isShowChoose()){
             binding.select.setVisibility(View.VISIBLE);

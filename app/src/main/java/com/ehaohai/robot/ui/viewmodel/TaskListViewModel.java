@@ -255,7 +255,12 @@ public class TaskListViewModel extends BaseViewModel {
     public void postTaskListLocal(){
         taskList = CommonUtil.getRobotTask(CommonData.sn);
         HhLog.e("postTaskListLocal", "任务读取 " + taskList.toString());
+
         updateData();
+
+        if(taskList == null || taskList.isEmpty()){
+            postTaskListOnline();
+        }
     }
     public void postTaskListOnline(){
         loading.setValue(new LoadingEvent(true));

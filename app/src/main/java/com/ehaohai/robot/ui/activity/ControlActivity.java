@@ -429,23 +429,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 }
             }
         });
-        ///翻身
-        binding.fanShen.setOnClickListener(view -> {
-            obtainViewModel().fanShen = true;
-            CommonUtil.applyFancyAnimation(view);
-            hideOtherButton(view);
-        });
         ///伸懒腰
         binding.shenLanYao.setOnClickListener(view -> {
             obtainViewModel().shenLanYao = true;
             obtainViewModel().sportControl("manual", "sport", "Stretch");
-            CommonUtil.applyFancyAnimation(view);
-            hideOtherButton(view);
-        });
-        ///握手
-        binding.woShou.setOnClickListener(view -> {
-            obtainViewModel().woShou = true;
-            obtainViewModel().sportControl("manual", "sport", "Hello");
             CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
@@ -464,12 +451,27 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             hideOtherButton(view);
         });
         ///跳
-        binding.jump.setOnClickListener(view -> {
+        binding.qianTiao.setOnClickListener(view -> {
             obtainViewModel().jump = true;
             obtainViewModel().sportControl("manual", "sport", "FrontJump");
             CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///舞蹈1
+        binding.wuDao1.setOnClickListener(view -> {
+            obtainViewModel().wuDao1 = true;
+            obtainViewModel().sportControl("manual", "sport", "Dance1");
+            CommonUtil.applyFancyAnimation(view);
+            hideOtherButton(view);
+        });
+        ///舞蹈2
+        binding.wuDao2.setOnClickListener(view -> {
+            obtainViewModel().wuDao2 = true;
+            obtainViewModel().sportControl("manual", "sport", "Dance2");
+            CommonUtil.applyFancyAnimation(view);
+            hideOtherButton(view);
+        });
+
         ///阻尼
         binding.zuNi.setOnClickListener(view -> {
             obtainViewModel().zuNi = true;
@@ -498,15 +500,17 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
-        ///锁定
+        ///停止动作
         binding.lock.setOnClickListener(view -> {
             obtainViewModel().lock = true;
+            obtainViewModel().sportControl("manual", "sport", "StopMove");
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
-        ///摆姿势
-        binding.baiZiShi.setOnClickListener(view -> {
-            obtainViewModel().baiZiShi = true;
+        ///打招呼
+        binding.daZhaoHu.setOnClickListener(view -> {
+            obtainViewModel().daZhaoHu = true;
+            obtainViewModel().sportControl("manual", "sport", "Hello");
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
@@ -594,17 +598,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     }
 
     private void hideOtherButton(View view) {
-        if (obtainViewModel().fanShen && view.getId() != binding.fanShen.getId()) {
-            CommonUtil.applyFancyBackAnimation(binding.fanShen);
-            obtainViewModel().fanShen = false;
-        }
         if (obtainViewModel().shenLanYao && view.getId() != binding.shenLanYao.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.shenLanYao);
             obtainViewModel().shenLanYao = false;
-        }
-        if (obtainViewModel().woShou && view.getId() != binding.woShou.getId()) {
-            CommonUtil.applyFancyBackAnimation(binding.woShou);
-            obtainViewModel().woShou = false;
         }
         if (obtainViewModel().biXin && view.getId() != binding.biXin.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.biXin);
@@ -614,9 +610,17 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyBackAnimation(binding.puRen);
             obtainViewModel().puRen = false;
         }
-        if (obtainViewModel().jump && view.getId() != binding.jump.getId()) {
-            CommonUtil.applyFancyBackAnimation(binding.jump);
+        if (obtainViewModel().jump && view.getId() != binding.qianTiao.getId()) {
+            CommonUtil.applyFancyBackAnimation(binding.qianTiao);
             obtainViewModel().jump = false;
+        }
+        if (obtainViewModel().wuDao1 && view.getId() != binding.wuDao1.getId()) {
+            CommonUtil.applyFancyBackAnimation(binding.wuDao1);
+            obtainViewModel().wuDao1 = false;
+        }
+        if (obtainViewModel().wuDao2 && view.getId() != binding.wuDao2.getId()) {
+            CommonUtil.applyFancyBackAnimation(binding.wuDao2);
+            obtainViewModel().wuDao2 = false;
         }
     }
 
@@ -641,9 +645,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyBackAnimation(binding.lock);
             obtainViewModel().lock = false;
         }
-        if (obtainViewModel().baiZiShi && view.getId() != binding.baiZiShi.getId()) {
-            CommonUtil.applyFancyBackAnimation(binding.baiZiShi);
-            obtainViewModel().baiZiShi = false;
+        if (obtainViewModel().daZhaoHu && view.getId() != binding.daZhaoHu.getId()) {
+            CommonUtil.applyFancyBackAnimation(binding.daZhaoHu);
+            obtainViewModel().daZhaoHu = false;
         }
     }
 

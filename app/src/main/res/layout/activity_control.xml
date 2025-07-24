@@ -768,9 +768,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="44dp">
 
-                            <!--翻身-->
+                            <!--伸懒腰-->
                             <LinearLayout
-                                android:id="@+id/fan_shen"
+                                android:id="@+id/shen_lan_yao"
                                 android:orientation="vertical"
                                 android:background="@drawable/circle_gray"
                                 android:layout_gravity="center_horizontal|bottom"
@@ -779,29 +779,6 @@
                                 android:layout_height="44dp">
                                 <ImageView
                                     android:layout_width="18dp"
-                                    android:layout_height="15dp"
-                                    android:scaleType="fitXY"
-                                    android:src="@drawable/ic_fanshen" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
-                                    android:text="翻身"/>
-                            </LinearLayout>
-
-                            <!--伸懒腰-->
-                            <LinearLayout
-                                android:id="@+id/shen_lan_yao"
-                                android:orientation="vertical"
-                                android:background="@drawable/circle_gray"
-                                android:layout_gravity="center_horizontal|bottom"
-                                android:gravity="center"
-                                android:layout_marginStart="15dp"
-                                android:layout_width="44dp"
-                                android:layout_height="44dp">
-                                <ImageView
-                                    android:layout_width="14dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
                                     android:src="@drawable/ic_shenlanyao" />
@@ -811,29 +788,6 @@
                                     android:textColor="@color/whiteColor"
                                     android:textSize="11sp"
                                     android:text="伸懒腰"/>
-                            </LinearLayout>
-
-                            <!--握手-->
-                            <LinearLayout
-                                android:id="@+id/wo_shou"
-                                android:orientation="vertical"
-                                android:background="@drawable/circle_gray"
-                                android:layout_gravity="center_horizontal|bottom"
-                                android:gravity="center"
-                                android:layout_marginStart="15dp"
-                                android:layout_width="44dp"
-                                android:layout_height="44dp">
-                                <ImageView
-                                    android:layout_width="18dp"
-                                    android:layout_height="14dp"
-                                    android:scaleType="fitXY"
-                                    android:src="@drawable/ic_woshou" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
-                                    android:text="握手"/>
                             </LinearLayout>
 
                             <!--比心-->
@@ -855,7 +809,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:text="比心"/>
                             </LinearLayout>
 
@@ -870,7 +824,7 @@
                                 android:layout_width="44dp"
                                 android:layout_height="44dp">
                                 <ImageView
-                                    android:layout_width="14dp"
+                                    android:layout_width="18dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
                                     android:src="@drawable/ic_puren" />
@@ -878,13 +832,36 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:text="扑人"/>
                             </LinearLayout>
 
                             <!--前跳-->
                             <LinearLayout
-                                android:id="@+id/jump"
+                                android:id="@+id/qian_tiao"
+                                android:orientation="vertical"
+                                android:background="@drawable/circle_gray"
+                                android:layout_gravity="center_horizontal|bottom"
+                                android:gravity="center"
+                                android:layout_marginStart="15dp"
+                                android:layout_width="44dp"
+                                android:layout_height="44dp">
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/qian_tiao" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/whiteColor"
+                                    android:textSize="11sp"
+                                    android:text="前跳"/>
+                            </LinearLayout>
+
+                            <!--舞蹈1-->
+                            <LinearLayout
+                                android:id="@+id/wu_dao_1"
                                 android:orientation="vertical"
                                 android:background="@drawable/circle_gray"
                                 android:layout_gravity="center_horizontal|bottom"
@@ -896,13 +873,36 @@
                                     android:layout_width="14dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
-                                    android:src="@drawable/ic_jump" />
+                                    android:src="@drawable/wu_dao_1" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
-                                    android:text="前跳"/>
+                                    android:textSize="11sp"
+                                    android:text="舞蹈1"/>
+                            </LinearLayout>
+
+                            <!--舞蹈2-->
+                            <LinearLayout
+                                android:id="@+id/wu_dao_2"
+                                android:orientation="vertical"
+                                android:background="@drawable/circle_gray"
+                                android:layout_gravity="center_horizontal|bottom"
+                                android:gravity="center"
+                                android:layout_marginStart="15dp"
+                                android:layout_width="44dp"
+                                android:layout_height="44dp">
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/wu_dao_2" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/whiteColor"
+                                    android:textSize="11sp"
+                                    android:text="舞蹈2"/>
                             </LinearLayout>
 
                             <!--图标-->
@@ -955,15 +955,15 @@
                                 android:layout_width="44dp"
                                 android:layout_height="44dp">
                                 <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
                                     android:scaleType="fitXY"
                                     android:src="@drawable/ic_zuni" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:text="阻尼"/>
                             </LinearLayout>
 
@@ -978,7 +978,7 @@
                                 android:layout_width="44dp"
                                 android:layout_height="44dp">
                                 <ImageView
-                                    android:layout_width="14dp"
+                                    android:layout_width="18dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
                                     android:src="@drawable/ic_zhanli" />
@@ -1001,7 +1001,7 @@
                                 android:layout_width="44dp"
                                 android:layout_height="44dp">
                                 <ImageView
-                                    android:layout_width="16dp"
+                                    android:layout_width="18dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
                                     android:src="@drawable/ic_zuoxia" />
@@ -1009,7 +1009,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:text="坐下"/>
                             </LinearLayout>
 
@@ -1025,18 +1025,18 @@
                                 android:layout_height="44dp">
                                 <ImageView
                                     android:layout_width="18dp"
-                                    android:layout_height="14dp"
+                                    android:layout_height="18dp"
                                     android:scaleType="fitXY"
-                                    android:src="@drawable/ic_wodao" />
+                                    android:src="@drawable/pa_xia" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:text="卧倒"/>
                             </LinearLayout>
 
-                            <!--锁定-->
+                            <!--停止-->
                             <LinearLayout
                                 android:id="@+id/lock"
                                 android:orientation="vertical"
@@ -1047,21 +1047,21 @@
                                 android:layout_width="44dp"
                                 android:layout_height="44dp">
                                 <ImageView
-                                    android:layout_width="14dp"
+                                    android:layout_width="18dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
-                                    android:src="@drawable/ic_lock" />
+                                    android:src="@drawable/ting_zhi" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
-                                    android:text="锁定"/>
+                                    android:textSize="11sp"
+                                    android:text="停止"/>
                             </LinearLayout>
 
-                            <!--摆姿势-->
+                            <!--打招呼-->
                             <LinearLayout
-                                android:id="@+id/bai_zi_shi"
+                                android:id="@+id/da_zhao_hu"
                                 android:orientation="vertical"
                                 android:background="@drawable/circle_gray"
                                 android:layout_gravity="center_horizontal|bottom"
@@ -1070,16 +1070,16 @@
                                 android:layout_width="44dp"
                                 android:layout_height="44dp">
                                 <ImageView
-                                    android:layout_width="14dp"
+                                    android:layout_width="18dp"
                                     android:layout_height="18dp"
                                     android:scaleType="fitXY"
-                                    android:src="@drawable/ic_baizishi" />
+                                    android:src="@drawable/da_zhao_hu" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="12sp"
-                                    android:text="摆姿势"/>
+                                    android:textSize="11sp"
+                                    android:text="打招呼"/>
                             </LinearLayout>
 
                             <!--图标-->

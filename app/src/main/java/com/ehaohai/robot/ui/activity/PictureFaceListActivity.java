@@ -39,6 +39,7 @@ import com.ehaohai.robot.ui.viewmodel.PictureFaceListViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
@@ -407,15 +408,20 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
                 intent.putStringArrayListExtra("urls", picUrls);
                 intent.putExtra("delete",true);
                 intent.putExtra("online",true);
+                List<FacePicture> list = new ArrayList<>();
+                list.add(pic);
+                intent.putExtra("onlineList",new Gson().toJson(list));
                 startActivity(intent);
                 return;
             }
             ///选择模式-点击已选图片
             Intent intent = new Intent(this, PictureViewerActivity.class);
+            List<FacePicture> list = new ArrayList<>();
             for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
                 FacePicture picture = obtainViewModel().pictureList.get(i);
                 if(picture.isSelected()){
                     picUrls.add(picture.getImgUrl());
+                    list.add(picture);
                 }
             }
             //已选0张图片
@@ -435,6 +441,7 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
             intent.putExtra("index",index);
             intent.putExtra("delete",true);
             intent.putExtra("online",true);
+            intent.putExtra("onlineList",new Gson().toJson(list));
             startActivity(intent);
         }else{
             //-单图片预览
@@ -443,6 +450,9 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
             intent.putStringArrayListExtra("urls", picUrls);
             intent.putExtra("delete",true);
             intent.putExtra("online",true);
+            List<FacePicture> list = new ArrayList<>();
+            list.add(pic);
+            intent.putExtra("onlineList",new Gson().toJson(list));
             startActivity(intent);
         }
     }

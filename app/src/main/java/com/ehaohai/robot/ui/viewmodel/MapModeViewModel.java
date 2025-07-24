@@ -183,17 +183,14 @@ public class MapModeViewModel extends BaseViewModel {
             vyPost = vy;
         }
         vyawPost = vyaw;
-        /*vxPost = vx;
-        vyPost = vy;
-        vyawPost = vyaw;*/
     }
 
     public void controlPost(){
         JSONObject object = new JSONObject();
         try {
-            object.put("vx",CommonUtil.parseDoubleCount(vxPost));
-            object.put("vy",CommonUtil.parseDoubleCount(vyPost));
-            object.put("vyaw",CommonUtil.parseDoubleCount(vyawPost));
+            object.put("vx",CommonUtil.parseDoubleCount(vxPost*0.5));//建图模式限速
+            object.put("vy",CommonUtil.parseDoubleCount(vyPost*0.5));//建图模式限速
+            object.put("vyaw",CommonUtil.parseDoubleCount(vyawPost*0.5));//建图模式限速
         } catch (JSONException e) {
             e.printStackTrace();
         }

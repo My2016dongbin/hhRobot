@@ -45,18 +45,20 @@ import okhttp3.Call;
 public class ControlViewModel extends BaseViewModel {
     public Context context;
     public final MutableLiveData<String> name = new MutableLiveData<>();
-    public boolean fanShen = false;
     public boolean shenLanYao = false;
-    public boolean woShou = false;
     public boolean biXin = false;
     public boolean puRen = false;
     public boolean jump = false;
+    public boolean wuDao1 = false;
+    public boolean wuDao2 = false;
+
     public boolean zuNi = false;
     public boolean zhanLi = false;
     public boolean zuoXia = false;
     public boolean woDao = false;
     public boolean lock = false;
-    public boolean baiZiShi = false;
+    public boolean daZhaoHu = false;
+
     public boolean cloudSet = false;
 
     public final MutableLiveData<Boolean> force = new MutableLiveData<>(false);

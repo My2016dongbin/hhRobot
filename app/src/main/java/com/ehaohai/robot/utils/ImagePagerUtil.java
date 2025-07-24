@@ -151,7 +151,7 @@ public class ImagePagerUtil {
     private void showPic(ImageView imageView, String url) {
         imageView.setImageBitmap(null);
         Glide.with(mActivity).load(url).placeholder(R.drawable.ic_jaizai)
-                .error(R.drawable.ic_no_pic).into(imageView);
+                .error(R.drawable.error_pic).into(imageView);
         dialog.show();
     }
     private class AnimateFirstDisplayListener extends SimpleImageLoadingListener {

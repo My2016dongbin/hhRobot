@@ -76,7 +76,7 @@ public class SingleWarnViewBinder extends ItemViewProvider<Warn, SingleWarnViewB
         }
         Glide.with(context).load(warn.getImgPath())
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
-                .error(R.drawable.ic_no_pic).into(binding.findImage);
+                .error(R.drawable.error_pic).into(binding.findImage);
         CommonUtil.click(binding.findImage, new Action() {
             @Override
             public void click() {

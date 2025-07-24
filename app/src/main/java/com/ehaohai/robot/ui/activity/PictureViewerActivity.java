@@ -31,14 +31,19 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityPictureViewerBinding;
 import com.ehaohai.robot.event.DeviceRefresh;
 import com.ehaohai.robot.event.PictureRefresh;
+import com.ehaohai.robot.ui.multitype.Audio;
+import com.ehaohai.robot.ui.multitype.FacePicture;
 import com.ehaohai.robot.ui.viewmodel.PictureViewerViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.List;
 
 public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewerBinding, PictureViewerViewModel> {
     @Override
@@ -55,6 +60,10 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
         obtainViewModel().pictureIndex = intent.getIntExtra("index",0);
         obtainViewModel().canDelete = intent.getBooleanExtra("delete",false);
         obtainViewModel().online = intent.getBooleanExtra("online",false);
+        if(obtainViewModel().online){
+            String onlineList = intent.getStringExtra("onlineList");
+            obtainViewModel().facePictureList = new Gson().fromJson(onlineList, new TypeToken<List<FacePicture>>(){}.getType());
+        }
         //是否显示删除按钮
         if(obtainViewModel().canDelete){
             binding.delete.setVisibility(View.VISIBLE);
@@ -111,7 +120,8 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
             @Override
             public void click() {
                 if(obtainViewModel().online){
-
+                    //CommonUtil.downloadImageToGallery(PictureViewerActivity.this,"https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAOEcdM.img");
+                    CommonUtil.downloadImageToGallery(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
                 }else{
                     CommonUtil.downLoadFile(PictureViewerActivity.this,obtainViewModel().urls.get(obtainViewModel().pictureIndex));
                     Toast.makeText(PictureViewerActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
@@ -126,7 +136,12 @@ public class PictureViewerActivity extends BaseLiveActivity<ActivityPictureViewe
                     @Override
                     public void click() {
                         if(obtainViewModel().online){
-
+                            obtainViewModel().deleteOnline(new Action() {
+                                @Override
+                                public void click() {
+                                    finish();
+                                }
+                            });
                         }else{
                             CommonUtil.deleteFile(obtainViewModel().urls.get(obtainViewModel().pictureIndex));
                             Toast.makeText(PictureViewerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();

@@ -69,14 +69,14 @@ public class PictureViewBinder extends ItemViewProvider<Picture, PictureViewBind
                                 .frame(1000 * 1000) // 取第1秒的帧
                                 .centerCrop()
                                 .override(binding.picture.getWidth(), binding.picture.getHeight())
-                                .error(R.drawable.ic_no_pic))
+                                .error(R.drawable.error_pic))
                         .into(binding.picture);
             });
             binding.play.setVisibility(View.VISIBLE);
         }else{
-            Glide.with(context).load(Uri.parse(picture.getPath()))
+            Glide.with(context).load(Uri.fromFile(new File(picture.getPath())))
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
-                    .error(R.drawable.ic_no_pic).into(binding.picture);
+                    .error(R.drawable.error_pic).into(binding.picture);
             binding.play.setVisibility(View.GONE);
         }
 
