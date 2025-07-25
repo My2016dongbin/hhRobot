@@ -32,16 +32,26 @@
                 android:text="识别时间"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/findType"
+            <FrameLayout
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/gray1"
-                android:textSize="14sp"
-                android:text="识别类型"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-            <TextView
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/findType"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:background="@drawable/circle_type"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="@color/gray1"
+                    android:textSize="12sp"
+                    android:text="报警类型"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+            <!--<TextView
                 android:id="@+id/findResult"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
@@ -49,7 +59,7 @@
                 android:textSize="14sp"
                 android:text="识别结果"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"/>-->
             <LinearLayout
                 android:layout_weight="1"
                 android:layout_width="0dp"

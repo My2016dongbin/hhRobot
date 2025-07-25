@@ -48,7 +48,7 @@
         tools:replace="android:label,android:icon,android:name">
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="286977bcdc4f973ed7d66bbafb12df0a"/>
+            android:value="a31621277bfc8f32074824a798498b3e"/>
         <service android:name="com.amap.api.location.APSService"/>
         <activity
             android:name="com.amap.api.navi.AmapRouteActivity"
@@ -139,6 +139,8 @@
         <activity android:name=".ui.activity.TaskRouteActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.PointListActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.MapLocationActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
             android:screenOrientation="landscape">

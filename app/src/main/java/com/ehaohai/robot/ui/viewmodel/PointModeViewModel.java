@@ -209,7 +209,7 @@ public class PointModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(10000)
+                .connTimeOut(30000)
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {
@@ -218,7 +218,6 @@ public class PointModeViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             Toast.makeText(context, "已开启打点模式", Toast.LENGTH_SHORT).show();
-                            start.postValue(true);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -303,7 +302,6 @@ public class PointModeViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             Toast.makeText(context, "已退出打点模式，所有打点保存成功", Toast.LENGTH_SHORT).show();
-                            start.postValue(false);
                             click.click();
 
                         } catch (Exception e) {

@@ -67,7 +67,7 @@ public class WarnViewBinder extends ItemViewProvider<Warn, WarnViewBinder.ViewHo
         binding.deviceName.setText("浩海机器狗");
         if(warn.getMoreInfo()!=null){
             binding.findType.setText(warn.getMoreInfo().getName());
-            binding.findResult.setText(warn.getMoreInfo().getAlarmInfo());
+            //binding.findResult.setText(warn.getMoreInfo().getAlarmInfo());
         }
         if(warn.getCount()%2==0){
             binding.click.setBackgroundResource(R.color.colorBlackBack2);
@@ -89,6 +89,7 @@ public class WarnViewBinder extends ItemViewProvider<Warn, WarnViewBinder.ViewHo
                 picUrls.add(warn.getImgPath());
                 Intent intent = new Intent(context, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
+                intent.putExtra("online",true);
                 context.startActivity(intent);
             }
         });

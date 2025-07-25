@@ -1222,9 +1222,9 @@ public class CommonUtil {
             String sn = jsonObject.getString("sn");
             JSONObject config = jsonObject.getJSONObject("config");
 
-            HhLog.e("Config refreshRobotFileIP", "读取到的: " + jsonObject);
-            HhLog.e("Config refreshRobotFileIP", "读取到的IP: " + ip);
-            HhLog.e("Config refreshRobotFileIP", "设备SN: " + sn);
+            //HhLog.e("Config refreshRobotFileIP", "读取到的: " + jsonObject);
+            //HhLog.e("Config refreshRobotFileIP", "读取到的IP: " + ip);
+            //HhLog.e("Config refreshRobotFileIP", "设备SN: " + sn);
 
             // 修改字段
             jsonObject.put("ip", IP);//修改IP
@@ -1240,7 +1240,7 @@ public class CommonUtil {
                 writer.write(jsonObject.toString());
                 writer.flush();
             }
-            HhLog.e("Config", "配置文件已更新");
+            //HhLog.e("Config", "配置文件已更新");
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package com.ehaohai.robot.ui.activity;
 
 import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -110,6 +111,13 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
         });
         binding.filter.setOnClickListener(view -> {
             binding.warnLayout.openDrawer(GravityCompat.END);
+        });
+        binding.confirm.setOnClickListener(view -> {
+            binding.warnLayout.closeDrawer(GravityCompat.END);
+            obtainViewModel().postWarnList();
+        });
+        binding.map.setOnClickListener(view -> {
+            startActivity(new Intent(SingleWarnListActivity.this,MapLocationActivity.class));
         });
         ///AI报警
         binding.ai.setOnClickListener(view -> {

@@ -49,7 +49,12 @@ public class TaskControlActivity extends BaseLiveActivity<ActivityTaskControlBin
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
-        startPlayerDog();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startPlayerDog();
+            }
+        },200);
     }
 
     private void bind_() {
@@ -77,7 +82,8 @@ public class TaskControlActivity extends BaseLiveActivity<ActivityTaskControlBin
                         Toast.makeText(TaskControlActivity.this, "当前任务正在进行中", Toast.LENGTH_SHORT).show();
                     }else{
                         //任务未执行
-                        obtainViewModel().startTask();
+                        //obtainViewModel().startTask();
+                        obtainViewModel().postTaskToDog();
                     }
                 }
             }

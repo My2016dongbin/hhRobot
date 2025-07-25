@@ -216,7 +216,7 @@ public class MapModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(10000)
+                .connTimeOut(30000)
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {
@@ -225,7 +225,6 @@ public class MapModeViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             Toast.makeText(context, "已开启建图模式", Toast.LENGTH_SHORT).show();
-                            start.postValue(true);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -268,7 +267,6 @@ public class MapModeViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             Toast.makeText(context, "建图保存成功", Toast.LENGTH_SHORT).show();
-                            start.postValue(false);
                             click.click();
 
                         } catch (Exception e) {

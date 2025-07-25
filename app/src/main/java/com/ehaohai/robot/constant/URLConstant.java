@@ -82,6 +82,10 @@ public class URLConstant {
     public static String HEART(){
         return LOCAL_PATH+"robot/v1/machine/app/heartbeats";
     }
+    //心跳-token
+    public static String HEART_TOKEN(){
+        return LOCAL_PATH+"robot/v1/monitors/logheart";
+    }
 
     //上传音频-post
     public static String UPLOAD_AUDIO(){

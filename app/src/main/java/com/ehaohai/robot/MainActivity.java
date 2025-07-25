@@ -180,6 +180,9 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     protected void onResume() {
         super.onResume();
         binding.modeText.setText(CommonData.mode);
+        if(!PersistentForegroundService.isRunning){
+            init_();
+        }
     }
 
     @Override

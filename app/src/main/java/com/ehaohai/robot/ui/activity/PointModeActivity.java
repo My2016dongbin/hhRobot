@@ -86,9 +86,11 @@ public class PointModeActivity extends BaseLiveActivity<ActivityPointModeBinding
                 boolean value = Boolean.TRUE.equals(obtainViewModel().start.getValue());
                 if(!value){
                     //开始
+                    obtainViewModel().start.postValue(true);
                     obtainViewModel().startPoint();
                 }else{
                     //停止
+                    obtainViewModel().start.postValue(false);
                     obtainViewModel().stopPoint(new Action() {
                         @Override
                         public void click() {

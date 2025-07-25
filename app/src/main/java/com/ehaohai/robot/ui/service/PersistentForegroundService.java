@@ -39,10 +39,12 @@ public class PersistentForegroundService extends Service {
     private Handler handler = new Handler();
     private Runnable taskRunnable;
     UDPReceiver udpReceiver;
+    public static boolean isRunning = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        isRunning = true;
 
         ///UDP消息监听
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -67,6 +69,7 @@ public class PersistentForegroundService extends Service {
 
     private void heart() {
         Log.e("TAG", "HEART = " + URLConstant.HEART());
+        ///参数心跳
         HhHttp.get()
                 .url(URLConstant.HEART())
                 .build()
@@ -118,6 +121,30 @@ public class PersistentForegroundService extends Service {
                         HhLog.e("onFailure: " + e.toString());
                     }
                 });
+        ///HEART_TOKEN token心跳
+        HhHttp.post()
+                .url(URLConstant.HEART_TOKEN()+"?id=1")
+//                .addParams("id","1")
+                .build()
+                .connTimeOut(10000)
+                .execute(new LoggedInStringCallback(null, this) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        Log.e("TAG", "onSuccess: HEART_TOKEN = " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            HhLog.e("catch: " + e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                    }
+                });
     }
 
     private void startForegroundService() {
@@ -155,6 +182,7 @@ public class PersistentForegroundService extends Service {
         handler.removeCallbacks(taskRunnable);
         Log.d(TAG, "Foreground service destroyed");
         super.onDestroy();
+        isRunning = false;
     }
 
     @Nullable

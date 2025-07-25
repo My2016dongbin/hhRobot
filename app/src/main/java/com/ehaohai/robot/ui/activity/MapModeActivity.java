@@ -83,6 +83,7 @@ public class MapModeActivity extends BaseLiveActivity<ActivityMapModeBinding, Ma
         CommonUtil.click(binding.mapStart, new Action() {
             @Override
             public void click() {
+                obtainViewModel().start.postValue(true);
                 obtainViewModel().startMap();
             }
         });
@@ -100,6 +101,7 @@ public class MapModeActivity extends BaseLiveActivity<ActivityMapModeBinding, Ma
                         JSONObject jsonObject = new JSONObject();
                         try {
                             jsonObject.put("floor",Integer.parseInt(text));
+                            obtainViewModel().start.postValue(false);
                             obtainViewModel().stopMap(jsonObject.toString(), new Action() {
                                 @Override
                                 public void click() {

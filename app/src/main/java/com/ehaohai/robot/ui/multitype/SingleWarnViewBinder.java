@@ -62,7 +62,7 @@ public class SingleWarnViewBinder extends ItemViewProvider<Warn, SingleWarnViewB
         binding.findTime.setText(warn.getTimeStamp());
         if(warn.getMoreInfo()!=null){
             binding.findType.setText(warn.getMoreInfo().getName());
-            binding.findResult.setText(warn.getMoreInfo().getAlarmInfo());
+            //binding.findResult.setText(warn.getMoreInfo().getAlarmInfo());
         }
         if(warn.getCount()%2==0){
             binding.click.setBackgroundResource(R.color.colorBlackBack2);
@@ -84,6 +84,7 @@ public class SingleWarnViewBinder extends ItemViewProvider<Warn, SingleWarnViewB
                 picUrls.add(warn.getImgPath());
                 Intent intent = new Intent(context, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
+                intent.putExtra("online",true);
                 context.startActivity(intent);
             }
         });
