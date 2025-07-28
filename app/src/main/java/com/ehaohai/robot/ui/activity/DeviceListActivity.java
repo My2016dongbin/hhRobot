@@ -142,12 +142,7 @@ public class DeviceListActivity extends BaseLiveActivity<ActivityDeviceListBindi
                     startActivity(new Intent(DeviceListActivity.this,DeviceSearchActivity.class));
                 }
             });
-            int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    screenWidth, // 宽度=屏幕宽度
-                    LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            binding.messageList.addView(dog, params);
+            binding.messageList.addView(dog);
         }else{
             View add = inflater.inflate(R.layout.item_device_add,null,false);
             CommonUtil.click(add, new Action() {
