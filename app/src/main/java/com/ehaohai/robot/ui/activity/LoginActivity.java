@@ -52,8 +52,8 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
-        binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userName,""));
-        binding.passwordEdit.setText((String)SPUtils.get(this, SPValue.password,""));
+        binding.usernameEdit.setText((String) SPUtils.get(this, SPValue.userName, ""));
+        binding.passwordEdit.setText((String) SPUtils.get(this, SPValue.password, ""));
 
 
         /*///TODO 默认自动登出
@@ -66,41 +66,43 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     private void bind_() {
         CommonUtil.click(binding.eye, () -> {
             obtainViewModel().eye = !obtainViewModel().eye;
-            if(obtainViewModel().eye){
+            if (obtainViewModel().eye) {
                 binding.eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_zheng));
                 binding.passwordEdit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }else{
+            } else {
                 binding.eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_bi));
                 binding.passwordEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             }
         });
         CommonUtil.click(binding.register, () -> {
-            startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
         CommonUtil.click(binding.forget, () -> {
-            startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
+            startActivity(new Intent(LoginActivity.this, ForgetActivity.class));
         });
         CommonUtil.click(binding.loginButton, () -> {
             ///在线模式
-            if(binding.usernameEdit.getText().toString().isEmpty()){
+            if (binding.usernameEdit.getText().toString().isEmpty()) {
                 Toast.makeText(LoginActivity.this, "请输入手机号或邮箱地址", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(binding.passwordEdit.getText().toString().isEmpty()){
+            if (binding.passwordEdit.getText().toString().isEmpty()) {
                 Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(!obtainViewModel().confirm){
+            if (!obtainViewModel().confirm) {
                 Toast.makeText(LoginActivity.this, "请先阅读并同意协议声明", Toast.LENGTH_SHORT).show();
                 return;
             }
-            /*///TODO 测试
-            SPUtils.put(HhApplication.getInstance(), SPValue.userName, binding.usernameEdit.getText().toString());
-            SPUtils.put(HhApplication.getInstance(), SPValue.password, binding.passwordEdit.getText().toString());
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            ///创建文件夹
-            createFiles("GHDWD7SAFG5A76");
-            finish();*/
+            if (binding.usernameEdit.getText().toString().equals("qc") && binding.passwordEdit.getText().toString().equals("888888")) {
+                ///TODO 测试
+                SPUtils.put(HhApplication.getInstance(), SPValue.userName, binding.usernameEdit.getText().toString());
+                SPUtils.put(HhApplication.getInstance(), SPValue.password, binding.passwordEdit.getText().toString());
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                ///创建文件夹
+                createFiles("GHDWD7SAFG5A76");
+                finish();
+            }
         });
         /*binding.offline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -124,9 +126,9 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
         });
         CommonUtil.click(binding.confirm, () -> {
             obtainViewModel().confirm = !obtainViewModel().confirm;
-            if(obtainViewModel().confirm){
+            if (obtainViewModel().confirm) {
                 binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
-            }else{
+            } else {
                 binding.confirm.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
             }
         });
@@ -134,11 +136,11 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
 
     private void createFiles(String snCode) {
         // 创建目录
-        File deviceDir = new File(getCacheDir()+"/device", snCode);
+        File deviceDir = new File(getCacheDir() + "/device", snCode);
         if (!deviceDir.exists()) deviceDir.mkdirs();
-        File picture = new File(getCacheDir()+"/device"+"/"+snCode, "picture");
+        File picture = new File(getCacheDir() + "/device" + "/" + snCode, "picture");
         if (!picture.exists()) picture.mkdirs();
-        File face = new File(getCacheDir()+"/device"+"/"+snCode, "face");
+        File face = new File(getCacheDir() + "/device" + "/" + snCode, "face");
         if (!face.exists()) face.mkdirs();
         try {
             // 创建 config 对象
@@ -180,7 +182,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     public void readConfigJson(String snCode) {
         try {
             // 找到文件路径
-            File configFile = new File(getCacheDir()+"/device/"+snCode, "config.json");
+            File configFile = new File(getCacheDir() + "/device/" + snCode, "config.json");
             if (!configFile.exists()) {
                 HhLog.e("Config", "配置文件不存在");
                 return;
@@ -254,6 +256,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
     }
 
     private boolean isExit = false;
+
     private void exit() {
         if (!isExit) {
             isExit = true;
@@ -263,7 +266,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
                 public void run() {
                     isExit = false;
                 }
-            },2000);
+            }, 2000);
         } else {
             finishAffinity();
         }

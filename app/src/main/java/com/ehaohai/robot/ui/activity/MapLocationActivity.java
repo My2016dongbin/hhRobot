@@ -2,13 +2,21 @@ package com.ehaohai.robot.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.alibaba.idst.nui.Constants;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Poi;
 import com.amap.api.navi.AmapNaviPage;
 import com.amap.api.navi.AmapNaviParams;
@@ -37,12 +45,38 @@ public class MapLocationActivity extends BaseLiveActivity<ActivityMapLocationBin
         NaviSetting.updatePrivacyShow(MapLocationActivity.this, true, true);
         NaviSetting.updatePrivacyAgree(MapLocationActivity.this, true);
         binding.mapView.onCreate(savedInstanceState);
+        obtainViewModel().aMap = binding.mapView.getMap();
+//        obtainViewModel().aMap.setMyLocationEnabled(true);
         init_();
         bind_();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
+        ///打点
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(new LatLng(36.289519,120.327248));
+        markerOption.title("青岛市")/*.snippet("青岛市：36.289519,120.327248")*/;
+
+        markerOption.draggable(true);//设置Marker可拖动
+        markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),R.mipmap.icon_marker)));
+        // 将Marker设置为贴地显示，可以双指下拉地图查看效果
+        markerOption.setFlat(true);//设置marker平贴地图效果
+        obtainViewModel().aMap.addMarker(markerOption);
+
+        // 定义 Marker 点击事件监听
+        AMap.OnMarkerClickListener markerClickListener = new AMap.OnMarkerClickListener() {
+            // marker 对象被点击时回调的接口
+            // 返回 true 则表示接口已响应事件，否则返回false
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                binding.warnLayout.openDrawer(GravityCompat.END);
+                return false;
+            }
+        };
+        // 绑定 Marker 被点击事件
+        obtainViewModel().aMap.setOnMarkerClickListener(markerClickListener);
 
     }
 

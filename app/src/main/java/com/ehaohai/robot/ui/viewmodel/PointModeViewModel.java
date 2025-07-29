@@ -274,14 +274,14 @@ public class PointModeViewModel extends BaseViewModel {
                 });
     }
 
-    public void stopPoint(Action click) {
+    public void stopPoint(String param,Action click) {
         loading.setValue(new LoadingEvent(true));
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("type","point");
             jsonObject.put("cmd","end");
             jsonObject.put("seq",new Random().nextInt(10000));
-            jsonObject.put("param","");
+            jsonObject.put("param",param);
         } catch (JSONException e) {
             e.printStackTrace();
         }

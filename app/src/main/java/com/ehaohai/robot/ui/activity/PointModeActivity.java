@@ -91,10 +91,21 @@ public class PointModeActivity extends BaseLiveActivity<ActivityPointModeBinding
                 }else{
                     //停止
                     obtainViewModel().start.postValue(false);
-                    obtainViewModel().stopPoint(new Action() {
+                    showFloorDialog("1", new OnInputConfirmListener() {
                         @Override
-                        public void click() {
-                            finish();
+                        public void onConfirm(String text) {
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("floor",Integer.parseInt(text));
+                                obtainViewModel().stopPoint(jsonObject.toString(),new Action() {
+                                    @Override
+                                    public void click() {
+                                        finish();
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
@@ -150,6 +161,47 @@ public class PointModeActivity extends BaseLiveActivity<ActivityPointModeBinding
                 dialog.dismiss();
             } else {
                 Toast.makeText(this, "打点名称不能为空", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            // 设置为屏幕宽度的 85% 可自适应不同机型
+            params.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.4);
+            window.setAttributes(params);
+        }
+    }
+
+
+    private void showFloorDialog(String defaultName, OnInputConfirmListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.TransparentDialog2);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_input_name, null);
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+
+        EditText etInput = view.findViewById(R.id.et_input);
+        TextView tvTitle = view.findViewById(R.id.tv_title);
+        TextView tvCancel = view.findViewById(R.id.tv_cancel);
+        TextView tvConfirm = view.findViewById(R.id.tv_confirm);
+
+        tvTitle.setText("请输入楼层数");
+        etInput.setText(defaultName);
+        etInput.setSelection(defaultName.length());
+        etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        tvCancel.setOnClickListener(v -> dialog.dismiss());
+        tvConfirm.setOnClickListener(v -> {
+            String input = etInput.getText().toString().trim();
+            if (!input.isEmpty()) {
+                listener.onConfirm(input);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "楼层数不能为空", Toast.LENGTH_SHORT).show();
             }
         });
 
