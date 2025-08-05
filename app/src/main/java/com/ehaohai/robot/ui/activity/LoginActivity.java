@@ -21,6 +21,7 @@ import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ActivityLoginBinding;
 import com.ehaohai.robot.ui.viewmodel.LoginViewModel;
 import com.ehaohai.robot.utils.Action;
@@ -148,7 +149,7 @@ public class LoginActivity extends BaseLiveActivity<ActivityLoginBinding, LoginV
 
             // 创建主 JSON 对象
             JSONObject root = new JSONObject();
-            root.put("ip", "172.16.10.54");
+            root.put("ip", URLConstant.LOCAL_IP);
             root.put("sn", "GHDWD7SAFG5A76");
             root.put("name", "浩海机器狗");
             root.put("account", "admin");

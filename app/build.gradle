@@ -62,7 +62,7 @@ android {
             applicationId "com.ehaohai.robot"//包名
             //resValue "string", "app_name", "浩海机器狗"   // 设置默认的app_name
             manifestPlaceholders = [
-                    APP_ICON: "@drawable/ic_mode_logo",//app图标
+                    APP_ICON: "@drawable/dog_icon",//app图标
                     CHANNEL_NAME: "haohaiVersion",
                     APP_NAME: "浩海机器狗",
                     AUTHORITIES: "com.ehaohai.robot.fileprovider",
@@ -73,7 +73,7 @@ android {
             dimension 'app'
             applicationId "com.ehaohai.robot"//包名
             manifestPlaceholders = [
-                    APP_ICON: "@drawable/ic_mode_logo",//app图标
+                    APP_ICON: "@drawable/dog_icon",//app图标
                     CHANNEL_NAME: "onceVersion",
                     APP_NAME: "浩海机器狗临时测试版${defaultConfig.versionName}",
                     AUTHORITIES: "com.ehaohai.robot.fileprovider",

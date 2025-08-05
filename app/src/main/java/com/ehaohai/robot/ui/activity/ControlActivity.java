@@ -30,9 +30,12 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.ehaohai.robot.HhApplication;
+import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ActivityControlBinding;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.model.Heart;
@@ -44,6 +47,9 @@ import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
+import com.ehaohai.robot.utils.SPUtils;
+import com.ehaohai.robot.utils.SPValue;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -60,6 +66,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, ControlViewModel> {
     BatteryReceiver batteryReceiver;
@@ -129,6 +138,16 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
         binding.back.setOnClickListener(view -> finish());
+        CommonUtil.click(binding.back, new Action() {
+            @Override
+            public void click() {
+                if(obtainViewModel().record){
+                    Toast.makeText(ControlActivity.this, "录制中，不允许退出操作页面，请先关闭", Toast.LENGTH_SHORT).show();
+                }else{
+                    finish();
+                }
+            }
+        });
         CommonUtil.click(binding.dataX, new Action() {
             @Override
             public void click() {
@@ -253,6 +272,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         binding.speak.setOnClickListener(view -> {
             obtainViewModel().speak = !obtainViewModel().speak;
             if (obtainViewModel().speak) {
+                permission();
                 CommonUtil.applyFancyAnimation(view);
                 voiceAnimation();
             } else {
@@ -371,8 +391,12 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             obtainViewModel().cloudSet = !obtainViewModel().cloudSet;
             if (obtainViewModel().cloudSet) {
                 binding.flCloudSet.setVisibility(View.VISIBLE);
+                binding.cloudSetImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_blue));
+                binding.cloudSetText.setTextColor(getResources().getColor(R.color.theme_color_blue));
             } else {
                 binding.flCloudSet.setVisibility(View.GONE);
+                binding.cloudSetImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_white));
+                binding.cloudSetText.setTextColor(getResources().getColor(R.color.gray1));
             }
         });
         ///云台-设置菜单-关闭按钮
@@ -406,11 +430,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             }
         });
         ///录像
-        CommonUtil.click(binding.record, () -> {
+        CommonUtil.click(binding.recordImage, () -> {
             obtainViewModel().record = !obtainViewModel().record;
             if (obtainViewModel().record) {
                 /*binding.videoCount.setVisibility(View.VISIBLE);
-                binding.record.setBackgroundResource(R.drawable.circle_line_red);
                 binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
                 //开始计时并录制
                 Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
@@ -419,8 +442,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             } else {
                 try {
                     binding.videoCount.setVisibility(View.GONE);
-                    binding.record.setBackgroundResource(R.drawable.circle_line_blue);
-                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_un));
+                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_image));
                     //关闭计时并保存录像
                     obtainViewModel().stopRecordTimes();
                     ScreenRecordService.stopRecording(this);
@@ -516,6 +538,32 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
     }
 
+    private void permission() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.RECORD_AUDIO)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean b) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     private boolean zoomDown = false;
     private String zoomParam = "";
 
@@ -546,6 +594,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         startActivityForResult(captureIntent, REQUEST_CODE_SCREEN_CAPTURE);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -563,8 +612,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 }
 
                 binding.videoCount.setVisibility(View.VISIBLE);
-                binding.record.setBackgroundResource(R.drawable.circle_line_red);
-                binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record));
+                binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_image_stop));
                 //开始计时并录制
                 Toast.makeText(ControlActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
                 obtainViewModel().startRecordTimes();

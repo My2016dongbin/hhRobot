@@ -505,7 +505,7 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
     public void onStartClick(Task task) {
         if(Objects.equals(CommonData.taskId+"", task.getTask_id()+"")){
             ///当前任务已下发
-            if(!Objects.equals(CommonData.taskStatus, "1")){
+            if(Objects.equals(CommonData.taskStatus, "1")){
                 //任务执行中
                 Toast.makeText(this, "当前任务正在执行中", Toast.LENGTH_SHORT).show();
             }else{

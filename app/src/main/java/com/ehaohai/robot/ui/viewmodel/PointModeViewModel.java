@@ -209,7 +209,9 @@ public class PointModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(30000)
+                .connTimeOut(40000)  // 设置连接超时
+                .readTimeOut(40000)  // 设置读取超时（可选）
+                .writeTimeOut(40000) // 设置写入超时（可选）
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {

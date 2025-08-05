@@ -368,14 +368,16 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp">
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:id="@+id/cloud_set_image"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_set" />
+                    android:src="@drawable/ic_set_white" />
                 <TextView
+                    android:id="@+id/cloud_set_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/theme_color_blue"
+                    android:textColor="@color/gray1"
                     android:textSize="12sp"
                     android:text="设置"/>
             </LinearLayout>
@@ -465,42 +467,30 @@
             </LinearLayout>
 
             <!--截图-->
-            <LinearLayout
+            <ImageView
                 android:id="@+id/screenshoot"
                 android:layout_marginTop="130dp"
                 android:layout_marginEnd="20dp"
                 android:orientation="vertical"
-                android:background="@drawable/circle_line_blue"
                 android:layout_gravity="end"
                 android:gravity="center"
                 android:layout_width="44dp"
-                android:layout_height="44dp">
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_screenshoot" />
-            </LinearLayout>
+                android:layout_height="44dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_picture_image" />
 
             <!--录像-->
-            <LinearLayout
-                android:id="@+id/record"
+            <ImageView
+                android:id="@+id/record_image"
                 android:layout_marginTop="182dp"
                 android:layout_marginEnd="20dp"
                 android:orientation="vertical"
-                android:background="@drawable/circle_line_blue"
                 android:layout_gravity="end"
                 android:gravity="center"
                 android:layout_width="44dp"
-                android:layout_height="44dp">
-                <ImageView
-                    android:id="@+id/record_image"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_record_un" />
-            </LinearLayout>
-
+                android:layout_height="44dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_record_image" />
 
             <ImageView
                 android:id="@+id/point_mode"

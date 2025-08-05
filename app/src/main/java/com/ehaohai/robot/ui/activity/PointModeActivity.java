@@ -248,7 +248,7 @@ public class PointModeActivity extends BaseLiveActivity<ActivityPointModeBinding
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void startChanged(boolean start) {
-        binding.pointStart.setImageDrawable(getResources().getDrawable(start?R.drawable.map_stop:R.drawable.point_add));
+        binding.pointStart.setImageDrawable(getResources().getDrawable(start?R.drawable.point_stop:R.drawable.point_add));
         binding.tag.setVisibility(start?View.VISIBLE:View.GONE);
     }
 

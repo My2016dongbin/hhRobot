@@ -42,6 +42,7 @@ import com.kongzue.dialogx.util.TextInfo;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.MediaPlayer;
@@ -53,6 +54,8 @@ import java.io.RandomAccessFile;
 import java.util.Objects;
 import java.util.Random;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding, AudioListViewModel> implements AudioViewBinder.OnItemClickListener {
@@ -109,13 +112,43 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
         CommonUtil.click(binding.record, () -> {
             obtainViewModel().recording = !obtainViewModel().recording;
             if(obtainViewModel().recording){
-                startRecordVoice();
-                obtainViewModel().startRecordTimes();
+                permission();
             }else{
                 stopRecordVoice();
                 obtainViewModel().stopRecordTimes();
             }
         });
+    }
+
+    private void permission() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.RECORD_AUDIO)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean b) {
+                        if(b){
+                            startRecordVoice();
+                            obtainViewModel().startRecordTimes();
+                        }else{
+                            obtainViewModel().recording = false;
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override
