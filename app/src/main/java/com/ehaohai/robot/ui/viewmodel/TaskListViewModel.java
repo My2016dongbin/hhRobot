@@ -22,6 +22,7 @@ import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import me.drakeet.multitype.MultiTypeAdapter;
@@ -117,9 +119,9 @@ public class TaskListViewModel extends BaseViewModel {
                     }
                 });*/
 
-        postAddTaskLocal(task);
+        addTaskLocal(task);
     }
-    public void postAddTaskLocal(Task task){
+    public void addTaskLocal(Task task){
         CommonUtil.addRobotTask(CommonData.sn,task);
         delayTaskListLocal();
     }
@@ -258,9 +260,7 @@ public class TaskListViewModel extends BaseViewModel {
 
         updateData();
 
-        if(taskList == null || taskList.isEmpty()){
-            postTaskListOnline();
-        }
+        postTaskListOnline();
     }
     public void postTaskListOnline(){
         loading.setValue(new LoadingEvent(true));
@@ -289,6 +289,27 @@ public class TaskListViewModel extends BaseViewModel {
                         Log.e("TAG", "onSuccess: TASK_COMMAND list = " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
+                            JSONObject param = jsonObject.getJSONObject("param");
+                            JSONObject route_json = param.getJSONObject("route_json");
+                            Task taskOnline = new Gson().fromJson(route_json.toString(), new TypeToken<Task>(){}.getType());
+                            if(taskList.size()==0){
+                                taskList.add(taskOnline);
+                                updateData();
+                            }else{
+                                int tag = 0;
+                                for (int i = 0; i < taskList.size(); i++) {
+                                    Task task = taskList.get(i);
+                                    if(Objects.equals(task.getTask_id(), taskOnline.getTask_id())){
+                                        return;
+                                    }else{
+                                        tag++;
+                                    }
+                                }
+                                if(tag >= taskList.size()){
+                                    taskList.add(taskOnline);
+                                    updateData();
+                                }
+                            }
 
 
                         } catch (Exception e) {

@@ -339,6 +339,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 binding.llCloud.setVisibility(View.GONE);
                 binding.dogLive.setVisibility(View.VISIBLE);
 
+                binding.pointMode.setVisibility(View.VISIBLE);
+                binding.mapMode.setVisibility(View.VISIBLE);
+
                 initLeftControl();
                 initRightControl();
 
@@ -373,6 +376,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
                 binding.llCloud.setVisibility(View.VISIBLE);
                 binding.dogLive.setVisibility(View.GONE);
+
+                binding.pointMode.setVisibility(View.GONE);
+                binding.mapMode.setVisibility(View.GONE);
 
                 initCloudControl();
 

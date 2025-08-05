@@ -1,5 +1,6 @@
 package com.ehaohai.robot;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMainBinding;
 import com.ehaohai.robot.event.Exit;
 import com.ehaohai.robot.event.UDPMessage;
+import com.ehaohai.robot.model.Heart;
 import com.ehaohai.robot.model.UdpMessage;
 import com.ehaohai.robot.ui.activity.ControlActivity;
 import com.ehaohai.robot.ui.activity.CustomNaviActivity;
@@ -65,6 +67,15 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(Exit event) {
         finish();
+    }
+
+
+    ///设备心跳数据
+    @SuppressLint("SetTextI18n")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(Heart heart) {
+        binding.battery.setPower(heart.getBatteryPercentage());
+        binding.batteryText.setText(heart.getBatteryPercentage()+"");
     }
 
 

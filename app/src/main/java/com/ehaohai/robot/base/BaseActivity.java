@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -83,7 +85,36 @@ public class BaseActivity extends AppCompatActivity{
                 window.setAttributes(attributes);
             }
         }
+
+        hideStatusBar(activity);
     }
+    protected void hideStatusBar(Activity activity) {
+        Window window = activity.getWindow();
+        View decorView = window.getDecorView();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11 及以上：使用 WindowInsetsController
+            final WindowInsetsController insetsController = decorView.getWindowInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars());
+                insetsController.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
+            }
+        } else {
+            // Android 4.4 ~ Android 10：使用旧版 FLAG
+            int flags = View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(flags);
+        }
+        // 保证状态栏区域背景透明（可选）
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
 
     protected void blackText(){
         //设置主题色白色 黑字

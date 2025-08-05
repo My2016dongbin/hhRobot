@@ -38,6 +38,7 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fullScreen(this);
         permissions();
     }
 

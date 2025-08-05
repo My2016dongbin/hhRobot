@@ -1885,12 +1885,14 @@ public class CommonUtil {
 
     public static String parseRouteShow(List<Task.Route> routeList) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < routeList.size(); i++) {
-            Task.Route route = routeList.get(i);
-            if(i>0){
-                builder.append(";");
+        if(routeList!=null){
+            for (int i = 0; i < routeList.size(); i++) {
+                Task.Route route = routeList.get(i);
+                if(i>0){
+                    builder.append(";");
+                }
+                builder.append(route.getPoi_name());
             }
-            builder.append(route.getPoi_name());
         }
         return builder.toString();
     }

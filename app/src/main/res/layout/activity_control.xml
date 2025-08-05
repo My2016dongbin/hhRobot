@@ -525,7 +525,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_gravity="bottom"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_control" />
+                android:src="@drawable/ic_control_cloud" />
             <!--(云台)设置步长焦距焦点-->
             <FrameLayout
                 android:id="@+id/fl_cloud_set"
