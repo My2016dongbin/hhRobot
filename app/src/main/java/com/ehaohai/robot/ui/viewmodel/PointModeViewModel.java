@@ -209,9 +209,9 @@ public class PointModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(40000)  // 设置连接超时
-                .readTimeOut(40000)  // 设置读取超时（可选）
-                .writeTimeOut(40000) // 设置写入超时（可选）
+                .connTimeOut(60000)  // 设置连接超时
+                .readTimeOut(60000)  // 设置读取超时（可选）
+                .writeTimeOut(60000) // 设置写入超时（可选）
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {
@@ -228,7 +228,7 @@ public class PointModeViewModel extends BaseViewModel {
 
                     @Override
                     public void onFailure(Call call, Exception e, int id) {
-                        HhLog.e("onFailure: " + e.toString());
+                        HhLog.e("onFailure: PointMode" + e.toString());
                         loading.setValue(new LoadingEvent(false));
                     }
                 });
@@ -295,7 +295,9 @@ public class PointModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(10000)
+                .connTimeOut(60000)  // 设置连接超时
+                .readTimeOut(60000)  // 设置读取超时（可选）
+                .writeTimeOut(60000) // 设置写入超时（可选）
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {

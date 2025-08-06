@@ -216,7 +216,9 @@ public class MapModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(30000)
+                .connTimeOut(60000)  // 设置连接超时
+                .readTimeOut(60000)  // 设置读取超时（可选）
+                .writeTimeOut(60000) // 设置写入超时（可选）
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {
@@ -233,7 +235,7 @@ public class MapModeViewModel extends BaseViewModel {
 
                     @Override
                     public void onFailure(Call call, Exception e, int id) {
-                        HhLog.e("onFailure: " + e.toString());
+                        HhLog.e("onFailure: MapMode" + e.toString());
                         loading.setValue(new LoadingEvent(false));
                     }
                 });
@@ -258,7 +260,9 @@ public class MapModeViewModel extends BaseViewModel {
                 .url(URLConstant.TASK_COMMAND())
                 .content(jsonObject.toString())
                 .build()
-                .connTimeOut(10000)
+                .connTimeOut(60000)  // 设置连接超时
+                .readTimeOut(60000)  // 设置读取超时（可选）
+                .writeTimeOut(60000) // 设置写入超时（可选）
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {
