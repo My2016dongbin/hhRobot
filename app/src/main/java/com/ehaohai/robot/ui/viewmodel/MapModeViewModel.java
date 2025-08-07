@@ -191,6 +191,7 @@ public class MapModeViewModel extends BaseViewModel {
             object.put("vx",CommonUtil.parseDoubleCount(vxPost*0.5));//建图模式限速
             object.put("vy",CommonUtil.parseDoubleCount(vyPost*0.5));//建图模式限速
             object.put("vyaw",CommonUtil.parseDoubleCount(vyawPost*0.5));//建图模式限速
+            object.put("timestamp",Calendar.getInstance().getTime().getTime()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }

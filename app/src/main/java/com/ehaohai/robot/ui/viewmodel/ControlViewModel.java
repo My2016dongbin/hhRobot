@@ -369,6 +369,7 @@ public class ControlViewModel extends BaseViewModel {
             object.put("vx",CommonUtil.parseDoubleCount(vxPost));
             object.put("vy",CommonUtil.parseDoubleCount(vyPost));
             object.put("vyaw",CommonUtil.parseDoubleCount(vyawPost));
+            object.put("timestamp",Calendar.getInstance().getTime().getTime()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
