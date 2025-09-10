@@ -499,6 +499,13 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
+        ///灭火器
+        binding.fire.setOnClickListener(view -> {
+            obtainViewModel().fire = true;
+            obtainViewModel().sportControl("manual", "sport", "Fire");
+            CommonUtil.applyFancyAnimation(view);
+            hideOtherButton(view);
+        });
 
         ///阻尼
         binding.zuNi.setOnClickListener(view -> {
@@ -675,6 +682,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         if (obtainViewModel().wuDao2 && view.getId() != binding.wuDao2.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.wuDao2);
             obtainViewModel().wuDao2 = false;
+        }
+        if (obtainViewModel().fire && view.getId() != binding.fire.getId()) {
+            CommonUtil.applyFancyBackAnimation(binding.fire);
+            obtainViewModel().fire = false;
         }
     }
 

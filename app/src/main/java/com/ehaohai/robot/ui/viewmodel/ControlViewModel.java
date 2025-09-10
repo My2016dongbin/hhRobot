@@ -51,6 +51,7 @@ public class ControlViewModel extends BaseViewModel {
     public boolean jump = false;
     public boolean wuDao1 = false;
     public boolean wuDao2 = false;
+    public boolean fire = false;
 
     public boolean zuNi = false;
     public boolean zhanLi = false;
