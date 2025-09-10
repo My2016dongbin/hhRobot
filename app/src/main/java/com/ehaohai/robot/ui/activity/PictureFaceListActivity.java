@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -235,9 +236,25 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if (photoFile != null) {
+            /*if (photoFile != null) {
                 obtainViewModel().facePath = photoFile.getPath();
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, obtainViewModel().facePath);
+                startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
+            }*/
+
+            if (photoFile != null) {
+                obtainViewModel().facePath = photoFile.getAbsolutePath();
+                Uri photoUri = FileProvider.getUriForFile(
+                        this,
+                        getPackageName() + ".fileprovider", // 与 Manifest 里的 authorities 对应
+                        photoFile
+                );
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+
+                // 重要：授予相机读写权限
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                 startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
             }
         }
@@ -403,7 +420,7 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
             //-多图片预览
             ///选择模式-点击未选图片
             if(!pic.isSelected()){
-                picUrls.add(pic.getImgUrl());
+                picUrls.add(CommonUtil.parseFaceImageUrl(pic.getImgUrl()));
                 Intent intent = new Intent(this, PictureViewerActivity.class);
                 intent.putStringArrayListExtra("urls", picUrls);
                 intent.putExtra("delete",true);
@@ -420,19 +437,19 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
             for (int i = 0; i < obtainViewModel().pictureList.size(); i++) {
                 FacePicture picture = obtainViewModel().pictureList.get(i);
                 if(picture.isSelected()){
-                    picUrls.add(picture.getImgUrl());
+                    picUrls.add(CommonUtil.parseFaceImageUrl(picture.getImgUrl()));
                     list.add(picture);
                 }
             }
             //已选0张图片
             if(picUrls.isEmpty()){
-                picUrls.add(pic.getImgUrl());
+                picUrls.add(CommonUtil.parseFaceImageUrl(pic.getImgUrl()));
             }
 
             int index = 0;
             for (int m = 0; m < picUrls.size(); m++) {
                 String url = picUrls.get(m);
-                if(Objects.equals(url, pic.getImgUrl())){
+                if(Objects.equals(url, CommonUtil.parseFaceImageUrl(pic.getImgUrl()))){
                     index = m;
                     break;
                 }
@@ -446,7 +463,7 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
         }else{
             //-单图片预览
             Intent intent = new Intent(this, PictureViewerActivity.class);
-            picUrls.add(pic.getImgUrl());
+            picUrls.add(CommonUtil.parseFaceImageUrl(pic.getImgUrl()));
             intent.putStringArrayListExtra("urls", picUrls);
             intent.putExtra("delete",true);
             intent.putExtra("online",true);

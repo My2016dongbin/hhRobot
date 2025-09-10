@@ -857,6 +857,22 @@ public class CommonUtil {
         return text;
     }
     /**
+     * 人脸库图片url
+     */
+    public static String parseFaceImageUrl(String str) {
+        String url = str;
+        if(str == null || str.isEmpty()){
+            return url;
+        }
+        try{
+            url = "http://" + URLConstant.LOCAL_IP + ":8011/" + "face/data/" + str.replace("/data/hh_robot/app/face/","");
+        }catch(Exception e){
+            HhLog.e(e.getMessage());
+        }
+        HhLog.e("url = " + url);
+        return url;
+    }
+    /**
      * String null ==> "" ==> defStr
      */
     public static String parse19String(String str,String defStr) {

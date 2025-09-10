@@ -18,6 +18,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.ehaohai.robot.BR;
 import com.ehaohai.robot.R;
+import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.databinding.ItemFacePictureListBinding;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonUtil;
@@ -58,7 +59,7 @@ public class FacePictureViewBinder extends ItemViewProvider<FacePicture, FacePic
         binding.setVariable(BR.adapter, this);
         binding.executePendingBindings(); //防止闪烁
 
-        Glide.with(context).load(Uri.parse(picture.getImgUrl()))
+        Glide.with(context).load(Uri.parse(CommonUtil.parseFaceImageUrl(picture.getImgUrl())))
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
                 .error(R.drawable.error_pic).into(binding.picture);
 
