@@ -22,6 +22,7 @@ import com.ehaohai.robot.ui.multitype.SingleWarnBugViewBinder;
 import com.ehaohai.robot.ui.multitype.SingleWarnViewBinder;
 import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.viewmodel.SingleWarnListViewModel;
+import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -117,6 +118,8 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
             obtainViewModel().postWarnList();
         });
         binding.map.setOnClickListener(view -> {
+            CommonData.warnList = obtainViewModel().warnList;
+            CommonData.bugList = obtainViewModel().bugList;
             startActivity(new Intent(SingleWarnListActivity.this,MapLocationActivity.class));
         });
         ///AI报警

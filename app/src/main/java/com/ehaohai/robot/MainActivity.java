@@ -170,7 +170,8 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
         CommonUtil.click(binding.modeButton, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(MainActivity.this, ModeActivity.class));
+                Toast.makeText(MainActivity.this, "敬请期待", Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(MainActivity.this, ModeActivity.class));
             }
         });
         CommonUtil.click(binding.warn, new Action() {

@@ -18,6 +18,7 @@ import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.ui.activity.LoginActivity;
 import com.ehaohai.robot.ui.multitype.Audio;
+import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.ehaohai.robot.utils.HhLog;
@@ -52,6 +53,8 @@ public class ControlViewModel extends BaseViewModel {
     public boolean wuDao1 = false;
     public boolean wuDao2 = false;
     public boolean fire = false;
+    //最新一条报警时间
+    public String warnDate = "";
 
     public boolean zuNi = false;
     public boolean zhanLi = false;
@@ -70,6 +73,8 @@ public class ControlViewModel extends BaseViewModel {
     public boolean record = false;
     public final MutableLiveData<String> recordTimes = new MutableLiveData<>();
     public final MutableLiveData<String> voiceTimes = new MutableLiveData<>();
+    public final MutableLiveData<String> audioName = new MutableLiveData<>();
+    public final MutableLiveData<Boolean> hasNewWarn = new MutableLiveData<>(false);
     public boolean stop = false;
     public int stopDistance = 160;
     public boolean isDog = true;
@@ -112,6 +117,83 @@ public class ControlViewModel extends BaseViewModel {
         dateVoice.set(Calendar.SECOND,0);
         voiceTimes.postValue(CommonUtil.parseZero(dateVoice.get(Calendar.HOUR_OF_DAY))+":"+CommonUtil.parseZero(dateVoice.get(Calendar.MINUTE))+":"+CommonUtil.parseZero(dateVoice.get(Calendar.SECOND)));
         runTimesVoice();
+    }
+
+    public void circleWarnList(){
+        HhHttp.get()
+                .url(URLConstant.ALARM_LIST())
+                .addParams("pageNum","1")
+                .addParams("pageSize","10")
+                .build()
+                .connTimeOut(10000)
+                .execute(new LoggedInStringCallback(this, context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        Log.e("TAG", "onSuccess: ALARM_LIST = " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            JSONArray items = data.getJSONArray("items");
+                            if(items.length()>0){
+                                JSONObject model = (JSONObject) items.get(0);
+                                Warn warn = new Gson().fromJson(model.toString(), new TypeToken<Warn>(){}.getType());
+                                if((!warnDate.equals(warn.getTimeStamp()+"")) && (!warnDate.isEmpty())){
+                                    //有新报警
+                                    hasNewWarn.postValue(true);
+                                    warnDate = warn.getTimeStamp()+"";
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            loading.setValue(new LoadingEvent(false));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        loading.setValue(new LoadingEvent(false, ""));
+                    }
+                });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                circleWarnList();
+            }
+        },10000);
+    }
+
+
+    public void getAudioList() {
+        HhHttp.post()
+                .url(URLConstant.GET_AUDIO_LIST())
+                .build()
+                .execute(new LoggedInStringCallback(this,context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        HhLog.e("onSuccess: post GET_AUDIO_LIST " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray videos = jsonObject.getJSONArray("videos");
+                            if (videos.length()>0) {
+                                JSONObject model = (JSONObject) videos.get(0);
+                                String name = model.getString("filename")+"";
+                                audioName.postValue(name.replace(".wav",""));
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        msg.setValue(e.getMessage());
+                    }
+                });
     }
 
     public void uploadAudio() {

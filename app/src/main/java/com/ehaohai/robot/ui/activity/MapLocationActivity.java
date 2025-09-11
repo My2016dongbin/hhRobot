@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.alibaba.idst.nui.Constants;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -23,15 +24,18 @@ import com.amap.api.navi.AmapNaviParams;
 import com.amap.api.navi.AmapNaviType;
 import com.amap.api.navi.AmapPageType;
 import com.amap.api.navi.NaviSetting;
+import com.bumptech.glide.Glide;
 import com.ehaohai.robot.MainActivity;
 import com.ehaohai.robot.R;
 import com.ehaohai.robot.base.BaseLiveActivity;
 import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityMapLocationBinding;
+import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.viewmodel.MapLocationViewModel;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
+import com.ehaohai.robot.utils.HhLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,6 @@ public class MapLocationActivity extends BaseLiveActivity<ActivityMapLocationBin
         NaviSetting.updatePrivacyAgree(MapLocationActivity.this, true);
         binding.mapView.onCreate(savedInstanceState);
         obtainViewModel().aMap = binding.mapView.getMap();
-//        obtainViewModel().aMap.setMyLocationEnabled(true);
         init_();
         bind_();
     }
@@ -54,23 +57,76 @@ public class MapLocationActivity extends BaseLiveActivity<ActivityMapLocationBin
     @SuppressLint("UseCompatLoadingForDrawables")
     private void init_() {
         ///打点
-        MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(new LatLng(36.289519,120.327248));
-        markerOption.title("青岛市")/*.snippet("青岛市：36.289519,120.327248")*/;
+        if(CommonData.warnList.size()>0){
+            for (int i = 0; i < CommonData.warnList.size(); i++) {
+                try {
+                    Warn warn = CommonData.warnList.get(i);
+                    Warn.LocationData locationData = warn.getLocationData();
+                    MarkerOptions markerOption = new MarkerOptions();
+                    markerOption.position(new LatLng(locationData.getLatitude(),locationData.getLongitude()));
+                    markerOption.title(warn.getDeviceName());
 
-        markerOption.draggable(true);//设置Marker可拖动
-        markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                .decodeResource(getResources(),R.mipmap.icon_marker)));
-        // 将Marker设置为贴地显示，可以双指下拉地图查看效果
-        markerOption.setFlat(true);//设置marker平贴地图效果
-        obtainViewModel().aMap.addMarker(markerOption);
+                    markerOption.draggable(false);//设置Marker可拖动
+                    markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                            .decodeResource(getResources(),R.mipmap.icon_marker)));
+                    // 将Marker设置为贴地显示，可以双指下拉地图查看效果
+                    markerOption.setFlat(true);//设置marker平贴地图效果
+                    Marker marker = obtainViewModel().aMap.addMarker(markerOption);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id",warn.getId());
+                    bundle.putString("time",warn.getTimeStamp());
+                    if(warn.getMoreInfo()!=null){
+                        bundle.putString("name",warn.getMoreInfo().getAlarmInfo());
+                        bundle.putString("type",warn.getMoreInfo().getName());
+                    }
+                    bundle.putString("url",warn.getImgPath());
+                    marker.setObject(bundle);
+                }catch (Exception e){
+                    //
+                }
+            }
+        }
+        try{
+            ///地图移动到第一条
+            Warn.LocationData locationData = CommonData.warnList.get(0).getLocationData();
+            obtainViewModel().aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationData.getLatitude(),locationData.getLongitude()),16));
+        }catch (Exception e){
+            //
+        }
+        /*if(CommonData.bugList.size()>0){
+            for (int i = 0; i < CommonData.bugList.size(); i++) {
+                try {
+                    Warn warn = CommonData.bugList.get(i);
+                    MarkerOptions markerOption = new MarkerOptions();
+                    markerOption.position(new LatLng(36.289519,120.327248));
+                    markerOption.title(warn.getDeviceName());
+
+                    markerOption.draggable(false);//设置Marker可拖动
+                    markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                            .decodeResource(getResources(),R.mipmap.icon_marker)));
+                    // 将Marker设置为贴地显示，可以双指下拉地图查看效果
+                    markerOption.setFlat(true);//设置marker平贴地图效果
+                    obtainViewModel().aMap.addMarker(markerOption);
+                }catch (Exception e){
+                    //
+                }
+            }
+        }*/
 
         // 定义 Marker 点击事件监听
         AMap.OnMarkerClickListener markerClickListener = new AMap.OnMarkerClickListener() {
             // marker 对象被点击时回调的接口
             // 返回 true 则表示接口已响应事件，否则返回false
+            @SuppressLint("SetTextI18n")
             @Override
             public boolean onMarkerClick(Marker marker) {
+                Bundle bundle = (Bundle) marker.getObject();
+                binding.warnName.setText(bundle.getString("name")+"");
+                binding.warnTime.setText(bundle.getString("time")+"");
+                binding.warnType.setText(bundle.getString("type")+"");
+                Glide.with(MapLocationActivity.this).load(bundle.getString("url")+"")
+                                .error(getResources().getDrawable(R.drawable.error_pic))
+                        .into(binding.warnImage);
                 binding.warnLayout.openDrawer(GravityCompat.END);
                 return false;
             }
@@ -162,5 +218,8 @@ public class MapLocationActivity extends BaseLiveActivity<ActivityMapLocationBin
     protected void onDestroy() {
         super.onDestroy();
         binding.mapView.onDestroy();
+
+        CommonData.warnList = new ArrayList<>();
+        CommonData.bugList = new ArrayList<>();
     }
 }

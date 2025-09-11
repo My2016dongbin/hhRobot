@@ -3,6 +3,7 @@ package com.ehaohai.robot.utils;
 
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.ui.multitype.Point;
+import com.ehaohai.robot.ui.multitype.Warn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,9 @@ public class CommonData {
     public static double lng_old = 0;
     public static String mode = "常规模式";
     public static List<Point> routeList = new ArrayList<>();
+
+    public static List<Warn> warnList = new ArrayList<>();
+    public static List<Warn> bugList = new ArrayList<>();
 
 
     public static boolean networkMode = false;//在线模式&&离线模式

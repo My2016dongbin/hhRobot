@@ -9,6 +9,7 @@ public class Warn {
     private String deviceType;
     private String deviceName;
     private MoreInfo moreInfo;
+    private LocationData locationData;
     private String imgPath;
     private String isRead;
 
@@ -18,6 +19,14 @@ public class Warn {
 
     private List<Err> errList;
     private String created_time;
+
+    public LocationData getLocationData() {
+        return locationData;
+    }
+
+    public void setLocationData(LocationData locationData) {
+        this.locationData = locationData;
+    }
 
     public List<Err> getErrList() {
         return errList;
@@ -111,6 +120,38 @@ public class Warn {
     }
 
     public Warn() {
+    }
+
+    public static class LocationData{
+        private double latitude;
+        private double longitude;
+
+        public LocationData() {
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+
+        @Override
+        public String toString() {
+            return "LocationData{" +
+                    "latitude=" + latitude +
+                    ", longitude=" + longitude +
+                    '}';
+        }
     }
 
     public int getCount() {
@@ -210,11 +251,14 @@ public class Warn {
                 ", deviceType='" + deviceType + '\'' +
                 ", deviceName='" + deviceName + '\'' +
                 ", moreInfo=" + moreInfo +
+                ", locationData=" + locationData +
                 ", imgPath='" + imgPath + '\'' +
                 ", isRead='" + isRead + '\'' +
                 ", msgType='" + msgType + '\'' +
                 ", deviceSn='" + deviceSn + '\'' +
                 ", detectType='" + detectType + '\'' +
+                ", errList=" + errList +
+                ", created_time='" + created_time + '\'' +
                 '}';
     }
 }

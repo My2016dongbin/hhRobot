@@ -92,6 +92,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         EventBus.getDefault().register(this);
         init_();
         bind_();
+
+        obtainViewModel().circleWarnList();
+        obtainViewModel().getAudioList();
     }
 
     ///设备心跳数据
@@ -266,6 +269,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///报警
         CommonUtil.click(binding.warn, () -> {
+            obtainViewModel().hasNewWarn.postValue(false);
             startActivity(new Intent(ControlActivity.this, SingleWarnListActivity.class));
         });
         ///对讲
@@ -326,7 +330,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 binding.warn.setVisibility(View.VISIBLE);
                 binding.speak.setVisibility(View.VISIBLE);
                 binding.force.setVisibility(View.VISIBLE);
-                binding.notice.setVisibility(View.VISIBLE);
+                //binding.notice.setVisibility(View.VISIBLE);
                 binding.stop.setVisibility(View.VISIBLE);
                 binding.controlLeft.setVisibility(View.VISIBLE);
                 binding.controlRight.setVisibility(View.VISIBLE);
@@ -368,7 +372,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 binding.warn.setVisibility(View.GONE);
                 binding.speak.setVisibility(View.GONE);
                 binding.force.setVisibility(View.GONE);
-                binding.notice.setVisibility(View.GONE);
+                //binding.notice.setVisibility(View.GONE);
                 binding.stop.setVisibility(View.GONE);
                 binding.controlLeft.setVisibility(View.GONE);
                 binding.controlRight.setVisibility(View.GONE);
@@ -421,10 +425,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().sportControl("manual", "obstacle", "OFF");
             }
         });
-        ///通知
+        /*///通知
         CommonUtil.click(binding.notice, () -> {
-//            Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
-        });
+            Toast.makeText(ControlActivity.this, "通知", Toast.LENGTH_SHORT).show();
+        });*/
         ///截图
         CommonUtil.click(binding.screenshoot, () -> {
             if (obtainViewModel().isDog) {
@@ -464,13 +468,13 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
         });
-        ///比心
+        /*///比心
         binding.biXin.setOnClickListener(view -> {
             obtainViewModel().biXin = true;
             obtainViewModel().sportControl("manual", "sport", "content");
             CommonUtil.applyFancyAnimation(view);
             hideOtherButton(view);
-        });
+        });*/
         ///扑人
         binding.puRen.setOnClickListener(view -> {
             obtainViewModel().puRen = true;
@@ -535,13 +539,13 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
-        ///停止动作
+        /*///停止动作
         binding.lock.setOnClickListener(view -> {
             obtainViewModel().lock = true;
             obtainViewModel().sportControl("manual", "sport", "StopMove");
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
-        });
+        });*/
         ///打招呼
         binding.daZhaoHu.setOnClickListener(view -> {
             obtainViewModel().daZhaoHu = true;
@@ -663,10 +667,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyBackAnimation(binding.shenLanYao);
             obtainViewModel().shenLanYao = false;
         }
-        if (obtainViewModel().biXin && view.getId() != binding.biXin.getId()) {
+        /*if (obtainViewModel().biXin && view.getId() != binding.biXin.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.biXin);
             obtainViewModel().biXin = false;
-        }
+        }*/
         if (obtainViewModel().puRen && view.getId() != binding.puRen.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.puRen);
             obtainViewModel().puRen = false;
@@ -706,10 +710,10 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyBackAnimation(binding.woDao);
             obtainViewModel().woDao = false;
         }
-        if (obtainViewModel().lock && view.getId() != binding.lock.getId()) {
+        /*if (obtainViewModel().lock && view.getId() != binding.lock.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.lock);
             obtainViewModel().lock = false;
-        }
+        }*/
         if (obtainViewModel().daZhaoHu && view.getId() != binding.daZhaoHu.getId()) {
             CommonUtil.applyFancyBackAnimation(binding.daZhaoHu);
             obtainViewModel().daZhaoHu = false;
@@ -740,8 +744,23 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
         obtainViewModel().recordTimes.observe(this, this::recordTimesChanged);
         obtainViewModel().voiceTimes.observe(this, this::voiceTimesChanged);
+        obtainViewModel().audioName.observe(this, this::audioNameChanged);
         obtainViewModel().pan.observe(this, this::panChanged);
         obtainViewModel().data.observe(this, this::dataChanged);
+        obtainViewModel().hasNewWarn.observe(this, this::hasNewWarn);
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void hasNewWarn(boolean hasNew) {
+        if(hasNew){
+            binding.warn.setBackground(getResources().getDrawable(R.drawable.circle_line_red));
+            binding.warnIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_warn_red));
+            binding.warnText.setTextColor(getResources().getColor(R.color.redColor));
+        }else{
+            binding.warn.setBackground(getResources().getDrawable(R.drawable.circle_line_blue));
+            binding.warnIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_warn));
+            binding.warnText.setTextColor(getResources().getColor(R.color.theme_color_blue));
+        }
     }
 
     private void recordTimesChanged(String recordTimes) {
@@ -750,6 +769,9 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
     private void voiceTimesChanged(String recordTimes) {
         binding.voiceCount.setText(recordTimes);
+    }
+    private void audioNameChanged(String audioName) {
+        binding.audioName.setText(audioName);
     }
 
     private void panChanged(boolean pan) {
