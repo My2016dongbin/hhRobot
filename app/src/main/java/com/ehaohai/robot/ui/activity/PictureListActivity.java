@@ -301,9 +301,25 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if (photoFile != null) {
+            /*if (photoFile != null) {
                 obtainViewModel().facePath = photoFile.getPath();
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, obtainViewModel().facePath);
+                startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
+            }*/
+
+            if (photoFile != null) {
+                obtainViewModel().facePath = photoFile.getAbsolutePath();
+                Uri photoUri = FileProvider.getUriForFile(
+                        this,
+                        getPackageName() + ".fileprovider", // 与 Manifest 里的 authorities 对应
+                        photoFile
+                );
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+
+                // 重要：授予相机读写权限
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                 startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
             }
         }
