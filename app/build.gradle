@@ -258,4 +258,18 @@ dependencies {
 //    implementation 'com.amap.api:navi-3dmap:latest.integration'
     implementation 'com.contrarywind:Android-PickerView:4.1.9'
 
+
+    // CameraX 核心库
+    def camerax_version = "1.2.3"
+
+    implementation "androidx.camera:camera-core:$camerax_version"
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+
+    // 用于在 PreviewView 中显示取景画面
+    implementation "androidx.camera:camera-view:1.2.3"
+
+    // 可选：如果要用 ML Kit / 图像分析
+    implementation "androidx.camera:camera-extensions:1.2.3"
+
 }

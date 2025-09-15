@@ -142,6 +142,8 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.MapLocationActivity"
             android:screenOrientation="landscape"/>
+        <activity android:name=".ui.activity.CameraXActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
             android:screenOrientation="landscape">
             <intent-filter>

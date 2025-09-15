@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -322,6 +324,9 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
 
                 startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
             }
+        }else{
+            // ------- 鸿蒙等不支持 ACTION_IMAGE_CAPTURE 的机型，走内置相机 -------
+            openCameraX();
         }
     }
     @Override
@@ -371,9 +376,27 @@ public class PictureListActivity extends BaseLiveActivity<ActivityPictureListBin
                     }
 
                 }
+            }else if (requestCode == 2001) {
+                String imagePath = data.getStringExtra(CameraXActivity.EXTRA_RESULT_PATH);
+                if (imagePath != null) {
+                    HhLog.e("ImagePath", "Selected image path: REQUEST_CODE_CAMERAX " + imagePath);
+                    showInputDialog("", text -> {
+                        obtainViewModel().createFaceFile(text, imagePath);
+                    });
+                }
             }
+
         }
     }
+
+    private void openCameraX() {
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            intent = new Intent(this, CameraXActivity.class);
+        }
+        startActivityForResult(intent, 2001);
+    }
+
 
     @SuppressLint("IntentReset")
     private void openGallery() {

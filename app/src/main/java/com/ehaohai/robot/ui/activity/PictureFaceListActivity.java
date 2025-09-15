@@ -224,6 +224,7 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
     }
 
     private void takePhoto() {
+        HhLog.e("takePhoto");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
@@ -257,6 +258,9 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
 
                 startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
             }
+        }else{
+            // ------- 鸿蒙等不支持 ACTION_IMAGE_CAPTURE 的机型，走内置相机 -------
+            openCameraX();
         }
     }
     @Override
@@ -308,8 +312,25 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
                     }
 
                 }
+            }else if (requestCode == 2001) {
+                String imagePath = data.getStringExtra(CameraXActivity.EXTRA_RESULT_PATH);
+                if (imagePath != null) {
+                    HhLog.e("ImagePath", "Selected image path: REQUEST_CODE_CAMERAX " + imagePath);
+                    showInputDialog("", text -> {
+                        obtainViewModel().createFaceFile(text, imagePath);
+                    });
+                }
             }
+
         }
+    }
+
+    private void openCameraX() {
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            intent = new Intent(this, CameraXActivity.class);
+        }
+        startActivityForResult(intent, 2001);
     }
 
     @SuppressLint("IntentReset")
