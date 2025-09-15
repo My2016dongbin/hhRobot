@@ -87,6 +87,15 @@ public class DeviceSearchActivity extends BaseLiveActivity<ActivityDeviceSearchB
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     private void init_() {
+        try{
+            WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiManager.MulticastLock lock = wifi.createMulticastLock("udpLock");
+            lock.acquire();
+            //lock.release();
+        }catch (Exception e){
+            //
+        }
+
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         // 启动接收线程
         udpReceiver = new UDPReceiver(wifiManager);

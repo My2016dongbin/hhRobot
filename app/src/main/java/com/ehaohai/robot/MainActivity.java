@@ -1,7 +1,9 @@
 package com.ehaohai.robot;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -108,6 +110,15 @@ public class MainActivity extends BaseLiveActivity<ActivityMainBinding, MainView
 
 
     private void init_() {
+        try{
+            WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiManager.MulticastLock lock = wifi.createMulticastLock("udpLock");
+            lock.acquire();
+            //lock.release();
+        }catch (Exception e){
+            //
+        }
+
         ///启动心跳服务
         Intent intent = new Intent(this, PersistentForegroundService.class);
         startService(intent);
