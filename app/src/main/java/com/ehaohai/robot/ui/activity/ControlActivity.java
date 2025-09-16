@@ -145,8 +145,22 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             @Override
             public void click() {
                 if(obtainViewModel().record){
-                    Toast.makeText(ControlActivity.this, "录制中，不允许退出操作页面，请先关闭", Toast.LENGTH_SHORT).show();
-                }else{
+                    CommonUtil.showConfirm(ControlActivity.this, "您正在进行录像，确定要结束录像吗？", "是", "取消", new Action() {
+                        @Override
+                        public void click() {
+                            ///保存录像并下一步
+                            saveVideo();
+                            delayAction(2000, new Action() {
+                                @Override
+                                public void click() {
+                                    finish();
+                                }
+                            });
+                        }
+                    }, () -> {
+
+                    },true);
+                }else {
                     finish();
                 }
             }
@@ -160,13 +174,49 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         CommonUtil.click(binding.mapMode, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(ControlActivity.this, MapModeActivity.class));
+                if(obtainViewModel().record){
+                    CommonUtil.showConfirm(ControlActivity.this, "您正在进行录像，确定要结束录像吗？", "是", "取消", new Action() {
+                        @Override
+                        public void click() {
+                            ///保存录像并下一步
+                            saveVideo();
+                            delayAction(2000, new Action() {
+                                @Override
+                                public void click() {
+                                    startActivity(new Intent(ControlActivity.this, MapModeActivity.class));
+                                }
+                            });
+                        }
+                    }, () -> {
+
+                    },true);
+                }else {
+                    startActivity(new Intent(ControlActivity.this, MapModeActivity.class));
+                }
             }
         });
         CommonUtil.click(binding.pointMode, new Action() {
             @Override
             public void click() {
-                startActivity(new Intent(ControlActivity.this, PointModeActivity.class));
+                if(obtainViewModel().record){
+                    CommonUtil.showConfirm(ControlActivity.this, "您正在进行录像，确定要结束录像吗？", "是", "取消", new Action() {
+                        @Override
+                        public void click() {
+                            ///保存录像并下一步
+                            saveVideo();
+                            delayAction(2000, new Action() {
+                                @Override
+                                public void click() {
+                                    startActivity(new Intent(ControlActivity.this, PointModeActivity.class));
+                                }
+                            });
+                        }
+                    }, () -> {
+
+                    },true);
+                }else {
+                    startActivity(new Intent(ControlActivity.this, PointModeActivity.class));
+                }
             }
         });
         binding.switchData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -238,8 +288,25 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         //播放器
         binding.llPlayer.setOnClickListener(view -> {
-            //startActivity(new Intent(this,AudioLocalListActivity.class));
-            startActivity(new Intent(this, AudioListActivity.class));
+            if(obtainViewModel().record){
+                CommonUtil.showConfirm(ControlActivity.this, "您正在进行录像，确定要结束录像吗？", "是", "取消", new Action() {
+                    @Override
+                    public void click() {
+                        ///保存录像并下一步
+                        saveVideo();
+                        delayAction(2000, new Action() {
+                            @Override
+                            public void click() {
+                                startActivity(new Intent(ControlActivity.this, AudioListActivity.class));
+                            }
+                        });
+                    }
+                }, () -> {
+
+                },true);
+            }else {
+                startActivity(new Intent(ControlActivity.this, AudioListActivity.class));
+            }
         });
         //设置
         binding.setting.setOnClickListener(view -> {
@@ -269,8 +336,27 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
         });
         ///报警
         CommonUtil.click(binding.warn, () -> {
-            obtainViewModel().hasNewWarn.postValue(false);
-            startActivity(new Intent(ControlActivity.this, SingleWarnListActivity.class));
+            if(obtainViewModel().record){
+                CommonUtil.showConfirm(ControlActivity.this, "您正在进行录像，确定要结束录像吗？", "是", "取消", new Action() {
+                    @Override
+                    public void click() {
+                        ///保存录像并下一步
+                        saveVideo();
+                        delayAction(2000, new Action() {
+                            @Override
+                            public void click() {
+                                obtainViewModel().hasNewWarn.postValue(false);
+                                startActivity(new Intent(ControlActivity.this, SingleWarnListActivity.class));
+                            }
+                        });
+                    }
+                }, () -> {
+
+                },true);
+            }else {
+                obtainViewModel().hasNewWarn.postValue(false);
+                startActivity(new Intent(ControlActivity.this, SingleWarnListActivity.class));
+            }
         });
         ///对讲
         binding.speak.setOnClickListener(view -> {
@@ -450,15 +536,7 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
                 obtainViewModel().startRecordTimes();*/
                 requestScreenCapture();
             } else {
-                try {
-                    binding.videoCount.setVisibility(View.GONE);
-                    binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_image));
-                    //关闭计时并保存录像
-                    obtainViewModel().stopRecordTimes();
-                    ScreenRecordService.stopRecording(this);
-                } catch (Exception e) {
-                    //
-                }
+                saveVideo();
             }
         });
         ///伸懒腰
@@ -553,6 +631,28 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
             CommonUtil.applyFancyAnimation(view);
             hideOtherButtonStatus(view);
         });
+    }
+
+    void delayAction(long delayMillis,Action action){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                action.click();
+            }
+        },delayMillis);
+    }
+
+
+    private void saveVideo() {
+        try {
+            binding.videoCount.setVisibility(View.GONE);
+            binding.recordImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_image));
+            //关闭计时并保存录像
+            obtainViewModel().stopRecordTimes();
+            ScreenRecordService.stopRecording(this);
+        } catch (Exception e) {
+            //
+        }
     }
 
     private void permission() {

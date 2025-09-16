@@ -73,12 +73,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <View
+                        android:visibility="gone"
                         android:layout_gravity="center"
                         android:background="@drawable/circle_red_4"
                         android:layout_width="8dp"
                         android:layout_height="8dp"/>
                     <TextView
-                        android:text="V1.10.0-12273c"
+                        android:text="V1.0.0-0916rc"
                         android:layout_marginStart="10dp"
                         android:textColor="@color/c4"
                         android:textSize="18sp"
@@ -89,7 +90,7 @@
                     android:id="@+id/update"
                     android:layout_marginTop="20dp"
                     android:layout_gravity="center_horizontal"
-                    android:text="更新到最新版本"
+                    android:text="已更新到最新版本"
                     android:gravity="center"
                     android:textColor="@color/c"
                     android:textSize="14sp"
