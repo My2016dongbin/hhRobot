@@ -82,6 +82,9 @@
                         android:textColor="@color/gray1"
                         android:textSize="14sp"
                         android:text=""
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:maxLength="20"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>
                     <LinearLayout

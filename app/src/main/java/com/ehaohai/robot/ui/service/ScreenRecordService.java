@@ -95,8 +95,8 @@ public class ScreenRecordService extends Service {
 
     private void startRecording() {
         try {
-            int width = 720;
-            int height = 1280;
+            int width = 1080;
+            int height = 1920;
             int dpi = getResources().getDisplayMetrics().densityDpi;
 
             mediaRecorder = new MediaRecorder();
@@ -106,7 +106,7 @@ public class ScreenRecordService extends Service {
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mediaRecorder.setOutputFile(videoPath);
             mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-            mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
+            mediaRecorder.setVideoEncodingBitRate(8 * 1024 * 1024);
             mediaRecorder.setVideoFrameRate(30);
             mediaRecorder.setVideoSize(width, height);
 

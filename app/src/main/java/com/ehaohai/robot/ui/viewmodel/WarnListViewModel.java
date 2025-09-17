@@ -14,12 +14,15 @@ import com.ehaohai.robot.base.LoggedInStringCallback;
 import com.ehaohai.robot.constant.HhHttp;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
+import com.ehaohai.robot.model.WarnType;
 import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.utils.HhLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhy.http.okhttp.builder.GetBuilder;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,6 +41,8 @@ public class WarnListViewModel extends BaseViewModel {
     public final MutableLiveData<Integer> bugNum = new MutableLiveData<>();
     public final MutableLiveData<String> todayCount = new MutableLiveData<>();
     public final MutableLiveData<String> allCount = new MutableLiveData<>();
+    public final MutableLiveData<Boolean> filterWarnType = new MutableLiveData<>(false);
+    public final MutableLiveData<Integer> filterWarnTypeIndex = new MutableLiveData<>(0);
     public MultiTypeAdapter aiAdapter;
     public MultiTypeAdapter bugAdapter;
     public List<Object> aiItems = new ArrayList<>();
@@ -47,6 +52,7 @@ public class WarnListViewModel extends BaseViewModel {
     public boolean isAi = true;
     public int pageNumAi = 1;
     public int pageNumBug = 1;
+    public List<WarnType> warnTypes = new ArrayList<>();
 
     public void start(Context context) {
         this.context = context;
@@ -55,15 +61,24 @@ public class WarnListViewModel extends BaseViewModel {
 
     public void postWarnList(){
         getAiUnRead();
-        HhHttp.get()
+        String code = null;
+        if(warnTypes!=null && warnTypes.size()>0){
+            code = warnTypes.get(filterWarnTypeIndex.getValue()).getCode();
+        }
+        GetBuilder getBuilder = HhHttp.get()
                 .url(URLConstant.ALARM_LIST())
-                .addParams("pageNum",pageNumAi+"")
-                .addParams("pageSize","10")
-                .build()
+                .addParams("pageNum", pageNumAi + "")
+                .addParams("pageSize", "10");
+        if(code!=null){
+            getBuilder.addParams("alarm_type",code);
+        }
+        loading.setValue(new LoadingEvent(true));
+        getBuilder.build()
                 .connTimeOut(10000)
                 .execute(new LoggedInStringCallback(this, context) {
                     @Override
                     public void onSuccess(String response, int id) {
+                        loading.setValue(new LoadingEvent(false));
                         Log.e("TAG", "onSuccess: ALARM_LIST = " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -343,5 +358,15 @@ public class WarnListViewModel extends BaseViewModel {
                         loading.setValue(new LoadingEvent(false, ""));
                     }
                 });
+    }
+
+    public void initWarnTypes() {
+        warnTypes = new ArrayList<>();
+        warnTypes.add(new WarnType(null,"全部"));
+        warnTypes.add(new WarnType("hat_recognition_service","安全帽检测"));
+        warnTypes.add(new WarnType("fire_recognition_service","火焰检测"));
+        warnTypes.add(new WarnType("face_recognition_service","人脸识别算法报警"));
+        warnTypes.add(new WarnType("lighting_check_service","灯光识别"));
+        warnTypes.add(new WarnType("smoking_recognition_service","抽烟识别"));
     }
 }

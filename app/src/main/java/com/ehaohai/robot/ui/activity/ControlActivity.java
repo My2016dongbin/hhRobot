@@ -49,6 +49,7 @@ import com.ehaohai.robot.utils.HhLog;
 import com.ehaohai.robot.utils.NetworkSpeedMonitor;
 import com.ehaohai.robot.utils.SPUtils;
 import com.ehaohai.robot.utils.SPValue;
+import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,6 +67,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -140,7 +142,46 @@ public class ControlActivity extends BaseLiveActivity<ActivityControlBinding, Co
 
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void bind_() {
+        binding.settingLayout.setScrimColor(getResources().getColor(R.color.transparent));
         binding.back.setOnClickListener(view -> finish());
+        CommonUtil.click(binding.playerChange, new Action() {
+            @Override
+            public void click() {
+                if(Objects.equals(obtainViewModel().playType, "0")){
+                    obtainViewModel().playType = "1";
+                    //切换列表循环
+                    binding.playerChange.setImageDrawable(getResources().getDrawable(R.drawable.ic_roll));
+                }else{
+                    obtainViewModel().playType = "0";
+                    //切换单曲循环
+                    binding.playerChange.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_white));
+                }
+            }
+        });
+        CommonUtil.click(binding.playerControl, new Action() {
+            @Override
+            public void click() {
+                if(!obtainViewModel().playing){
+                    if(Objects.equals(obtainViewModel().playType, "0")){
+                        //单曲循环
+                        obtainViewModel().audioPlay("aplay","SP",new Gson().toJson(obtainViewModel().audioNameList.subList(0,1)));
+                        obtainViewModel().playing = true;
+                        binding.playerControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    }
+                    if(Objects.equals(obtainViewModel().playType, "1")){
+                        //列表循环
+                        obtainViewModel().audioPlay("aplay","RP",new Gson().toJson(obtainViewModel().audioNameList));
+                        obtainViewModel().playing = true;
+                        binding.playerControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    }
+                }else{
+                    //停止播放
+                    obtainViewModel().audioPlay("aplay","ST","");
+                    obtainViewModel().playing = false;
+                    binding.playerControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+                }
+            }
+        });
         CommonUtil.click(binding.back, new Action() {
             @Override
             public void click() {

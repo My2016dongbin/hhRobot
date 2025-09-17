@@ -55,6 +55,10 @@ public class ControlViewModel extends BaseViewModel {
     public boolean fire = false;
     //最新一条报警时间
     public String warnDate = "";
+    //播放类型（0单曲循环、1列表循环）
+    public String playType = "1";
+    public boolean playing = false;
+    public List<String> audioNameList = new ArrayList<>();
 
     public boolean zuNi = false;
     public boolean zhanLi = false;
@@ -177,10 +181,15 @@ public class ControlViewModel extends BaseViewModel {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray videos = jsonObject.getJSONArray("videos");
+                            audioNameList = new ArrayList<>();
                             if (videos.length()>0) {
-                                JSONObject model = (JSONObject) videos.get(0);
-                                String name = model.getString("filename")+"";
-                                audioName.postValue(name.replace(".wav",""));
+                                for (int i = 0; i < videos.length(); i++) {
+                                    JSONObject model = (JSONObject) videos.get(i);
+                                    String name = model.getString("filename")+"";
+                                    audioNameList.add(name);
+                                }
+                                String firstName = audioNameList.get(0);
+                                audioName.postValue(firstName.replace(".wav",""));
                             }
 
                         } catch (Exception e) {
@@ -310,6 +319,83 @@ public class ControlViewModel extends BaseViewModel {
                         loading.setValue(new LoadingEvent(false, ""));
                     }
                 });
+    }
+    public void audioPlay2(String type,String cmd,String param) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("type", type);
+            object.put("cmd", cmd);
+            object.put("seq", new Random().nextInt(10000));
+            object.put("param", param);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.e("TAG", "onSuccess: OFFLINE_CONTROL = " + URLConstant.OFFLINE_CONTROL() + object);
+        HhHttp.postString()
+                .url(URLConstant.OFFLINE_CONTROL())
+                .content(object.toString())
+                .build()
+                .connTimeOut(10000)
+                .execute(new LoggedInStringCallback(this, context) {
+                    @Override
+                    public void onSuccess(String response, int id) {
+                        Log.e("TAG", "onSuccess: OFFLINE_CONTROL = " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "服务异常", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e, int id) {
+                        HhLog.e("onFailure: " + e.toString());
+                        loading.setValue(new LoadingEvent(false, ""));
+                    }
+                });
+    }
+    public void audioPlay(String type,String cmd,String param) {
+        JSONObject jsonObject = new JSONObject();
+        List<String> stringList = new ArrayList<>();
+        stringList.add(fileName);
+        RequestParams params = new RequestParams(URLConstant.PLAY_AUDIO());
+//        params.addParameter("command",1);
+        try {
+            jsonObject.put("type", type);
+            jsonObject.put("cmd", cmd);
+            jsonObject.put("seq", new Random().nextInt(10000));
+            jsonObject.put("param", param);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        params.setBodyContent(jsonObject.toString());
+        HhLog.e("onSuccess: post PLAY_AUDIO " + URLConstant.PLAY_AUDIO());
+        HhLog.e("onSuccess: post PLAY_AUDIO " + jsonObject);
+        HhLog.e("onSuccess: post PLAY_AUDIO " + CommonData.token);
+        HhHttp.postX(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                HhLog.e("onSuccess: post PLAY_AUDIO " + result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                HhLog.e("onFailure: PLAY_AUDIO " + ex.toString());
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     private void runTimes() {

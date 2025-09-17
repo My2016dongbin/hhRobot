@@ -107,8 +107,7 @@ public class PictureListViewModel extends BaseViewModel {
         if (pictureList != null && pictureList.size()!=0) {
             items.addAll(pictureList);
         }else{
-            //items.add(new Empty());
-            return;
+            items.add(new Empty());
         }
 
         assertAllRegistered(adapter, items);
@@ -120,8 +119,7 @@ public class PictureListViewModel extends BaseViewModel {
         if (faceList != null && faceList.size()!=0) {
             itemsFace.addAll(faceList);
         }else{
-            //items.add(new Empty());
-            return;
+            items.add(new Empty());
         }
 
         assertAllRegistered(adapterFace, itemsFace);

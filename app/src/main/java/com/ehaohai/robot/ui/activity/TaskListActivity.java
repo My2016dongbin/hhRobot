@@ -140,6 +140,7 @@ public class TaskListActivity extends BaseLiveActivity<ActivityTaskListBinding, 
     }
 
     private void bind_() {
+        binding.warnLayout.setScrimColor(getResources().getColor(R.color.transparent));
         CommonUtil.click(binding.back, new Action() {
             @Override
             public void click() {

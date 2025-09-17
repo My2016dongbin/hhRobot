@@ -528,7 +528,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_gravity="bottom"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_control_cloud" />
+                android:src="@drawable/ic_control" />
             <!--(云台)设置步长焦距焦点-->
             <FrameLayout
                 android:id="@+id/fl_cloud_set"
@@ -1437,10 +1437,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:id="@+id/player_control"
                         android:src="@drawable/ic_play"
                         android:layout_marginStart="25dp"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"/>
+                        android:padding="5dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"/>
                     <TextView
                         android:id="@+id/audio_name"
                         android:layout_weight="1"
@@ -1454,10 +1456,12 @@
                         android:paddingStart="10dp"
                         />
                     <ImageView
+                        android:id="@+id/player_change"
                         android:src="@drawable/ic_roll"
                         android:layout_marginEnd="25dp"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"/>
+                        android:padding="5dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"/>
                 </LinearLayout>
                 <!--更多功能-->
                 <TextView

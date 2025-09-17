@@ -356,8 +356,6 @@ public class AudioListActivity extends BaseLiveActivity<ActivityAudioListBinding
             audioRecord.release();
             audioRecord = null;
         }
-
-        obtainViewModel().uploadAudio();
     }
 
 

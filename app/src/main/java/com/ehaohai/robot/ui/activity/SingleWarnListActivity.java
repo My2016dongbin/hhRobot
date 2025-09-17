@@ -2,6 +2,7 @@ package com.ehaohai.robot.ui.activity;
 
 import static me.drakeet.multitype.MultiTypeAsserts.assertHasTheSameAdapter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.ehaohai.robot.ui.multitype.SingleWarnBugViewBinder;
 import com.ehaohai.robot.ui.multitype.SingleWarnViewBinder;
 import com.ehaohai.robot.ui.multitype.Warn;
 import com.ehaohai.robot.ui.viewmodel.SingleWarnListViewModel;
+import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.CommonData;
 import com.ehaohai.robot.utils.CommonUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -41,6 +43,7 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
     }
 
     private void init_() {
+        obtainViewModel().initWarnTypes();
         ///AI报警列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         binding.aiRecycle.setLayoutManager(linearLayoutManager);
@@ -107,6 +110,7 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
     }
 
     private void bind_() {
+        binding.warnLayout.setScrimColor(getResources().getColor(R.color.transparent));
         binding.back.setOnClickListener(view -> {
             finish();
         });
@@ -133,6 +137,8 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
                 binding.aiAll.setVisibility(View.VISIBLE);
                 binding.aiList.setVisibility(View.VISIBLE);
                 binding.bugList.setVisibility(View.GONE);
+
+                binding.filter.setVisibility(View.VISIBLE);
             }
         });
         ///故障报警
@@ -146,6 +152,57 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
                 binding.aiToday.setVisibility(View.GONE);
                 binding.aiAll.setVisibility(View.GONE);
                 binding.aiList.setVisibility(View.GONE);
+
+                binding.filter.setVisibility(View.GONE);
+            }
+        });
+        ///筛选-报警类型
+        CommonUtil.click(binding.filterTapType, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnType.postValue(true);
+            }
+        });
+        CommonUtil.click(binding.warnConfirm, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnType.postValue(false);
+            }
+        });
+        CommonUtil.click(binding.warnAll, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnTypeIndex.postValue(0);
+            }
+        });
+        CommonUtil.click(binding.warnSafe, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnTypeIndex.postValue(1);
+            }
+        });
+        CommonUtil.click(binding.warnFire, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnTypeIndex.postValue(2);
+            }
+        });
+        CommonUtil.click(binding.warnFace, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnTypeIndex.postValue(3);
+            }
+        });
+        CommonUtil.click(binding.warnLight, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnTypeIndex.postValue(4);
+            }
+        });
+        CommonUtil.click(binding.warnSmoke, new Action() {
+            @Override
+            public void click() {
+                obtainViewModel().filterWarnTypeIndex.postValue(5);
             }
         });
     }
@@ -176,6 +233,52 @@ public class SingleWarnListActivity extends BaseLiveActivity<ActivitySingleWarnL
         obtainViewModel().bugNum.observe(this, this::bugNumChanged);
         obtainViewModel().todayCount.observe(this, this::todayChanged);
         obtainViewModel().allCount.observe(this, this::allChanged);
+        obtainViewModel().filterWarnType.observe(this, this::filterWarnTypeChanged);
+        obtainViewModel().filterWarnTypeIndex.observe(this, this::filterWarnTypeIndexChanged);
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void filterWarnTypeIndexChanged(int index) {
+        unFilterState();
+        if(index == 0){
+            binding.warnAllState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
+        }
+        if(index == 1){
+            binding.warnSafeState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
+        }
+        if(index == 2){
+            binding.warnFireState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
+        }
+        if(index == 3){
+            binding.warnFaceState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
+        }
+        if(index == 4){
+            binding.warnLightState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
+        }
+        if(index == 5){
+            binding.warnSmokeState.setImageDrawable(getResources().getDrawable(R.drawable.ic_yes));
+        }
+        binding.filterTextType.setText(obtainViewModel().warnTypes.get(obtainViewModel().filterWarnTypeIndex.getValue()).getName()+"");
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void unFilterState(){
+        binding.warnAllState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+        binding.warnSafeState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+        binding.warnFireState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+        binding.warnFaceState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+        binding.warnLightState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+        binding.warnSmokeState.setImageDrawable(getResources().getDrawable(R.drawable.ic_un));
+    }
+
+    private void filterWarnTypeChanged(boolean filterWarn) {
+        if(filterWarn){
+            binding.llFilter.setVisibility(View.GONE);
+            binding.llWarn.setVisibility(View.VISIBLE);
+        }else{
+            binding.llFilter.setVisibility(View.VISIBLE);
+            binding.llWarn.setVisibility(View.GONE);
+        }
     }
 
     private void aiNumChanged(int changed) {

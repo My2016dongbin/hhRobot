@@ -55,7 +55,10 @@
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/gray1"
                     android:textSize="14sp"
-                    android:text="一楼_站点1"
+                    android:text=""
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:maxLength="20"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
                 <TextView
@@ -64,7 +67,7 @@
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/gray1"
                     android:textSize="14sp"
-                    android:text="xy"
+                    android:text=""
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
                 <TextView
@@ -87,7 +90,7 @@
                     android:textSize="14sp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:text="5"
+                    android:text="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
                 <LinearLayout

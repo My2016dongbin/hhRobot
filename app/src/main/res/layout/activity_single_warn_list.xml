@@ -331,116 +331,303 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <!--筛选报警信息-->
-                <TextView
+                <!--筛选主菜单-->
+                <LinearLayout
+                    android:id="@+id/ll_filter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="筛选报警信息"
-                    android:textSize="16sp"
-                    android:textColor="@color/whiteColor"
-                    android:background="@color/setting"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:paddingStart="25dp"
-                    />
-                <!--设备类型-->
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
+
+                    <!--筛选报警信息-->
                     <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="设备类型"
-                        android:textSize="14sp"
-                        android:textColor="@color/gray1"
+                        android:text="筛选报警信息"
+                        android:textSize="16sp"
+                        android:textColor="@color/whiteColor"
+                        android:background="@color/setting"
                         android:paddingTop="16dp"
                         android:paddingBottom="16dp"
                         android:paddingStart="25dp"
                         />
+                    <!--报警类型-->
+                    <LinearLayout
+                        android:id="@+id/filter_tap_type"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="报警类型"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:paddingStart="25dp"
+                            />
+                        <TextView
+                            android:id="@+id/filter_text_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="全部"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:layout_gravity="center_vertical|end"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            />
+                        <ImageView
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_right_gray" />
+                    </LinearLayout>
+                    <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+                    <!--确定按钮-->
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="全部"
-                        android:textSize="14sp"
-                        android:textColor="@color/gray1"
-                        android:layout_gravity="center_vertical|end"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        />
-                    <ImageView
-                        android:layout_marginEnd="20dp"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center_vertical|end"
-                        android:src="@drawable/ic_right_gray" />
+                        android:id="@+id/confirm"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="200dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/bg_button2"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="确定"
+                        android:textColor="@color/c12"
+                        android:textSize="16sp" />
                 </LinearLayout>
-                <View
-                    android:background="@color/line_color2"
-                    android:layout_width="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_height="0.5dp"/>
-                <!--设备名称-->
+                <!--报警类型-->
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:id="@+id/ll_warn"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!--报警类型-->
                     <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="设备名称"
-                        android:textSize="14sp"
-                        android:textColor="@color/gray1"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
+                        android:text="报警类型"
+                        android:textSize="16sp"
+                        android:textColor="@color/whiteColor"
+                        android:background="@color/setting"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp"
                         android:paddingStart="25dp"
                         />
-                    <EditText
-                        android:id="@+id/filter_name_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:gravity="center_vertical|end"
-                        android:background="@color/black_input_back"
-                        android:hint="请输入"
-                        android:inputType="text"
-                        android:minHeight="48dp"
-                        android:maxWidth="200dp"
-                        android:textColor="@color/text_color12"
-                        android:textColorHint="@color/text_color9"
-                        android:textCursorDrawable="@drawable/edit_cursor_color"
-                        android:textSize="14sp"
-                        tools:ignore="TextContrastCheck" />
-                    <ImageView
-                        android:layout_marginEnd="20dp"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center_vertical|end"
-                        android:src="@drawable/ic_right_gray" />
+                    <!--全部-->
+                    <LinearLayout
+                        android:id="@+id/warn_all"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="全部"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"
+                            android:paddingStart="25dp"
+                            />
+                        <ImageView
+                            android:id="@+id/warn_all_state"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_yes" />
+                    </LinearLayout>
+                    <!--安全帽检测-->
+                    <LinearLayout
+                        android:id="@+id/warn_safe"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="安全帽检测"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"
+                            android:paddingStart="25dp"
+                            />
+                        <ImageView
+                            android:id="@+id/warn_safe_state"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_yes" />
+                    </LinearLayout>
+                    <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+                    <!--火焰检测-->
+                    <LinearLayout
+                        android:id="@+id/warn_fire"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="火焰检测"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"
+                            android:paddingStart="25dp"
+                            />
+                        <ImageView
+                            android:id="@+id/warn_fire_state"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_yes" />
+                    </LinearLayout>
+                    <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+                    <!--人脸识别算法报警-->
+                    <LinearLayout
+                        android:id="@+id/warn_face"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="人脸识别算法报警"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"
+                            android:paddingStart="25dp"
+                            />
+                        <ImageView
+                            android:id="@+id/warn_face_state"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_yes" />
+                    </LinearLayout>
+                    <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+                    <!--灯光识别-->
+                    <LinearLayout
+                        android:id="@+id/warn_light"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="灯光识别"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"
+                            android:paddingStart="25dp"
+                            />
+                        <ImageView
+                            android:id="@+id/warn_light_state"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_yes" />
+                    </LinearLayout>
+                    <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+                    <!--抽烟识别-->
+                    <LinearLayout
+                        android:id="@+id/warn_smoke"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="抽烟识别"
+                            android:textSize="14sp"
+                            android:textColor="@color/gray1"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"
+                            android:paddingStart="25dp"
+                            />
+                        <ImageView
+                            android:id="@+id/warn_smoke_state"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:src="@drawable/ic_yes" />
+                    </LinearLayout>
+                    <View
+                        android:background="@color/line_color2"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="0.5dp"/>
+
+                    <TextView
+                        android:id="@+id/warn_confirm"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="200dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/bg_button2"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="确定"
+                        android:textColor="@color/c12"
+                        android:textSize="16sp" />
+
                 </LinearLayout>
-                <!--确定按钮-->
-                <TextView
-                    android:id="@+id/confirm"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/bg_button2"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:text="确定"
-                    android:textColor="@color/c12"
-                    android:textSize="16sp" />
             </LinearLayout>
         </ScrollView>
 
