@@ -34,6 +34,8 @@ import com.ehaohai.robot.base.ViewModelFactory;
 import com.ehaohai.robot.databinding.ActivityPictureFaceListBinding;
 import com.ehaohai.robot.event.PictureRefresh;
 import com.ehaohai.robot.ui.cell.OnInputConfirmListener;
+import com.ehaohai.robot.ui.multitype.Empty;
+import com.ehaohai.robot.ui.multitype.EmptyNullViewBinder;
 import com.ehaohai.robot.ui.multitype.FacePicture;
 import com.ehaohai.robot.ui.multitype.FacePictureViewBinder;
 import com.ehaohai.robot.ui.viewmodel.PictureFaceListViewModel;
@@ -107,6 +109,7 @@ public class PictureFaceListActivity extends BaseLiveActivity<ActivityPictureFac
         FacePictureViewBinder facePictureViewBinder = new FacePictureViewBinder(this);
         facePictureViewBinder.setListener(this);
         obtainViewModel().adapter.register(FacePicture.class, facePictureViewBinder);
+        obtainViewModel().adapter.register(Empty.class, new EmptyNullViewBinder(this));
         binding.recyclePic.setAdapter(obtainViewModel().adapter);
         assertHasTheSameAdapter(binding.recyclePic, obtainViewModel().adapter);
 

@@ -14,6 +14,7 @@ import com.ehaohai.robot.constant.HhHttp;
 import com.ehaohai.robot.constant.URLConstant;
 import com.ehaohai.robot.event.LoadingEvent;
 import com.ehaohai.robot.event.PictureRefresh;
+import com.ehaohai.robot.ui.multitype.Empty;
 import com.ehaohai.robot.ui.multitype.FacePicture;
 import com.ehaohai.robot.utils.Action;
 import com.ehaohai.robot.utils.HhLog;
@@ -87,8 +88,7 @@ public class PictureFaceListViewModel extends BaseViewModel {
         if (pictureList != null && pictureList.size()!=0) {
             items.addAll(pictureList);
         }else{
-            //items.add(new Empty());
-            return;
+            items.add(new Empty());
         }
 
         assertAllRegistered(adapter, items);
@@ -100,7 +100,7 @@ public class PictureFaceListViewModel extends BaseViewModel {
         if (pictureList != null && pictureList.size()!=0) {
             items.addAll(pictureList);
         }else{
-            //items.add(new Empty());
+            items.add(new Empty());
         }
 
         assertAllRegistered(adapter, items);

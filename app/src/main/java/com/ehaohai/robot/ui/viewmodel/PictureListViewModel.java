@@ -131,7 +131,7 @@ public class PictureListViewModel extends BaseViewModel {
         if (pictureList != null && pictureList.size()!=0) {
             items.addAll(pictureList);
         }else{
-            //items.add(new Empty());
+            items.add(new Empty());
         }
 
         assertAllRegistered(adapter, items);
