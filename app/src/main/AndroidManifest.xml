@@ -145,6 +145,7 @@
         <activity android:name=".ui.activity.CameraXActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.activity.LaunchActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

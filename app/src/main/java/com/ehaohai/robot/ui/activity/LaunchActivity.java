@@ -37,6 +37,12 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //避免图标点击重复启动页
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
+
 
         fullScreen(this);
         permissions();
@@ -68,12 +74,16 @@ public class LaunchActivity extends BaseLiveActivity<ActivityLaunchBinding, Laun
                             }
                             URLConstant.setLocalPath(offlineIp);
                             new Handler().postDelayed(() -> {
-                                startActivity(new Intent(LaunchActivity.this, MainActivity.class));
+                                Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                                 finish();
                             },2000);
                         }else{
                             new Handler().postDelayed(() -> {
-                                startActivity(new Intent(LaunchActivity.this, LoginActivity.class));
+                                Intent intent = new Intent(LaunchActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                                 finish();
                             },2000);
                         }
